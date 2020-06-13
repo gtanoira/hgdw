@@ -1,0 +1,35 @@
+{
+  "name": "hotgo-datawarehouse-apis",
+  "version": "1.0.0",
+  "description": "code sample for the talk \"Modern Web APIs with Node.js & TypeScript\" at the International JavaScript Conference 2017 in Munich.",
+  "keywords": [
+    "typeorm",
+    "webapi",
+    "api",
+    "web",
+    "web api",
+    "typescript"
+  ],
+  "scripts": {
+    "docker-build": "docker build -t confmr.azurecr.io/javascript-conference-2017-nodejs-typescript:latest .",
+    "docker-push": "docker push confmr.azurecr.io/javascript-conference-2017-nodejs-typescript",
+    "build": "rimraf build && tsc",
+    "start": "nodemon --exec ts-node src/index.ts",
+    "start-server": "node build/index.js"
+  },
+  "author": "Gonzalo Martinez Tanoira <gonzalo.mtanoira@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@types/restify": "^8.4.2",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.4",
+    "pg": "^8.2.1",
+    "reflect-metadata": "^0.1.13",
+    "restify": "^8.5.1",
+    "rimraf": "^3.0.2",
+    "rxjs": "^6.5.5",
+    "ts-node": "^8.10.2",
+    "typeorm": "^0.2.25",
+    "typescript": "^3.9.5"
+  }
+}
