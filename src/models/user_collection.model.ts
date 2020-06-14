@@ -1,6 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('payment_commit')
+@Entity('user_collection')
 export class UserCollectionModel {
   @PrimaryGeneratedColumn()
   public id: number;

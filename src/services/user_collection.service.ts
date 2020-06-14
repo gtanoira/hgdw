@@ -10,9 +10,10 @@ export class UserCollectionService {
 
   public async actualizar(): Promise<{}> {
     const connection = await HotGoDWHBPProvider.getConnection();
-    return await connection.getRepository(UserCollectionModel).save(userCollection);
+    return {};
+    // return await connection.getRepository(UserCollectionModel).save(userCollection);
   }
-  
+
   public async create(userCollection: UserCollectionModel): Promise<UserCollectionModel> {
     const connection = await HotGoDWHBPProvider.getConnection();
     return await connection.getRepository(UserCollectionModel).save(userCollection);
