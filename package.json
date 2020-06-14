@@ -15,7 +15,8 @@
     "docker-push": "docker push confmr.azurecr.io/javascript-conference-2017-nodejs-typescript",
     "build": "rimraf build && tsc",
     "start": "nodemon --exec ts-node src/index.ts",
-    "start-server": "node build/index.js"
+    "start-server": "node build/index.js",
+    "lint": "tslint"
   },
   "author": "Gonzalo Martinez Tanoira <gonzalo.mtanoira@gmail.com>",
   "license": "ISC",
@@ -29,7 +30,10 @@
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.5",
     "ts-node": "^8.10.2",
-    "typeorm": "^0.2.25",
+    "typeorm": "^0.2.25"
+  },
+  "devDependencies": {
+    "tslint": "^6.1.2",
     "typescript": "^3.9.5"
   }
 }

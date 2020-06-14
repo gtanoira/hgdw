@@ -1,6 +1,8 @@
 import { HttpServer } from './httpServer';
 import { RequestHandler, Server } from 'restify';
 import * as restify from 'restify';
+
+// Controlers
 import { CONTROLLERS } from '../controllers/index';
 
 export class ApiServer implements HttpServer {
@@ -14,15 +16,15 @@ export class ApiServer implements HttpServer {
     this.addRoute('post', url, requestHandler);
   }
 
-  public del(url: string, requestHandler: RequestHandler): void {
-    this.addRoute('del', url, requestHandler);
+  public delete(url: string, requestHandler: RequestHandler): void {
+    this.addRoute('delete', url, requestHandler);
   }
 
   public put(url: string, requestHandler: RequestHandler): void {
     this.addRoute('put', url, requestHandler);
   }
 
-  private addRoute(method: 'get' | 'post' | 'put' | 'del', url: string, requestHandler: RequestHandler): void {
+  private addRoute(method: 'get' | 'post' | 'put' | 'delete', url: string, requestHandler: RequestHandler): void {
     this.restify[method](url, async (req, res, next) => {
       try {
         await requestHandler(req, res, next);

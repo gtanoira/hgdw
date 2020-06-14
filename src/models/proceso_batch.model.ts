@@ -10,4 +10,16 @@ export class ProcesoBatchModel {
 
   @Column()
   public tabla: string;
+  
+  @Column({ length: 1000 })
+  public resultado: string;
+  
+  @Column({ name: 'id_fk'})
+  public idFk: number;
+  
+  @Column({ name: 'alta_date'})
+  public altaDate: string;
+    
+  @Column({ name: 'alta_user'})
+  public altaUser: string;
 }
