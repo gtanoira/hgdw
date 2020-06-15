@@ -35,7 +35,7 @@ export class HotGoDWHBPProvider {
 
     const { type, host, port, username, password, database, ssl } = this.configuration;
     this.connection = await createConnection({
-      type, host, port, username, password, database,
+      type, host, port, username, password, // database,
       extra: {
         ssl
       },
@@ -43,6 +43,7 @@ export class HotGoDWHBPProvider {
         ProcesoBatchModel,
         UserCollectionModel
       ],
+      migrationsRun: false,
       autoSchemaSync: true
     } as any);// as any to prevent complaining about the object does not fit to MongoConfiguration, which we won't use here
 
@@ -77,6 +78,7 @@ export class HotGoDatalakeProvider {
       entities: [
         PaymentCommitModel
       ],
+      migrationsRun: false,
       autoSchemaSync: true
     } as any);// as any to prevent complaining about the object does not fit to MongoConfiguration, which we won't use here
 

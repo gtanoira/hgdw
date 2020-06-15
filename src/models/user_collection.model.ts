@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('user_collection')
+@Entity('DWHBP.user_collection')
 export class UserCollectionModel {
   @PrimaryGeneratedColumn()
   public id: number;

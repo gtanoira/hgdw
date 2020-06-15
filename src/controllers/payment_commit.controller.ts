@@ -10,11 +10,16 @@ import { paymentCommitService } from '../services/payment_commit.service';
 
 export class PaymentCommitController implements Controller {
   public initialize(httpServer: HttpServer): void {
-    httpServer.get('/payment_commit', this.list.bind(this));
+    httpServer.get('/payment_commit', this.list.bind(this));  
+    httpServer.get('/payment_commit/new/:ultimoId', this.listNew.bind(this));
   }
 
   private async list(req: Request, res: Response): Promise<PaymentCommitModel[]> {
     return res.send(await paymentCommitService.list());
+  }
+  
+  private async listNew(req: Request, res: Response): Promise<PaymentCommitModel[]> {
+    return res.send(await paymentCommitService.listNew(req.params.ultimoId));
   }
 
 }

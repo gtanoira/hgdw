@@ -1,3 +1,9 @@
 node_modules
 .idea
 build
+
+# Exclude these directories
+src/settings
+
+# Exclude these files
+ormconfig.json
