@@ -3,7 +3,7 @@ import { HttpServer } from '../server/httpServer';
 import { Request, Response } from 'restify';
 
 // Models
-import { PaymentCommitModel } from '../models/payment_commit.model';
+import { PaymentCommit } from '../models/payment_commit.model';
 
 // Services
 import { paymentCommitService } from '../services/payment_commit.service';
@@ -14,11 +14,11 @@ export class PaymentCommitController implements Controller {
     httpServer.get('/payment_commit/new/:ultimoId', this.listNew.bind(this));
   }
 
-  private async list(req: Request, res: Response): Promise<PaymentCommitModel[]> {
+  private async list(req: Request, res: Response): Promise<PaymentCommit[]> {
     return res.send(await paymentCommitService.list());
   }
   
-  private async listNew(req: Request, res: Response): Promise<PaymentCommitModel[]> {
+  private async listNew(req: Request, res: Response): Promise<PaymentCommit[]> {
     return res.send(await paymentCommitService.listNew(req.params.ultimoId));
   }
 

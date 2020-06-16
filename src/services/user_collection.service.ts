@@ -1,11 +1,11 @@
 import { Connection } from 'typeorm';
 
 // Models
+import { ProcesosBatch } from '../models/proceso_batch.model';
 import { UserCollectionModel } from '../models/user_collection.model';
 
 // Databases
-import { HotGoDWHBPProvider } from '../database/index';
-import { ProcesoBatchModel } from '../models/proceso_batch.model';
+import { HotGoDBase } from '../database/index';
 
 // Services
 import { emailService } from '../services/email.service';
@@ -28,12 +28,12 @@ export class UserCollectionService {
   }
 
   public async create(userCollection: UserCollectionModel): Promise<UserCollectionModel> {
-    const connection = await HotGoDWHBPProvider.getConnection();
+    const connection = await HotGoDBase.setConnection('DWHBP');
     return await connection.getRepository(UserCollectionModel).save(userCollection);
   }
 
   public async list(): Promise<UserCollectionModel[]> {  
-    const connection = await HotGoDWHBPProvider.getConnection();
+    const connection = await HotGoDBase.setConnection('DWHBP');
     return await connection.getRepository(UserCollectionModel).find();
   }
 
@@ -45,10 +45,9 @@ export class UserCollectionService {
     try {
       
       // Buscar el id del ultimo registro actualizado
-      const connectionDWHBP = await HotGoDWHBPProvider.getConnection();
+      const connectionDWHBP = await HotGoDBase.setConnection('Datalake');
       const ultimoId = await this.buscarUltimoId(connectionDWHBP, 'payment_commit');
       connectionDWHBP.close();
-      console.log('*** 2');
 
       // Leer los registros nuevos a procesar de la tabla payment_commit
       const paymentCommits = await paymentCommitService.listNew(ultimoId);
@@ -77,7 +76,7 @@ export class UserCollectionService {
     
     let ultimoId: number;
     try {
-      const procesoBatch = await connection.getRepository(ProcesoBatchModel)
+      const procesoBatch = await connection.getRepository(ProcesosBatch)
         .createQueryBuilder("batch")
         .where('batch.tabla = :tabla', { tabla: 'payment_commit'})
         .orderBy('batch.alta_date', "DESC")

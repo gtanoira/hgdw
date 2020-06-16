@@ -3,7 +3,7 @@ import { HttpServer } from '../server/httpServer';
 import { Request, Response } from 'restify';
 
 // Models
-import { ProcesoBatchModel } from '../models/proceso_batch.model';
+import { ProcesosBatch } from '../models/proceso_batch.model';
 
 // Services
 import { procesoBatchService } from '../services/proceso_batch.service';
@@ -17,7 +17,7 @@ export class ProcesoBatchController implements Controller {
     // httpServer.del('proceso_batch/:id', this.remove.bind(this));
   }
 
-  private async list(req: Request, res: Response): Promise<ProcesoBatchModel[]> {
+  private async list(req: Request, res: Response): Promise<ProcesosBatch[]> {
     const recs = await procesoBatchService.list();
     return res.send(recs);
   }
