@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, AfterLoad } from 'typeorm';
 
 @Entity({
   name: 'payment_commit',
@@ -12,29 +12,29 @@ export class PaymentCommit {
 
   @Column()
   public status: string;
-  
+
   @Column({
     name: 'is_suscription',
     type: 'tinyint'
   })
   public isSuscription: number;
-  
+
   @Column({
     name: 'user_id'
   })
   public userId: string;
-    
+
   @Column({
     name: 'access_until',
     type: 'timestamp'
   })
   public accessUntil: string;
-   
+
   @Column({
     name: 'method_name'
   })
   public methodName: string;
-  
+
   @Column()
   public source: string;
 
@@ -52,39 +52,48 @@ export class PaymentCommit {
     type: 'int'
   })
   public duration: number;
-    
+
   @Column()
   public message: string;
-    
+
   @Column()
   public event: string;
-    
+
   @Column({
     type: 'timestamp'
   })
   public timestamp: string;
-  
+
   @Column({
     type: 'int'
   })
   public discount: number;
-      
+
   @Column({
     name: 'payment_id'
   })
   public paymentId: string;
-    
+
   @Column()
   public package: string;
-      
+
   @Column({
-    type: 'tinyint'
+    type: 'tinyint',
+    zerofill: true
   })
   public trial: number;
-        
-  @Column({ 
+
+  @Column({
     name: 'trial_duration',
-    type: 'int'
+    type: 'int',
+    zerofill: true
   })
   public trialDuration: number;
+
+  // Triggers 
+  @AfterLoad()
+    fillZeros() {
+      if (this.trial === null) this.trial = 0;
+      if (this.trialDuration === null) this.trialDuration = 0;
+    }
 }

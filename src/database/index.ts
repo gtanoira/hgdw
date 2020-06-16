@@ -1,4 +1,4 @@
-import { Connection, createConnection, getConnectionOptions, ConnectionOptions } from 'typeorm';
+import { Connection, getConnectionOptions, ConnectionOptions, createConnections } from 'typeorm';
 
 // Models
 import { ProcesosBatch } from '../models/proceso_batch.model';
@@ -26,53 +26,42 @@ export interface ConnectionOptions {
 
 // Base de datos HotGo 
 export class HotGoDBase {
-  private static connection: Connection;
-  private static connectionOptions: ConnectionOptions;
+  public static connections: Connection[];
 
-  public static async setConnection(dbSchemaName: string): Promise<Connection> {
+  // Establecer todas las conexiones con las bases de datos
+  public static async setConnections(): Promise<void> {
 
-    // Si la conexión existe, devolverla y no hacer nada más
-    if (this.connection) {
-      if (this.connection.name === dbSchemaName) {
-        return this.connection;
-      } else {
-        // Cerrar la conexión anterior
-        this.connection.close();
-      }
+    // Customizar la conección a HotGo DB Datalake
+    let connectionDatalakeOptions: ConnectionOptions = await getConnectionOptions('Datalake');  // leer las opciones desde ormconfig.json
+    // Si no existe las credenciales para conectarse a Datalake, emitir un error
+    if (!connectionDatalakeOptions) {
+      throw new Error(`Las credenciales para la BDatos HotGo (schema: Datalake) no existen.`);
     }
+    // Customizar
+    Object.assign(connectionDatalakeOptions, {
+      entities: [
+        PaymentCommit
+      ]
+    });
 
-    // Customizar la conección a HotGo DB
-    try {
-      this.connectionOptions = await getConnectionOptions(dbSchemaName);  // leer las opciones desde ormconfig.json
-
-      // Si no existe las credenciales para conectarse a la BDatos, emitir un error
-      if (!this.connectionOptions) {
-        throw new Error(`Las credenciales para la BDatos HotGo (schema: ${dbSchemaName}) no existen.`);
-      }
-
-      // Customizar
-      if (dbSchemaName === 'Datalake') {
-        Object.assign(this.connectionOptions, {
-          entities: [
-            PaymentCommit
-          ]
-        });
-      };
-      if (dbSchemaName === 'DWHBP') {
-        Object.assign(this.connectionOptions, {
-          entities: [
-            ProcesosBatch
-          ]
-        });
-        // namingStrategy: new MyNamingStrategy()
-      };
-
-      // create a connection using modified connection options
-      this.connection = await createConnection(this.connectionOptions);
-    } catch (err) {
-      console.log('*** CONNECTION ERROR:', err);
-    } finally {
-      return this.connection;
+    // Customizar la conección a HotGo DB DWHBP
+    const connectionDWHBPOptions: ConnectionOptions = await getConnectionOptions('DWHBP');  // leer las opciones desde ormconfig.json
+    // Si no existe las credenciales para conectarse a Datalake, emitir un error
+    if (!connectionDWHBPOptions) {
+      throw new Error(`Las credenciales para la BDatos HotGo (schema: DWHBP) no existen.`);
     }
+    // Customizar
+    Object.assign(connectionDWHBPOptions, {
+      entities: [
+        ProcesosBatch
+      ]
+    });
+
+    // Crear las conexiones usando las opciones modificadas
+    const options: ConnectionOptions[] = [];
+    options.push(connectionDWHBPOptions);
+    options.push(connectionDatalakeOptions);
+    this.connections = await createConnections(options);
+    return;
   }
 }

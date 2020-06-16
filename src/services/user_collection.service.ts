@@ -1,4 +1,4 @@
-import { Connection } from 'typeorm';
+import { Connection, getConnection } from 'typeorm';
 
 // Models
 import { ProcesosBatch } from '../models/proceso_batch.model';
@@ -28,12 +28,12 @@ export class UserCollectionService {
   }
 
   public async create(userCollection: UserCollectionModel): Promise<UserCollectionModel> {
-    const connection = await HotGoDBase.setConnection('DWHBP');
+    const connection = getConnection('DWHBP');
     return await connection.getRepository(UserCollectionModel).save(userCollection);
   }
 
   public async list(): Promise<UserCollectionModel[]> {  
-    const connection = await HotGoDBase.setConnection('DWHBP');
+    const connection = getConnection('DWHBP');
     return await connection.getRepository(UserCollectionModel).find();
   }
 
@@ -45,9 +45,8 @@ export class UserCollectionService {
     try {
       
       // Buscar el id del ultimo registro actualizado
-      const connectionDWHBP = await HotGoDBase.setConnection('Datalake');
+      const connectionDWHBP = getConnection('Datalake');
       const ultimoId = await this.buscarUltimoId(connectionDWHBP, 'payment_commit');
-      connectionDWHBP.close();
 
       // Leer los registros nuevos a procesar de la tabla payment_commit
       const paymentCommits = await paymentCommitService.listNew(ultimoId);
