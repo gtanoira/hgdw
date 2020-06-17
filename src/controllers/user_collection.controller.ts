@@ -3,6 +3,9 @@ import { getConnection, Connection } from 'typeorm';
 import { HttpServer } from '../server/httpServer';
 import { Request, Response } from 'restify';
 
+// Librerías externas
+import * as moment from 'moment';
+
 // Models
 import { PaymentCommit } from '../models/payment_commit.model';
 import { ProcesosBatch } from '../models/proceso_batch.model';
@@ -12,6 +15,7 @@ import { StRegister } from '../models/st_register.model';
 import { auxiliarTablesService } from '../services/auxiliar_tables.service';
 import { loggerService } from '../services/logger.service';
 import { paymentCommitService } from '../services/payment_commit.service';
+import { stRegisterService } from '../services/st_register.service';
 import { userCollectionService } from '../services/user_collection.service';
 
 // Common Functions
@@ -94,12 +98,12 @@ export class UserCollectionController implements Controller {
     // Definir variables
     const MAX_LENGTH = 30 * 1024;  // maximo length para los VALUES() del INSERT
     let rtnMessage = {};  // mensaje de retorno de la funcion
+    let paymStatus: String;
+    let paymDescription: String;
     let user: StRegister;
+    let timestamp: String;
     let timestampLocal: String;
     let timestampAr: String;
-
-    // Conectarse a la BDatos
-    const connection = getConnection('DWHBP');
 
     let insertValues = '';
     // Chequear que haya por lo menos 1 registro
@@ -108,8 +112,8 @@ export class UserCollectionController implements Controller {
       paymentCommits.forEach( async (payment) => {
 
         // Buscar Usuario
-        try {
-          user = await connection.getRepository(StRegister).findOne({userId: payment.userId});
+        user = await stRegisterService.getByUserId(payment.userId);
+        if (user) {
           console.log('*** USER:');
           console.log(user);
           
@@ -117,25 +121,36 @@ export class UserCollectionController implements Controller {
           timestampLocal = await ToTimeZone(payment.timestamp, user.country);
           timestampAr = await ToTimeZone(payment.timestamp, 'AR');
           console.log('*** TIMESTAMPs:');
+          console.log(typeof(payment.timestamp));
           console.log(payment.timestamp, timestampLocal, timestampAr);
           
-        } catch (error) {
+        } else {
           console.log('*** USER:');
           console.log(user);
-          console.log(error);
           null;
         }
 
         // Calcular los datos faltantes
         
-        // paym_description
-        const paymDescription = await auxiliarTablesService.fieldStatusGetPaymDescription(payment.status);
+        // paym_status (null: no se pudo determinar)
+        const fieldStatus = (await auxiliarTablesService.getPaymStatus(payment.status));
+        paymStatus = fieldStatus.paymStatus;
+        console.log('*** paymStatus:', paymStatus);
         // Chequear si no lo encontró y enviarlo al Logger
-        if (!paymDescription) { 
+        if (paymStatus == null) { 
           const errMessage = `El registro ${payment.id} de la tabla Datalake.payment_commit posee el siguiente status (${payment.status}) que no está definido en la tabla DWHBP.field_status.`;
           loggerService.crearLogActualizar(errMessage); 
         }
-        console.log('*** PAYM_DESCRIPTION:', paymDescription);
+
+        // paym_description
+        if (paymStatus === 'no aprobado') {
+          paymDescription = 'rechazado';
+        } else if (paymStatus == null) {
+          paymDescription = '';
+        } else {
+          paymDescription = await userCollectionService.getPaymDescription(payment);
+        }
+        console.log('*** paymDescription (P):', paymDescription);
         
 
         // Armar el registro   ,'${payment.}'

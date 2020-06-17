@@ -21,5 +21,4 @@ export class PaymentCommitController implements Controller {
   private async listNew(req: Request, res: Response): Promise<PaymentCommit[]> {
     return res.send(await paymentCommitService.listNew(req.params.ultimoId));
   }
-
 }

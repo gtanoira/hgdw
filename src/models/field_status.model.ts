@@ -13,6 +13,6 @@ export class FieldStatus {
   @Column({ comment: 'Valor que viene de las tablas del Datalake'})
   public status: string;
 
-  @Column({ name: 'paym_description', comment: 'Resultado que se obtiene del valor dado por status: aprobado / no aprobado'})
-  public paymDescription: string;
+  @Column({ name: 'paym_status', comment: 'Resultado que se obtiene del valor dado por status: aprobado / no aprobado'})
+  public paymStatus: string;
 }
