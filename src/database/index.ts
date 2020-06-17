@@ -1,9 +1,13 @@
 import { Connection, getConnectionOptions, ConnectionOptions, createConnections } from 'typeorm';
 
 // Models
+import { ErrorLog } from '../models/error_logs.model';
+import { FieldStatus } from '../models/field_status.model';
+import { Pais } from '../models/paises.model';
 import { ProcesosBatch } from '../models/proceso_batch.model';
 import { PaymentCommit } from '../models/payment_commit.model';
-import { UserCollectionModel } from '../models/user_collection.model';
+import { StRegister } from '../models/st_register.model';
+import { UserCollection } from '../models/user_collection.model';
 
 /* 
 Ejemplo de la interfaz "ConnectionOptions"
@@ -53,7 +57,12 @@ export class HotGoDBase {
     // Customizar
     Object.assign(connectionDWHBPOptions, {
       entities: [
-        ProcesosBatch
+        ErrorLog,
+        FieldStatus,
+        Pais,
+        ProcesosBatch,
+        StRegister,
+        UserCollection
       ]
     });
 

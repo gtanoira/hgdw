@@ -14,11 +14,11 @@ export class PaymentCommitService {
   
   public async listNew(ultimoId: number): Promise<PaymentCommit[]> {  
     const connection = getConnection('Datalake');
-    return await connection.getRepository(PaymentCommit)
-      .createQueryBuilder()
+    return await connection.getRepository(PaymentCommit).find({id: 31944})
+      /* .createQueryBuilder()
       .where('id > :ultimoId', { ultimoId: ultimoId} )
-      .limit(100)
-      .getMany();
+      .limit(1)
+      .getMany(); */
   }
 }
 

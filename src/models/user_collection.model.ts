@@ -1,38 +1,47 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('DWHBP.user_collection')
-export class UserCollectionModel {
+@Entity({
+  name: 'user_collections',
+  database: 'DWHBP',
+  // schema: 'ProcesosBatchsSchema',
+  synchronize: false  // no incluir en migration
+})
+export class UserCollection {
+  @Column({ comment: 'ID sintético' })
   @PrimaryGeneratedColumn()
   public id: number;
  
   @Column({ name: 'user_id' })
   public userId: string;
-  
-  @Column({ name: 'user_activation' })
-  public user_activation: string;
 
-  @Column()
+  @Column({ comment: 'País. Se guarda aqui y no se obtiene de st-register por un tema de performance' })
   public country: string;
  
-  @Column()
+  @Column({ comment: 'Tipo de evento: payment_commit / rebill' })
   public event: string;
      
   @Column({ type: 'timestamp' })
   public timestamp: string;
      
-  @Column({ type: 'datetime', name: 'timestamp_local' })
+  @Column({ type: 'datetime', name: 'timestamp_local', comment: 'Dia y hora LOCAL (la del país)' })
   public timestampLocal: string;
      
-  @Column({ type: 'datetime', name: 'timestamp_ar' })
+  @Column({ type: 'datetime', name: 'timestamp_ar', comment: 'Dia y hora de Argentina' })
   public timestampAr: string;
   
-  @Column({ name: 'idp_desc' })
-  public idpDesc: string;
+  @Column({ name: 'idp_id', comment: 'ID de la plataforma de donde proviene el cliente' })
+  public idpId: string;
   
   @Column()
   public source: string;
   
-  @Column({ name: 'paym_processor' })
+  @Column({ comment: 'Mensaje de status del procesador de pagos'})
+  public status: string;
+  
+  @Column({ name: 'paym_description', comment: 'Alta / Reactivación / Recobro / Rechazado' })
+  public paymDescription: string;
+  
+  @Column({ name: 'paym_processor', comment: 'Procesador de pago. Este campo solo se llena de payment_commit.' })
   public paymProcessor: string;
    
   @Column({ name: 'paym_status' })
