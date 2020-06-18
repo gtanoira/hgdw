@@ -49,15 +49,15 @@ export class StRegisterService {
     // return await connection.getRepository(StRegister)
     return getConnection('DWHBP').getRepository(StRegister)
       .createQueryBuilder()
-      .getMany();
-      /* .then( data => data.map( el => { 
+      .getMany()
+      .then( data => data.map( el => { 
         return {
           id: el.id,
           userId: el.userId,
           country: el.country,
           idpId: el.idpId
         }
-      })); */
+      }));
   }
 }
 

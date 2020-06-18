@@ -14,6 +14,12 @@ export class ProcesoBatchService {
     const connection = getConnection('DWHBP');
     return await connection.getRepository(ProcesosBatch).find();
   }
+
+  // Grabar un proceso en la tabla
+  public async addProceso(newBatch: ProcesosBatch): Promise<ProcesosBatch> {
+    const connection = getConnection('DWHBP');
+    return await connection.getRepository(ProcesosBatch).save(newBatch);
+  }
 }
 
 export const procesoBatchService = new ProcesoBatchService();

@@ -13,24 +13,12 @@ export class UserCollection {
  
   @Column({ name: 'user_id' })
   public userId: string;
-
-  @Column({ comment: 'País. Se guarda aqui y no se obtiene de st-register por un tema de performance' })
-  public country: string;
  
   @Column({ comment: 'Tipo de evento: payment_commit / rebill' })
   public event: string;
      
   @Column({ type: 'timestamp' })
   public timestamp: string;
-     
-  @Column({ type: 'datetime', name: 'timestamp_local', comment: 'Dia y hora LOCAL (la del país)' })
-  public timestampLocal: string;
-     
-  @Column({ type: 'datetime', name: 'timestamp_ar', comment: 'Dia y hora de Argentina' })
-  public timestampAr: string;
-  
-  @Column({ name: 'idp_id', comment: 'ID de la plataforma de donde proviene el cliente' })
-  public idpId: string;
   
   @Column()
   public source: string;
@@ -52,9 +40,6 @@ export class UserCollection {
    
   @Column({ name: 'paym_origin' })
   public paymOrigin: string;
-     
-  @Column({ name: 'paym_price_type' })
-  public paymPriceType: string;
   
   @Column()
   public message: string;

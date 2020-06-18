@@ -8,7 +8,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 })
 export class ProcesosBatch {
   @PrimaryGeneratedColumn()
-  public id: number;
+  public id?: number;
 
   @Column({ name: 'ultimo_timestamp_lote', type: 'timestamp' })
   public ultimoTimestampLote: string;
@@ -23,7 +23,7 @@ export class ProcesosBatch {
   public idFk: number;
   
   @Column({ name: 'alta_date', type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
-  public altaDate: string;
+  public altaDate?: string;
     
   @Column({ name: 'alta_user' })
   public altaUser?: string;

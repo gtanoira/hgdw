@@ -25,9 +25,11 @@ import { UserCache } from '../models/user_cache.model';
 import { auxiliarTablesService } from '../services/auxiliar_tables.service';
 import { loggerService } from '../services/logger.service';
 import { paymentCommitService } from '../services/payment_commit.service';
+import { procesoBatchService } from '../services/proceso_batch.service';
 import { stRegisterService } from '../services/st_register.service';
 import { userCollectionService } from '../services/user_collection.service';
 import { UserCollection } from '../models/user_collection.model';
+import { last } from 'rxjs/operators';
 
 export class UserCollectionController implements Controller {
 
@@ -45,12 +47,14 @@ export class UserCollectionController implements Controller {
   private async actualizar(req: Request, res: Response): Promise<{}> {
 
     // Actualizar desde la payment_commit
-    console.log('***');
-    console.log('*** INICIO');
+    console.log(' ');
+    console.log('*** Actualizando tabla: DWHBP.user_collection desde Datalake.payment_commit');
+    console.log('*** start: ', moment().format('hh:mm:ss'));
     const rtnMessage = await this.actualizarDesdePaymentCommit();
     console.log(rtnMessage);
-    console.log('*** FIN');
-        
+    console.log('*** FIN actualizacion desde payment_commit');
+    console.log('*** end: ', moment().format('hh:mm:ss'));
+
     return res.send(rtnMessage);
   }
   
@@ -71,6 +75,21 @@ export class UserCollectionController implements Controller {
       processMessage = await this.grabarDesdePaymentCommit(paymentCommits);
 
       // Guardar el resultado en la tabla DWHBP.procesos_batchs
+      if (processMessage['status'] === 'ok') {
+        const lastCollection = await getConnection('DWHBP').getRepository(UserCollection)
+          .createQueryBuilder()
+          .orderBy('id', 'DESC')
+          .getOne();
+        const newBatch: ProcesosBatch = {
+          tabla: 'payment_commit',
+          ultimoTimestampLote: lastCollection.timestamp,
+          resultado: processMessage['message'],
+          idFk: lastCollection.id,
+          altaUser: 'hotgo_gateway'
+        }
+        procesoBatchService.addProceso(newBatch);
+      }
+
       return processMessage;
 
     } catch (err) {
@@ -156,7 +175,6 @@ export class UserCollectionController implements Controller {
             
             // Exch_rate y amount_usd
             currency = await auxiliarTablesService.getMonedaPais(user.country);
-            console.log('*** currency:', currency, user.country);
             // Chequear si no lo encontró y enviarlo al Logger
             if (!currency) { 
               const errMessage = `Falta definir la moneda para el país ${user.country} del usuario ${payment.userId}`;
@@ -230,7 +248,6 @@ export class UserCollectionController implements Controller {
           if (cantRegsProcesados !== 0 && cantRegsProcesados%300 === 0) {
             await this.inserIntotUserCollection(values)
               .then( (res) => {
-                console.log('*** GRABAR:', res['message']['raw']['message']);
                 cantRegsGrabados += res['message']['raw']['affectedRows'];
               })
               .catch( (err) => {
@@ -241,6 +258,7 @@ export class UserCollectionController implements Controller {
               });
             
               values = [];
+              console.log('*** payment_commit grabados:', cantRegsGrabados, moment().format('hh:mm:ss'));
           }
         };  // end for..of
 
@@ -248,7 +266,6 @@ export class UserCollectionController implements Controller {
         if (values.length > 0) {
           await this.inserIntotUserCollection(values)
               .then( (res) => {
-                console.log('*** GRABANDO ultimo lote:', res['message']['raw']['message']);
                 cantRegsGrabados += res['message']['raw']['affectedRows'];
               })
               .catch( (err) => {
@@ -260,7 +277,7 @@ export class UserCollectionController implements Controller {
         }
 
         rtnStatus = 'ok';
-        rtnMessage = `Se insertaron ${cantRegsGrabados} registro de un total de ${cantRegsProcesados}`;
+        rtnMessage = `Se insertaron ${cantRegsGrabados} registro de un total de ${cantRegsProcesados} (usuarios inexistentes encontrados: ${userInexistentes})`;
 
       } catch (error) {
         console.log('*** grabarPaymentCommits() ERROR:', error);
@@ -287,8 +304,6 @@ export class UserCollectionController implements Controller {
         .insert()
         .values(values)
         .execute();
-      console.log('*** INSERT OK:');
-      console.log(response);
 
       return { status: 'ok', message: response };
 

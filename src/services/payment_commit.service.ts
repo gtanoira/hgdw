@@ -16,8 +16,7 @@ export class PaymentCommitService {
     const connection = getConnection('Datalake');
     return await connection.getRepository(PaymentCommit)
       .createQueryBuilder()
-      .where('id > :ultimoId', { ultimoId: 31668} )  // ultimoId
-      .limit(10)
+      .where('id > :ultimoId', { ultimoId: ultimoId} )  // ultimoId
       .getMany();
   }
 
