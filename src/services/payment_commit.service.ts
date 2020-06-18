@@ -16,8 +16,8 @@ export class PaymentCommitService {
     const connection = getConnection('Datalake');
     return await connection.getRepository(PaymentCommit)
       .createQueryBuilder()
-      .where('id > :ultimoId', { ultimoId: ultimoId} )
-      .limit(302)
+      .where('id > :ultimoId', { ultimoId: 31668} )  // ultimoId
+      .limit(10)
       .getMany();
   }
 
@@ -31,8 +31,8 @@ export class PaymentCommitService {
         .createQueryBuilder()
         .select('1')
         .where("user_id = :userId", {userId: payment.userId})
-        .andWhere("payment_type = :paymType", {paymType: payment.paymentType})
         .andWhere("timestamp <= :timestamp", {timestamp: payment.timestamp})
+        .andWhere("payment_type = :paymType", {paymType: payment.paymentType})
         .andWhere("DWHBP.fn_paym_status(status) = 'aprobado'")
         .orderBy("timestamp", "DESC")
         .getOne();

@@ -19,6 +19,7 @@ import { SAPGW_SERVER } from '../settings/sapgw_server.settings';
 import { PaymentCommit } from '../models/payment_commit.model';
 import { ProcesosBatch } from '../models/proceso_batch.model';
 import { StRegister } from '../models/st_register.model';
+import { UserCache } from '../models/user_cache.model';
 
 // Services
 import { auxiliarTablesService } from '../services/auxiliar_tables.service';
@@ -47,6 +48,7 @@ export class UserCollectionController implements Controller {
     console.log('***');
     console.log('*** INICIO');
     const rtnMessage = await this.actualizarDesdePaymentCommit();
+    console.log(rtnMessage);
     console.log('*** FIN');
         
     return res.send(rtnMessage);
@@ -107,6 +109,8 @@ export class UserCollectionController implements Controller {
   private async grabarDesdePaymentCommit(paymentCommits: PaymentCommit[]): Promise<{}> {
 
     // Definir variables
+    let cantRegsProcesados = 0; 
+    let cantRegsGrabados = 0; 
     let rtnMessage = {};  // mensaje de retorno de la funcion
     let rtnStatus = 'fail';  // status de retorno de la función
     let userInexistentes = 0;
@@ -117,9 +121,7 @@ export class UserCollectionController implements Controller {
     let amountUsd: Number;
     let paymStatus: String;
     let paymDescription: String;
-    let user: StRegister;
-    let timestampLocal: String;
-    let timestampAr: String;
+    let user: UserCache;
     let values = []; // lugar donde se guardaran todos los VALUES() del INSERT INTO a realizar
 
     // Chequear que haya por lo menos 1 registro
@@ -127,63 +129,10 @@ export class UserCollectionController implements Controller {
 
       try {
 
-        let cantRegsProcesados = 0; 
-        let cantRegsGrabados = 0; 
-
         for (const payment of paymentCommits) {
           
           // Calcular los datos faltantes
 
-          // Buscar Usuario
-          user = await stRegisterService.getByUserId(payment.userId);
-          if (user) {
-            
-            // Exch_rate y amount_usd
-            currency = await auxiliarTablesService.getMonedaPais(user.country);
-            console.log('*** Moneda: ', currency);
-            // Chequear si no lo encontró y enviarlo al Logger
-            if (!currency) { 
-              const errMessage = `Falta definir la moneda para el país ${user.country} del usuario ${payment.userId}`;
-              loggerService.crearLogActualizar(errMessage);
-
-              exchRate = '';
-              amountUsd = 0;
-
-            } else {
-              // Buscar la cotización en el SAP
-              try {
-                const response = await axios.get(`${SAPGW_SERVER}/api2/convertir_importe`, {
-                  params: {
-                    importe: payment.amount,
-                    monorigen: currency,
-                    mondestino: 'USD',
-                    fecha: moment(payment.timestamp).format('YYYYMMDD')
-                  },
-                  headers: {
-                    "Authorization": "Bearer BYPASS"
-                  }
-                });
-                exchRate = response.data['cotizacion'];
-                amountUsd = response.data['importe'];
-                
-              } catch (error) {
-                exchRate = '';
-                amountUsd = 0;
-              }
-            }
-            
-          } else {
-            console.log('*** User inexsitente en st_register:');
-            // Timestamps
-            timestampLocal = '';
-            timestampAr = '';
-            // ExchRate y amountUsd
-            currency = '';
-            exchRate = '';
-            amountUsd = 0;
-            userInexistentes += 1;
-          }
-          
           // paym_status (null: no se pudo determinar)
           paymStatus = await auxiliarTablesService.getPaymStatus(payment.status);
           // Chequear si no lo encontró y enviarlo al Logger
@@ -200,7 +149,52 @@ export class UserCollectionController implements Controller {
           } else {
             paymDescription = await paymentCommitService.getPaymDescription(payment);
           }
-          
+
+          // Buscar Usuario
+          user = await stRegisterService.getUserIdActualizar(payment.userId);
+          if (user) {
+            
+            // Exch_rate y amount_usd
+            currency = await auxiliarTablesService.getMonedaPais(user.country);
+            console.log('*** currency:', currency, user.country);
+            // Chequear si no lo encontró y enviarlo al Logger
+            if (!currency) { 
+              const errMessage = `Falta definir la moneda para el país ${user.country} del usuario ${payment.userId}`;
+              loggerService.crearLogActualizar(errMessage);
+
+              exchRate = '';
+              amountUsd = 0;
+
+            } else {
+              try {
+                const response = await axios.get(`${SAPGW_SERVER}/api2/convertir_importe`, {
+                  params: {
+                    importe: payment.amount,
+                    monorigen: currency,
+                    mondestino: 'USD',
+                    fecha: moment(payment.timestamp).format('YYYYMMDD')
+                  },
+                  headers: {
+                    "Authorization": "Bearer BYPASS"
+                  }
+                });
+                exchRate = response.data['cotizacion'];
+                amountUsd = response.data['importe'];
+                  
+              } catch (error) {
+                exchRate = '';
+                amountUsd = 0;
+              }
+            }
+            
+          } else {
+            // ExchRate y amountUsd
+            currency = '';
+            exchRate = '';
+            amountUsd = 0;
+            userInexistentes += 1;
+          }
+                    
           // Armar el registro
           let value = {
             userId: payment.userId,
@@ -236,8 +230,8 @@ export class UserCollectionController implements Controller {
           if (cantRegsProcesados !== 0 && cantRegsProcesados%300 === 0) {
             await this.inserIntotUserCollection(values)
               .then( (res) => {
-                console.log('*** GRABAR:', res['message'].message);
-                cantRegsGrabados += res['message'].affectedRows;
+                console.log('*** GRABAR:', res['message']['raw']['message']);
+                cantRegsGrabados += res['message']['raw']['affectedRows'];
               })
               .catch( (err) => {
                 // Hacer un rollback y terminar
@@ -254,8 +248,8 @@ export class UserCollectionController implements Controller {
         if (values.length > 0) {
           await this.inserIntotUserCollection(values)
               .then( (res) => {
-                console.log('*** GRABANDO ultimo lote:', res['message'].message);
-                cantRegsGrabados += res['message'].affectedRows;
+                console.log('*** GRABANDO ultimo lote:', res['message']['raw']['message']);
+                cantRegsGrabados += res['message']['raw']['affectedRows'];
               })
               .catch( (err) => {
                 // Hacer un rollback y terminar
@@ -264,6 +258,10 @@ export class UserCollectionController implements Controller {
                 return { status: rtnStatus, message: rtnMessage };
               });
         }
+
+        rtnStatus = 'ok';
+        rtnMessage = `Se insertaron ${cantRegsGrabados} registro de un total de ${cantRegsProcesados}`;
+
       } catch (error) {
         console.log('*** grabarPaymentCommits() ERROR:', error);
         rtnStatus = 'fail';
