@@ -7,14 +7,14 @@ import { getConnection } from 'typeorm';
 
 // Services
 
-export class PaymentCommitController implements Controller {
+export class RebillController implements Controller {
   public initialize(httpServer: HttpServer): void {
-    httpServer.get('/payment_commit/actualizar/:user', this.actualizar.bind(this));
+    httpServer.get('/rebill/actualizar/:user', this.actualizar.bind(this));
   }
 
   private async actualizar(req: Request, res: Response): Promise<any> {
     return res.send(
-      await getConnection('DWHBP').query(`CALL pr_update_payment_commit('${req.params.user}')`)
+      await getConnection('DWHBP').query(`CALL pr_update_rebill('${req.params.user}')`)
     );
   }
 

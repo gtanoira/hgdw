@@ -6,6 +6,7 @@ import { FieldStatus } from '../models/field_status.model';
 import { Pais } from '../models/paises.model';
 import { ProcesosBatch } from '../models/proceso_batch.model';
 import { PaymentCommit } from '../models/payment_commit.model';
+import { Rebill } from '../models/rebill.model';
 import { StRegister } from '../models/st_register.model';
 import { UserCollection } from '../models/user_collection.model';
 
@@ -44,7 +45,8 @@ export class HotGoDBase {
     // Customizar
     Object.assign(connectionDatalakeOptions, {
       entities: [
-        PaymentCommit
+        PaymentCommit,
+        Rebill
       ]
     });
 
