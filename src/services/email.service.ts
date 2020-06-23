@@ -1,10 +1,10 @@
 import * as nodemailer from 'nodemailer'; 
-import { EmailServerSettings } from '../settings/email_server.settings'; 
+import { EMAIL_SERVER_SETTINGS } from '../settings/environment.settings'; 
 
 class EmailService { 
 
   private _transporter = nodemailer.createTransport(
-    EmailServerSettings.SmtpServerConnectionString
+    EMAIL_SERVER_SETTINGS.SmtpServerConnectionString
   );
   /* nodemailer.createTransport({
     host: "smtp.example.com",
@@ -19,7 +19,7 @@ class EmailService {
   public sendMail(to: string, subject: string, content: string): Promise<void> { 
 
     let options = { 
-      from: EmailServerSettings.fromAddress, 
+      from: EMAIL_SERVER_SETTINGS.fromAddress, 
       to: to, 
       subject: subject, 
       text: content 

@@ -1,22 +1,38 @@
 # Claxson - HotGo Repo DWH
 
-This repository contains the sample for the talk "Modern Web APIs with Node.js & TypeScript" at the International JavaScript Conference 2017 in Munich.
-Slides can be found on [Speakerdeck](https://speakerdeck.com/manuelrauber/modern-web-apis-with-node-dot-js-and-typescript-1)
+Este repositorio contiene todos los servicios de backend necesarios para controlar y mantener el datawarehouse de HotGo
 
-## Setup
+Esta app corre los siguientes productos:
+* NodeJs 
+* Typescript 
+* Restify (REST API)
+* TypeOrm (Modelado de base de datos)
+* Axios (HTTP requests/responses)
+* Nodemailer (envíos de emails)
 
-Run `npm i` to install all necessary packages.
+## App Setup
 
-## Start
+Después de clonar, ejecutar `npm i` para instalar todas las dependencias
+Inicialmente se usó NodeJs 10.15.3
 
-Run `npm start` to start the application. 
-Please take a look at both controllers for all available routes.
+## App Start
 
-* [CustomerController](src/controllers/customer.ts)
-* [BillController](src/controllers/bill.ts)
+Ejecutar `npm start` para iniciar la aplicación
+
+Todos los controles y sus rutas se encuentran en:
+* [PaymentCommit](src/controllers/payment_commit.controller.ts)
+* [Rebill](src/controllers/rebill.controller.ts)
+* [Procesos Batchs](src/controllers/proceso_batch.controller.ts)
 
 ## Database setup
 
-The sample uses a database for storing the data. 
-Thanks to [TypeORM](https://github.com/typeorm/typeorm) several database engines are supported. 
-You can set the credentials for your own database in the [`src/index.ts`-file]()src/index.ts 
+La app usa una base de datos MySql hosteada en AWS.
+Gracias a [TypeORM](https://github.com/typeorm/typeorm) se puede configurar esta aplicación con distintas bases de datos.
+
+Las credenciales y parámetros iniciales de todas las bases de datos se encuentran en el archivo src/ormconfig.json y es seteado particularmente para cada ambiente.
+
+Todas las tablas asociadas a cada base de datos se encuentran en [src/database/index.ts] file
+
+## Environment Settings
+
+Todas las configuraciones específicas para cada ambiente (desarrollo, test, QA, productivo) se encuentran en el archivo src/settings/environment.settings.ts.
