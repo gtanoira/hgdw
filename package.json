@@ -11,8 +11,6 @@
     "typescript"
   ],
   "scripts": {
-    "docker-build": "docker build -t confmr.azurecr.io/javascript-conference-2017-nodejs-typescript:latest .",
-    "docker-push": "docker push confmr.azurecr.io/javascript-conference-2017-nodejs-typescript",
     "build": "rimraf build && tsc",
     "start": "nodemon --exec ts-node src/index.ts",
     "start-server": "node build/index.js",
@@ -24,22 +22,23 @@
     "@types/nodemailer": "^6.4.0",
     "@types/nodemailer-direct-transport": "^1.0.31",
     "@types/nodemailer-smtp-transport": "^2.7.4",
-    "@types/restify": "^8.4.2",
     "axios": "^0.19.2",
+    "express": "^4.17.1",
     "mysql": "^2.18.1",
     "nodemailer": "^6.4.8",
-    "nodemon": "^2.0.4",
     "pg": "^8.2.1",
     "reflect-metadata": "^0.1.13",
-    "restify": "^8.5.1",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.5",
     "ts-node": "^8.10.2",
     "typeorm": "^0.3.0-rc.19"
   },
   "devDependencies": {
+    "@types/express": "^4.17.7",
     "@types/morgan": "^1.9.1",
     "morgan": "^1.10.0",
+    "nodemon": "^2.0.4",
+    "tsc": "^1.20150623.0",
     "tslint": "^6.1.2",
     "typescript": "^3.9.5"
   }

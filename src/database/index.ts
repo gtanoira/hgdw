@@ -1,13 +1,16 @@
 import { Connection, getConnectionOptions, ConnectionOptions, createConnections } from 'typeorm';
 
+// Envirnoment
+import { AWS_DBASE } from '../settings/environment.settings';
+
 // Models
 import { ErrorLog } from '../models/error_logs.model';
 import { FieldStatus } from '../models/field_status.model';
 import { Pais } from '../models/paises.model';
-import { ProcesosBatch } from '../models/proceso_batch.model';
+import { ProcesoBatch } from '../models/proceso_batch.model';
 import { PaymentCommit } from '../models/payment_commit.model';
 import { Rebill } from '../models/rebill.model';
-import { StRegister } from '../models/st_register.model';
+import { UserRegister } from '../models/user_register.model';
 import { UserCollection } from '../models/user_collection.model';
 
 /* 
@@ -50,29 +53,40 @@ export class HotGoDBase {
       ]
     });
 
-    // Customizar la conección a HotGo DB DWHBP
-    const connectionDWHBPOptions: ConnectionOptions = await getConnectionOptions('DWHBP');  // leer las opciones desde ormconfig.json
+    // Customizar la conección a HotGo DB AWS_DBASE
+    const connectionAWS_DBASEOptions: ConnectionOptions = await getConnectionOptions(AWS_DBASE);  // leer las opciones desde ormconfig.json
     // Si no existe las credenciales para conectarse a Datalake, emitir un error
-    if (!connectionDWHBPOptions) {
-      throw new Error(`Las credenciales para la BDatos HotGo (schema: DWHBP) no existen.`);
+    if (!connectionAWS_DBASEOptions) {
+      throw new Error(`Las credenciales para la BDatos HotGo (schema: ${AWS_DBASE}) no existen.`);
     }
     // Customizar
-    Object.assign(connectionDWHBPOptions, {
+    Object.assign(connectionAWS_DBASEOptions, {
       entities: [
         ErrorLog,
         FieldStatus,
         Pais,
-        ProcesosBatch,
-        StRegister,
+        ProcesoBatch,
+        UserRegister,
         UserCollection
       ]
     });
 
     // Crear las conexiones usando las opciones modificadas
     const options: ConnectionOptions[] = [];
-    options.push(connectionDWHBPOptions);
+    options.push(connectionAWS_DBASEOptions);
     options.push(connectionDatalakeOptions);
-    this.connections = await createConnections(options);
-    return;
+    this.connections = await createConnections(options)
+    .then(
+      connection => {
+        console.log(`Database AWS.Datalake y AWS.${AWS_DBASE} iniciados`);
+        return this.connections;
+      },
+    )
+    .catch(
+      error => {
+        console.log('*** ERROR al iniciar las conecciones a las bases de datos');
+        return null;
+      }
+    );
   }
 }

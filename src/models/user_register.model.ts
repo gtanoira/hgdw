@@ -1,12 +1,15 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
 
+// Envirnoment
+import { AWS_DBASE } from '../settings/environment.settings';
+
 @Entity({
-  name: 'st_register',
-  database: 'DWHBP',
+  name: 'user_registers',
+  database: AWS_DBASE,
   // schema: 'ProcesosBatchsSchema',
   synchronize: false  // no incluir en migration
 })
-export class StRegister {
+export class UserRegister {
   @PrimaryGeneratedColumn()
   public id: number;
 

@@ -1,5 +1,8 @@
 import { getConnection } from 'typeorm';
 
+// Envirnoment
+import { AWS_DBASE } from '../settings/environment.settings';
+
 // Models
 import { FieldStatus } from '../models/field_status.model';
 import { Pais } from '../models/paises.model';
@@ -22,7 +25,7 @@ export class AuxiliarTablesService {
   }
 
   public async getFieldStatus(): Promise<FieldStatus[]> {
-    const connection = getConnection('DWHBP');
+    const connection = getConnection(AWS_DBASE);
     return await connection.getRepository(FieldStatus).find();
   }
 
@@ -39,7 +42,7 @@ export class AuxiliarTablesService {
   }
 
   public async getPaises(): Promise<Pais[]> {
-    const connection = getConnection('DWHBP');
+    const connection = getConnection(AWS_DBASE);
     return await connection.getRepository(Pais).find();
   }
 }

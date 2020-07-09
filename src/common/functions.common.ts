@@ -1,6 +1,9 @@
 import { getConnection } from "typeorm";
 import * as moment from 'moment';
 
+// Envirnoment
+import { AWS_DBASE } from '../settings/environment.settings';
+
 // Models
 import { Pais } from "../models/paises.model";
 
@@ -8,7 +11,7 @@ import { Pais } from "../models/paises.model";
 export async function ToTimeZone(datetimeUtc: string, country: string): Promise<String> {
 
   try {
-    const connection = getConnection('DWHBP');
+    const connection = getConnection(AWS_DBASE);
     const pais = await connection.getRepository(Pais).findOne({paisId: country.toUpperCase()});
     return moment(datetimeUtc, 'YYYY-MM-DDThh:mm:ss').add(pais.utcShift, 'hours').format('YYYY-MM-DDThh:mm:ss');
   

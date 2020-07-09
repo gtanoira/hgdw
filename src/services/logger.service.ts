@@ -1,5 +1,8 @@
 import { getConnection } from "typeorm";
 
+// Envirnoment
+import { AWS_DBASE } from '../settings/environment.settings';
+
 // Settings
 import { EMAILS_POR_ACTUALIZACON } from '../settings/environment.settings';
 
@@ -12,7 +15,7 @@ export class LoggerService {
 
     try {
       // Guardar en la base de datos
-      const connection = getConnection('DWHBP');
+      const connection = getConnection(AWS_DBASE);
       const errorRec = new ErrorLog();
       errorRec.errorType = 'actualizar tabla';
       errorRec.message = errMessage;

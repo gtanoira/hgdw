@@ -1,12 +1,15 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
+// Envirnoment
+import { AWS_DBASE } from '../settings/environment.settings';
+
 @Entity({
   name: 'procesos_batchs',
-  database: 'DWHBP',
+  database: AWS_DBASE,
   // schema: 'ProcesosBatchsSchema',
   synchronize: false  // no incluir en migration
 })
-export class ProcesosBatch {
+export class ProcesoBatch {
   @PrimaryGeneratedColumn()
   public id?: number;
 

@@ -5,7 +5,8 @@
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "outDir": "build"
+    "outDir": "build",
+    "moduleResolution": "node",
   },
   "exclude": [
     "node_modules"

@@ -6,6 +6,9 @@
 */
 import { EntitySchema } from "typeorm";
 
+// Envirnoment
+import { AWS_DBASE } from '../settings/environment.settings';
+
 export interface ProcesosBatchModel {
   id: number;
   ultimoTimestampLote: string;
@@ -19,7 +22,7 @@ export interface ProcesosBatchModel {
 export const ProcesosBatchsSchema = new EntitySchema<ProcesosBatchModel>({
   name: "ProcesosBatch",
   tableName: "procesos_batchs",
-  database: "DWHBP",
+  database: AWS_DBASE,
   synchronize: false,   // no incluir en migrations
   columns: {
     id: {
@@ -54,15 +57,5 @@ export const ProcesosBatchsSchema = new EntitySchema<ProcesosBatchModel>({
       type: String,
       length: 255
     }
-  },
-  indices: [
-    {
-      name: "idx_01_procesos_batchs",
-      unique: true,
-      columns: [
-        "tabla",
-        "altaDate"
-      ]
-    }
-  ],
+  }
 });

@@ -1,8 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
+// Envirnoment
+import { AWS_DBASE } from '../settings/environment.settings';
+
 @Entity({
   name: 'paises',
-  database: 'DWHBP',
+  database: AWS_DBASE,
   // schema: 'ProcesosBatchsSchema',
   synchronize: false  // no incluir en migration
 })
