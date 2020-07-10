@@ -22,8 +22,8 @@ Ejecutar `npm start` para iniciar la aplicación
 
 Todos los controles y sus rutas se encuentran en:
 * Procesos Batchs
-  * Controllers (src/controllers/procesos-batchs.controller.ts)
-  * Routes (src/routes/procesos-batchs.route.ts)
+  * [Controllers] (src/controllers/procesos-batchs.controller.ts)
+  * [Routes] (src/routes/procesos-batchs.route.ts)
 
 ## Database setup
 
