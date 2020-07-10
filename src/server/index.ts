@@ -18,17 +18,16 @@ export class ApiServer {
     // Default options for all routes
     let corsOptions = {
       "methods": "GET,PUT,POST,DELETE",
-      "allowedHeaders": "Access-Control-Allow-Origin, Access-Control-Allow-Headers",
+      "allowedHeaders": "Access-Control-Allow-Origin, Access-Control-Allow-Headers, Authorization",
       "exposedHeaders": "Authorization",
       "preflightContinue": false,
-      "optionsSuccessStatus": 204
+      "optionsSuccessStatus": 200
     };
     if (this.whiteList.indexOf(req.header('Origin')) !== -1) {
       corsOptions['origin'] = true;  // reflect (enable) the requested origin in the CORS response
     } else {
       corsOptions['origin'] = false; // disable CORS for this request
     }
-    console.log('*** REQ:', req);
     callback(null, corsOptions) // callback expects two parameters: error and options
   }
 
@@ -53,7 +52,7 @@ export class ApiServer {
     app.use(cors(this.corsOptionsDelegate));
     
     // Routes
-    app.use('/procesos_batchs', procesosBatchsRoute.router);
+    app.use('/api2/procesos_batchs', procesosBatchsRoute.router);
 
     // Starting the Server
     app.set('port', process.env.PORT || port);
