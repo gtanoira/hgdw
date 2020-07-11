@@ -4,14 +4,11 @@ import { Connection, getConnectionOptions, ConnectionOptions, createConnections 
 import { AWS_DBASE } from '../settings/environment.settings';
 
 // Models
-import { ErrorLog } from '../models/error_logs.model';
+import { ErrorLog } from '../models/error-log.model';
 import { FieldStatus } from '../models/field_status.model';
 import { Pais } from '../models/paises.model';
 import { ProcesoBatch } from '../models/proceso_batch.model';
-import { PaymentCommit } from '../models/payment_commit.model';
-import { Rebill } from '../models/rebill.model';
-import { UserRegister } from '../models/user_register.model';
-import { UserCollection } from '../models/user_collection.model';
+import { ScheduleEvent } from '../models/schedule-event.model';
 
 /* 
 Ejemplo de la interfaz "ConnectionOptions"
@@ -40,16 +37,15 @@ export class HotGoDBase {
   public static async setConnections(): Promise<void> {
 
     // Customizar la conección a HotGo DB Datalake
-    let connectionDatalakeOptions: ConnectionOptions = await getConnectionOptions('Datalake');  // leer las opciones desde ormconfig.json
+    let connectionInformationSchemaOptions: ConnectionOptions = await getConnectionOptions('INFORMATION_SCHEMA');  // leer las opciones desde ormconfig.json
     // Si no existe las credenciales para conectarse a Datalake, emitir un error
-    if (!connectionDatalakeOptions) {
-      throw new Error(`Las credenciales para la BDatos HotGo (schema: Datalake) no existen.`);
+    if (!connectionInformationSchemaOptions) {
+      throw new Error(`Las credenciales para la BDatos HotGo (schema: INFORMATION_SCHEMA) no existen.`);
     }
     // Customizar
-    Object.assign(connectionDatalakeOptions, {
+    Object.assign(connectionInformationSchemaOptions, {
       entities: [
-        PaymentCommit,
-        Rebill
+        ScheduleEvent
       ]
     });
 
@@ -65,16 +61,14 @@ export class HotGoDBase {
         ErrorLog,
         FieldStatus,
         Pais,
-        ProcesoBatch,
-        UserRegister,
-        UserCollection
+        ProcesoBatch
       ]
     });
 
     // Crear las conexiones usando las opciones modificadas
     const options: ConnectionOptions[] = [];
     options.push(connectionAWS_DBASEOptions);
-    options.push(connectionDatalakeOptions);
+    options.push(connectionInformationSchemaOptions);
     this.connections = await createConnections(options)
     .then(
       connection => {
@@ -85,6 +79,7 @@ export class HotGoDBase {
     .catch(
       error => {
         console.log('*** ERROR al iniciar las conecciones a las bases de datos');
+        console.log(error);
         return null;
       }
     );

@@ -13,7 +13,7 @@ export class ErrorLog {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column({ name: 'error_type', comment: 'Identificar el tipo de proceso o funcion que generó el error'})
+  @Column({ name: 'error_type', comment: 'Tipo de proceso que generó el error'})
   public errorType: string;
 
   @Column({ length: 4000, comment: 'Mensaje de error'})
@@ -21,4 +21,10 @@ export class ErrorLog {
 
   @Column({ type: 'timestamp', comment: 'Dia y hora en que se grabó el error'})
   public timestamp: string;
+  
+  @Column({ name: 'error_code', comment: 'Tipo de error'})
+  public errorCode: string;
+    
+  @Column({ name: 'error_solved', type: 'tinyint', comment: 'Solucionado'})
+  public errorSolved: number;
 }

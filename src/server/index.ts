@@ -4,7 +4,9 @@ import * as morgan from 'morgan';
 import * as cors from 'cors';
 
 // Routes
+import { errorLogsRoute } from '../routes/error-logs.route';
 import { procesosBatchsRoute }  from '../routes/procesos-batchs.route';
+import { scheduleEventsRoute } from '../routes/schedule-events.route';
 
 export class ApiServer {
 
@@ -51,8 +53,13 @@ export class ApiServer {
     // CORS
     app.use(cors(this.corsOptionsDelegate));
     
-    // Routes
+    /*
+     * Routes
+     */
     app.use('/api2/procesos_batchs', procesosBatchsRoute.router);
+    app.use('/api2/error_logs', errorLogsRoute.router);
+    app.use('/api2/schedule_events', scheduleEventsRoute.router);
+
 
     // Starting the Server
     app.set('port', process.env.PORT || port);

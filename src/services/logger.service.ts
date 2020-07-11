@@ -7,7 +7,7 @@ import { AWS_DBASE } from '../settings/environment.settings';
 import { EMAILS_POR_ACTUALIZACON } from '../settings/environment.settings';
 
 // Models
-import { ErrorLog } from "../models/error_logs.model";
+import { ErrorLog } from "../models/error-log.model";
 
 export class LoggerService {
 

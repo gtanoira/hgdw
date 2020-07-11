@@ -1,0 +1,163 @@
+openapi: 3.0.0
+info:
+  description: |
+    Documentación de todas las APIs del datawarehouse de HotGo.
+  version: "3.0.0"
+  title: HotGo Datawarehouse Backend
+  contact:
+    email: gonzalo.mtanoira@gmail.com
+
+servers:
+  - url: 'http://hgdw.claxson.com'
+    description: PROD - HotGo Datawarehouse Backend
+    
+
+#######################
+# API section
+#######################
+tags:
+  - name: Backend
+  
+parameters:
+  authorization:
+    name: Authorization 
+    in: header
+    description: token de sesión
+    required: true
+    schema:
+      type: string
+      default: Bearer \<token\>
+
+# Path items
+paths:
+  /api2/error_logs:
+    get:
+      tags:
+        - Backend
+      summary: INDEX
+      description: Obtener todos los registros de la tabla error_logs (INDEX)
+      parameters:
+        - $ref: '#/parameters/authorization'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorLogs'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+          
+  /api2/procesos_batchs:
+    get:
+      tags:
+        - Backend
+      summary: INDEX
+      description: Obtener todos los registros de la tabla procesos_batchs (INDEX)
+      parameters:
+        - $ref: '#/parameters/authorization'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcesosBatchs'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    delete:
+      tags:
+        - Backend
+      summary: DELETE
+      description: Borrar los procesos hechos a una tabla a partir del idFK especificado por el registro id y los superiores (idFK >= xxxx)
+      parameters:
+        - $ref: '#/parameters/authorization'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcesosBatchs'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+#######################
+# Components
+#######################         
+components:
+
+  # Common data models
+  schemas:
+    ErrorMessage:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+    ErrorLogs:
+      type: object
+      properties:
+        id:
+          type: integer
+          
+    ProcesosBatchs:
+      type: object
+      properties:
+        id:
+          type: integer
+        ultimo_timestamp_lote:
+          type: string 
+        tabla:
+          type: string
+        resultado:
+          type: string
+          maxLength: 4000
+        idFk:
+          type: integer
+        altaDate:
+          type: string
+        altaUser:
+          type: string
+        
+
+  # Common responses
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+    MethodNotAllowed:
+      description: HTTP method not allowed
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+    NotFound:
+      description: Not Found ver MESSAGE key para más info)
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+    ServiceUnavailable:
+      description:  Service unavailable
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+    Unauthorized:
+      description:  Unauthorized (Token inválido o ha expirado)
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'

@@ -1,6 +1,8 @@
-import { Router, NextFunction } from 'express';
-import { procesosBatchsController } from '../controllers/procesos-batchs.controller';
+import { Router } from 'express';
 import * as cors from 'cors';
+
+// Controllers
+import { procesosBatchsController } from '../controllers/procesos-batchs.controller';
 
 export class ProcesosBatchsRoute {
 
@@ -17,5 +19,4 @@ export class ProcesosBatchsRoute {
   }
 
 }
-
 export const procesosBatchsRoute = new ProcesosBatchsRoute();

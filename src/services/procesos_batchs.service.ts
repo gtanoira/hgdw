@@ -9,12 +9,6 @@ import { ProcesoBatch } from '../models/proceso_batch.model';
 
 export class ProcesosBatchsService {
 
-  /* // Grabar un proceso en la tabla
-  public async addProceso(newBatch: ProcesoBatch): Promise<ProcesoBatch> {
-    const connection = getConnection(AWS_DBASE);
-    return await connection.getRepository(ProcesoBatch).save(newBatch);
-  } */
-
   // Borrar un registro de la tabla
   public async delById(id: number): Promise<DeleteResult> {
     const connection = getConnection(AWS_DBASE);
@@ -29,12 +23,6 @@ export class ProcesosBatchsService {
     const connection = getConnection(AWS_DBASE);
     return await connection.getRepository(ProcesoBatch).find();
   }
-
-  /* public async getById(id: number): Promise<ProcesoBatch> {
-    const connection = getConnection(AWS_DBASE);
-    return await connection.getRepository(ProcesoBatch).findOne(id); 
-  } */
-
 }
 
 export const procesosBatchsService = new ProcesosBatchsService();

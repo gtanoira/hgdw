@@ -1,0 +1,124 @@
+{
+	"info": {
+		"_postman_id": "a2f9b536-5c5c-43f3-8343-eca13aa74348",
+		"name": "DWHG Backend APIs",
+		"description": "APIs para actualizar y consultar los datos del datawarehouse de HotGo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Error Logs - GET",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "Bearer {{token}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{hotGoServer}}/api2/error_logs",
+					"host": [
+						"{{hotGoServer}}"
+					],
+					"path": [
+						"api2",
+						"error_logs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Procesos Batchs - GET",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "Bearer {{token}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{hotGoServer}}/api2/procesos_batchs",
+					"host": [
+						"{{hotGoServer}}"
+					],
+					"path": [
+						"api2",
+						"procesos_batchs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Procesos Batchs - DELETE",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "Bearer {{token}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Access-Control-Request-Method",
+						"value": "DELETE",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Access-Control-Request-Headers",
+						"value": "Authorization",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{hotGoServer}}/api2/procesos_batchs/47",
+					"host": [
+						"{{hotGoServer}}"
+					],
+					"path": [
+						"api2",
+						"procesos_batchs",
+						"47"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

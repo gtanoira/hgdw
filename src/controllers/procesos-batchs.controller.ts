@@ -20,7 +20,6 @@ class ProcesosBatchsController {
   } */
 
   public async index(req: Request, res: Response): Promise<any> {
-    console.log('*** Authorization:', req.headers);
     
     // Validar que el request tenga un token de un usuario válido
     if ( await authorizationService.isTokenValid(req.headers.authorization)) {
