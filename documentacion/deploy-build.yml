@@ -1,0 +1,13 @@
+name: Deploy Build
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
+  push:
+    branches:
+      - master
+    #  Ejecutar solo por cambios en este directorio
+    paths:
+      - 'build/*'
+# Environment
+env:
+  SERVER: prod

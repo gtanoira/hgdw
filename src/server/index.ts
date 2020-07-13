@@ -1,7 +1,7 @@
-import * as express from 'express';
-import * as path from 'path';
-import * as morgan from 'morgan';
-import * as cors from 'cors';
+import express from 'express';
+import path from 'path';
+import morgan from 'morgan';
+import cors from 'cors';
 
 // Routes
 import { errorLogsRoute } from '../routes/error-logs.route';
@@ -15,17 +15,20 @@ export class ApiServer {
     'http://localhost:4200',
     'http://10.4.[0-9]{1,3}.[0-9]{1,3}'
   ];
+  
   // CORS validador del origin del HTTP request
-  private corsOptionsDelegate = (req, callback) => {
+  private corsOptions = {};
+  private corsOptionsDelegate = (req: any, callback: any) => {
     // Default options for all routes
     let corsOptions = {
+      "origin": false,
       "methods": "GET,PUT,POST,DELETE",
       "allowedHeaders": "Access-Control-Allow-Origin, Access-Control-Allow-Headers, Authorization",
-      "exposedHeaders": "Authorization",
+      "exposedHeaders": "",
       "preflightContinue": false,
       "optionsSuccessStatus": 200
     };
-    if (this.whiteList.indexOf(req.header('Origin')) !== -1) {
+    if (this.whiteList.indexOf(req.headers.host) !== -1) {
       corsOptions['origin'] = true;  // reflect (enable) the requested origin in the CORS response
     } else {
       corsOptions['origin'] = false; // disable CORS for this request

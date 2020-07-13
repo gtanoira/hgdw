@@ -6,7 +6,7 @@ import { AWS_DBASE } from '../settings/environment.settings';
 // Models
 import { ErrorLog } from '../models/error-log.model';
 import { FieldStatus } from '../models/field_status.model';
-import { Pais } from '../models/paises.model';
+import { Country } from '../models/country.model';
 import { ProcesoBatch } from '../models/proceso_batch.model';
 import { ScheduleEvent } from '../models/schedule-event.model';
 
@@ -31,7 +31,7 @@ export interface ConnectionOptions {
 
 // Base de datos HotGo 
 export class HotGoDBase {
-  public static connections: Connection[];
+  public static connections: Connection[] | null;
 
   // Establecer todas las conexiones con las bases de datos
   public static async setConnections(): Promise<void> {
@@ -60,7 +60,7 @@ export class HotGoDBase {
       entities: [
         ErrorLog,
         FieldStatus,
-        Pais,
+        Country,
         ProcesoBatch
       ]
     });

@@ -1,22 +1,23 @@
 import { getConnection } from "typeorm";
-import * as moment from 'moment';
+import moment from 'moment';
 
 // Envirnoment
 import { AWS_DBASE } from '../settings/environment.settings';
 
 // Models
-import { Pais } from "../models/paises.model";
+import { Country } from "../models/country.model";
 
 // Convierte un UTC datetime a la zona horaria del país elegido
-export async function ToTimeZone(datetimeUtc: string, country: string): Promise<String> {
+export async function ToTimeZone(datetimeUtc: string, country: string): Promise<String | null> {
 
   try {
     const connection = getConnection(AWS_DBASE);
-    const pais = await connection.getRepository(Pais).findOne({paisId: country.toUpperCase()});
-    return moment(datetimeUtc, 'YYYY-MM-DDThh:mm:ss').add(pais.utcShift, 'hours').format('YYYY-MM-DDThh:mm:ss');
+    const hsShift = await connection.getRepository(Country).findOne({paisId: country.toUpperCase()})
+      .then( data => data ? data.utcShift : 0)
+      .catch( error => 0 );
+    return moment(datetimeUtc, 'YYYY-MM-DDThh:mm:ss').add(hsShift, 'hours').format('YYYY-MM-DDThh:mm:ss');
   
   } catch (error) {
-    console.log('*** TO_TIME_ZONE:')
     console.log(error);
     return null;
   }

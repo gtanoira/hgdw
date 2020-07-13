@@ -11,20 +11,20 @@ import { AWS_DBASE } from '../settings/environment.settings';
 })
 export class ErrorLog {
   @PrimaryGeneratedColumn()
-  public id: number;
+  public id!: number;
 
-  @Column({ name: 'error_type', comment: 'Tipo de proceso que generó el error'})
-  public errorType: string;
+  @Column({ name: 'error_type', comment: 'Tipo de proceso que generó el error' })
+  public errorType!: string | 'not defined';
 
-  @Column({ length: 4000, comment: 'Mensaje de error'})
-  public message: string;
+  @Column({ length: 4000, comment: 'Mensaje de error' })
+  public message!: string;
 
-  @Column({ type: 'timestamp', comment: 'Dia y hora en que se grabó el error'})
-  public timestamp: string;
+  @Column({ type: 'timestamp', comment: 'Dia y hora en que se grabó el error' })
+  public timestamp!: string;
   
-  @Column({ name: 'error_code', comment: 'Tipo de error'})
-  public errorCode: string;
+  @Column({ name: 'error_code', comment: 'Tipo de error' })
+  public errorCode!: string;
     
-  @Column({ name: 'error_solved', type: 'tinyint', comment: 'Solucionado'})
-  public errorSolved: number;
+  @Column({ name: 'error_solved', type: 'tinyint', comment: 'Solucionado' })
+  public errorSolved!: number;
 }

@@ -8,14 +8,14 @@ import { Entity, Column, PrimaryColumn } from 'typeorm';
 })
 export class ScheduleEvent {
   @PrimaryColumn({ name: 'event_name' })
-  public eventName: string;
+  public eventName!: string;
 
   @Column({ name: 'interval_value' })
-  public intervalValue: string;
+  public intervalValue!: string;
  
   @Column({ name: 'interval_field' })
-  public intervalField: string;
+  public intervalField!: string;
  
   @Column()
-  public status: string; 
+  public status!: string; 
 }

@@ -11,7 +11,7 @@ class ScheduleEventsController {
   public async index(req: Request, res: Response): Promise<any> {
     
     // Validar que el request tenga un token de un usuario válido
-    if ( await authorizationService.isTokenValid(req.headers.authorization)) {
+    if ( await authorizationService.isTokenValid(req.headers.authorization || '')) {
       return await scheduleEventsService.getAll()
         .then( data => {
           return res.status(200).send(data);

@@ -1,11 +1,11 @@
-import * as axios from 'axios';
+import axios from 'axios';
 
 // Environment
 import { LOGIN_CENTRAL_SERVER } from '../settings/environment.settings';
 
 class AuthorizationService {
 
-  private http = axios.default;
+  private http = axios;
 
   public async isTokenValid(token: string): Promise<Boolean> {
     

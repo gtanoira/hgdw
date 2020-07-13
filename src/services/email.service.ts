@@ -1,4 +1,4 @@
-import * as nodemailer from 'nodemailer'; 
+import nodemailer from 'nodemailer'; 
 import { EMAIL_SERVER_SETTINGS } from '../settings/environment.settings'; 
 
 class EmailService { 
@@ -16,23 +16,27 @@ class EmailService {
     }
   }); */
  
-  public sendMail(to: string, subject: string, content: string): Promise<void> { 
+  public async sendMail(to: string, subject: string, content: string): Promise<String> { 
 
     let options = { 
       from: EMAIL_SERVER_SETTINGS.fromAddress, 
       to: to, 
       subject: subject, 
       text: content 
-    } 
+    }
 
+    let rtnMessage = '';
     this._transporter.sendMail(options, (error, info) => { 
       if (error) { 
-        return console.log(`error: ${error}`); 
+        console.log(`error: ${error}`); 
+        rtnMessage = `Email error: ${error}`; 
       } 
       console.log(`Message Sent ${info.response}`); 
+      rtnMessage = `Message Sent ${info.response}`; 
     });
 
-    return;
+    return rtnMessage;
+
   } 
 }
 

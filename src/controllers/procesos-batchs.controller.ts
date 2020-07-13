@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 
 // Models
-import { ProcesoBatch } from '../models/proceso_batch.model';
 
 // Services
 import { procesosBatchsService } from '../services/procesos_batchs.service';
@@ -22,7 +21,7 @@ class ProcesosBatchsController {
   public async index(req: Request, res: Response): Promise<any> {
     
     // Validar que el request tenga un token de un usuario válido
-    if ( await authorizationService.isTokenValid(req.headers.authorization)) {
+    if ( await authorizationService.isTokenValid(req.headers.authorization || '')) {
       const recs = await procesosBatchsService.getAll();
       return res.status(200).send(recs);
     } else {

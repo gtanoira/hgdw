@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as cors from 'cors';
+import cors from 'cors';
 
 // Controllers
 import { procesosBatchsController } from '../controllers/procesos-batchs.controller';
