@@ -1,4 +1,3 @@
-import Reflect from 'reflect-metadata';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 // Envirnoment

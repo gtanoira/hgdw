@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ApiServer } from './server/index';
 import { HotGoDBase } from './database/index';
 
