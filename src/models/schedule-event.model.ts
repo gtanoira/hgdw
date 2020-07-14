@@ -1,3 +1,4 @@
+import Reflect from 'reflect-metadata';
 import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity({

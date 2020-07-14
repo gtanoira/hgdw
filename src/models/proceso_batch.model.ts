@@ -1,3 +1,4 @@
+import Reflect from 'reflect-metadata';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 // Envirnoment
