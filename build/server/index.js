@@ -27,7 +27,7 @@ class ApiServer {
                 "preflightContinue": false,
                 "optionsSuccessStatus": 200
             };
-            if (this.whiteList.indexOf(req.headers.host) !== -1) {
+            if (this.whiteList.indexOf(req.headers.origin) !== -1) {
                 corsOptions['origin'] = true;
             }
             else {

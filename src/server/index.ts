@@ -29,7 +29,7 @@ export class ApiServer {
       "optionsSuccessStatus": 200
     };
     
-    if (this.whiteList.indexOf(req.headers.host) !== -1) {
+    if (this.whiteList.indexOf(req.headers.origin) !== -1) {
       corsOptions['origin'] = true;  // reflect (enable) the requested origin in the CORS response
     } else {
       corsOptions['origin'] = false; // disable CORS for this request
