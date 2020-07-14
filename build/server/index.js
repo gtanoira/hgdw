@@ -46,7 +46,7 @@ class ApiServer {
         app.use('/api2/procesos_batchs', procesos_batchs_route_1.procesosBatchsRoute.router);
         app.use('/api2/error_logs', error_logs_route_1.errorLogsRoute.router);
         app.use('/api2/schedule_events', schedule_events_route_1.scheduleEventsRoute.router);
-        app.set('port', process.env.PORT || port);
+        app.set('port', port);
         app.listen(app.get('port'), () => {
             console.log(`Server escuchando en el port`, app.get('port'));
         });

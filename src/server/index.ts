@@ -66,7 +66,7 @@ export class ApiServer {
 
 
     // Starting the Server
-    app.set('port', process.env.PORT || port);
+    app.set('port', port);
     app.listen(app.get('port'), () => {
         console.log(`Server escuchando en el port`, app.get('port'));
     });

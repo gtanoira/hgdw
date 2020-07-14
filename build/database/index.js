@@ -46,7 +46,6 @@ class HotGoDBase {
             options.push(connectionInformationSchemaOptions);
             this.connections = yield typeorm_1.createConnections(options)
                 .then(connection => {
-                console.log(`Database AWS.Datalake y AWS.${environment_settings_1.AWS_DBASE} iniciados`);
                 return this.connections;
             })
                 .catch(error => {
