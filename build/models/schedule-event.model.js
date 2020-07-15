@@ -26,6 +26,10 @@ __decorate([
     __metadata("design:type", String)
 ], ScheduleEvent.prototype, "intervalField", void 0);
 __decorate([
+    typeorm_1.Column({ name: 'last_executed', type: 'datetime' }),
+    __metadata("design:type", String)
+], ScheduleEvent.prototype, "lastExecuted", void 0);
+__decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
 ], ScheduleEvent.prototype, "status", void 0);

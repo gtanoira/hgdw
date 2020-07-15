@@ -16,6 +16,9 @@ export class ScheduleEvent {
   @Column({ name: 'interval_field' })
   public intervalField!: string;
  
+  @Column({ name: 'last_executed', type: 'datetime' })
+  public lastExecuted!: string;
+  
   @Column()
   public status!: string; 
 }

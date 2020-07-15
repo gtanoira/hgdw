@@ -1,4 +1,4 @@
-import { getConnection, DeleteResult } from 'typeorm';
+import { getConnection } from 'typeorm';
 
 // Envirnoment
 import { AWS_DBASE } from '../settings/environment.settings';
