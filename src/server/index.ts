@@ -13,7 +13,9 @@ export class ApiServer {
   // CORS origins habilitados a acceder a la app
   private whiteList = [
     'http://localhost:4200',
-    'http://10.4.[0-9]{1,3}.[0-9]{1,3}'
+    'http://10.4.[0-9]{1,3}.[0-9]{1,3}',
+    'http://portaladmin2.claxson.com',
+    'http://portaladmin2dev.claxson.com'
   ];
   
   // CORS validador del origin del HTTP request

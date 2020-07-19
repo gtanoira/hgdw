@@ -15,7 +15,9 @@ class ApiServer {
     constructor() {
         this.whiteList = [
             'http://localhost:4200',
-            'http://10.4.[0-9]{1,3}.[0-9]{1,3}'
+            'http://10.4.[0-9]{1,3}.[0-9]{1,3}',
+            'http://portaladmin2.claxson.com',
+            'http://portaladmin2dev.claxson.com'
         ];
         this.corsOptions = {};
         this.corsOptionsDelegate = (req, callback) => {
