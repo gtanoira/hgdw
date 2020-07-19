@@ -15,6 +15,7 @@ export class ScheduleEventsRoute {
   
   config(): void {
     this.router.get('/', cors(), scheduleEventsController.index);
+    this.router.patch('/', cors(), scheduleEventsController.patch);
   }
 
 }

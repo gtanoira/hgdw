@@ -22,8 +22,8 @@ export class ApiServer {
     // Default options for all routes
     let corsOptions = {
       "origin": false,
-      "methods": "GET,PUT,POST,DELETE",
-      "allowedHeaders": "Access-Control-Allow-Origin, Access-Control-Allow-Headers, Authorization",
+      "methods": "GET,PUT,PATCH,POST,DELETE",
+      "allowedHeaders": "Access-Control-Allow-Origin, Access-Control-Allow-Headers, Authorization, Content-Type",
       "exposedHeaders": "",
       "preflightContinue": false,
       "optionsSuccessStatus": 200
