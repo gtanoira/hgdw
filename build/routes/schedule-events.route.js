@@ -14,6 +14,7 @@ class ScheduleEventsRoute {
     }
     config() {
         this.router.get('/', cors_1.default(), schedule_events_controller_1.scheduleEventsController.index);
+        this.router.patch('/', cors_1.default(), schedule_events_controller_1.scheduleEventsController.patch);
     }
 }
 exports.ScheduleEventsRoute = ScheduleEventsRoute;

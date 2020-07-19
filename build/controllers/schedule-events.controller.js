@@ -30,5 +30,26 @@ class ScheduleEventsController {
             }
         });
     }
+    patch(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (yield authorization_service_1.authorizationService.isTokenValid(req.headers.authorization || '')) {
+                console.log('*** BODY:', req.body);
+                const eventName = req.body.eventId;
+                const intervalValue = +req.body.intervalValue;
+                const intervalTime = req.body.intervalTime;
+                return yield schedule_events_service_1.scheduleEventsService.patchEvent(eventName, intervalValue, intervalTime)
+                    .then(data => {
+                    return res.status(200).send(data);
+                })
+                    .catch(err => {
+                    console.log('*** ERR:', err);
+                    return res.status(503).send(err);
+                });
+            }
+            else {
+                return res.status(401).send({ 'message': 'HTG-003(E): el token del usuario es inválido o ha expirado. Vuelva a loguearse.' });
+            }
+        });
+    }
 }
 exports.scheduleEventsController = new ScheduleEventsController();

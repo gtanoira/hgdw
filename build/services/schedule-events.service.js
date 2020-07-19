@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.scheduleEventsService = exports.ScheduleEventsService = void 0;
 const typeorm_1 = require("typeorm");
+const environment_settings_1 = require("../settings/environment.settings");
 const schedule_event_model_1 = require("../models/schedule-event.model");
 class ScheduleEventsService {
     getAll() {
@@ -20,6 +21,13 @@ class ScheduleEventsService {
                 .createQueryBuilder()
                 .where('event_schema = :event', { event: 'HGDW' })
                 .getMany();
+        });
+    }
+    patchEvent(eventName, intervalValue, intervalTime) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
+            const sqlCmd = `ALTER EVENT evt_update_${eventName} ON SCHEDULE EVERY ${intervalValue} ${intervalTime} STARTS NOW()`;
+            return yield connection.query(sqlCmd);
         });
     }
 }
