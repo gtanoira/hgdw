@@ -10,16 +10,14 @@ class ProcesosBatchsController {
 
   // Borrar un lote y todos sus posteriores
   public async delete(req: Request, res: Response): Promise<any> {
-    let rtnStatus = 503;
-    let rtnMessage = '';
-    const data = await procesosBatchsService.delById(+req.params.id)
+    let rtnStatus = 444;
+    let rtnMessage = 'No hay nada';
+    await procesosBatchsService.delById(+req.params.id)
       .then(
         data => {
           const aux = JSON.parse(data);
-          console.log('*** DATA:', data);
-          console.log('*** JSON:', aux);
           rtnStatus = aux.status;
-          rtnMessage = aux.message;
+          rtnMessage = aux;
         }
       )
       .catch(
