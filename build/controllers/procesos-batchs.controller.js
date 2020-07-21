@@ -15,8 +15,19 @@ const authorization_service_1 = require("../services/authorization.service");
 class ProcesosBatchsController {
     delete(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield procesos_batchs_service_1.procesosBatchsService.delById(+req.params.id);
-            return res.send(data).status(data ? 200 : 404);
+            let rtnStatus = 444;
+            let rtnMessage = 'No hay nada';
+            yield procesos_batchs_service_1.procesosBatchsService.delById(+req.params.id)
+                .then(data => {
+                const aux = JSON.parse(data);
+                rtnStatus = aux.status;
+                rtnMessage = aux;
+            })
+                .catch(err => {
+                rtnStatus = 503;
+                rtnMessage = err;
+            });
+            return res.send(rtnMessage).status(rtnStatus);
         });
     }
     index(req, res) {

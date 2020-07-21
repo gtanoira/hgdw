@@ -16,12 +16,17 @@ const proceso_batch_model_1 = require("../models/proceso_batch.model");
 class ProcesosBatchsService {
     delById(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            const sqlCmd = `CALL pr_delete_batch(${id})`;
             const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
-            return yield connection.getRepository(proceso_batch_model_1.ProcesoBatch)
-                .createQueryBuilder()
-                .delete()
-                .where("id = :id", { id })
-                .execute();
+            return yield connection.query(sqlCmd)
+                .then(data => {
+                const dataMessage = JSON.stringify(data);
+                const rtnMessage = JSON.parse(dataMessage);
+                return rtnMessage[0][0].sqlResult;
+            })
+                .catch(err => {
+                throw new Error("err");
+            });
         });
     }
     getAll() {
