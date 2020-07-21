@@ -10,13 +10,10 @@ import { ProcesoBatch } from '../models/proceso_batch.model';
 export class ProcesosBatchsService {
 
   // Borrar un registro de la tabla
-  public async delById(id: number): Promise<DeleteResult> {
+  public async delById(id: number): Promise<string> {
+    const sqlCmd = `CALL pr_delete_batch(${id})`;
     const connection = getConnection(AWS_DBASE);
-    return await connection.getRepository(ProcesoBatch)
-      .createQueryBuilder()
-      .delete()
-      .where("id = :id", { id })
-      .execute();
+    return await connection.query(sqlCmd);
   }
 
   public async getAll():Promise<ProcesoBatch[]> {

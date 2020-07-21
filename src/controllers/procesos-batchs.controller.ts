@@ -8,18 +8,31 @@ import { authorizationService } from '../services/authorization.service';
 
 class ProcesosBatchsController {
 
+  // Borrar un lote y todos sus posteriores
   public async delete(req: Request, res: Response): Promise<any> {
-    const data = await procesosBatchsService.delById(+req.params.id);
-    return res.send(data).status(data ? 200 : 404);
+    let rtnStatus = 503;
+    let rtnMessage = '';
+    const data = await procesosBatchsService.delById(+req.params.id)
+      .then(
+        data => {
+          const aux = JSON.parse(data);
+          console.log('*** DATA:', data);
+          console.log('*** JSON:', aux);
+          rtnStatus = aux.status;
+          rtnMessage = aux.message;
+        }
+      )
+      .catch(
+        err => {
+          rtnStatus = 503;
+          rtnMessage = err;
+        }
+      );
+    return res.send(rtnMessage).status(rtnStatus);
   }
 
-  /* private async edit(req: Request, res: Response): Promise<ProcesosBatch> {
-    const data = await procesoBatchService.getById(req.params.id);
-    return res.send(data ? 200 : 404, data);
-  } */
-
+  // Obtener todos los registros
   public async index(req: Request, res: Response): Promise<any> {
-    
     // Validar que el request tenga un token de un usuario válido
     if ( await authorizationService.isTokenValid(req.headers.authorization || '')) {
       const recs = await procesosBatchsService.getAll();
