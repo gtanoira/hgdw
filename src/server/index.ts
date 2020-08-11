@@ -5,6 +5,7 @@ import cors from 'cors';
 
 // Routes
 import { errorLogsRoute } from '../routes/error-logs.route';
+import { googleAnalyticsRoute } from '../routes/google-analytics.route';
 import { procesosBatchsRoute }  from '../routes/procesos-batchs.route';
 import { scheduleEventsRoute } from '../routes/schedule-events.route';
 
@@ -65,6 +66,7 @@ export class ApiServer {
     app.use('/api2/procesos_batchs', procesosBatchsRoute.router);
     app.use('/api2/error_logs', errorLogsRoute.router);
     app.use('/api2/schedule_events', scheduleEventsRoute.router);
+    app.use('/ga', googleAnalyticsRoute.router);
 
 
     // Starting the Server
