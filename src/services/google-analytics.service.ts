@@ -1,7 +1,8 @@
-import axios from 'axios';
+import axios, { AxiosPromise } from 'axios';
 import jsonwebtoken from 'jsonwebtoken';
 import { google }  from 'googleapis';
 import { JWT } from 'google-auth-library';
+import { GoogleAuth } from 'google-auth-library';
 
 // Environment
 import gan from '../settings/HGDW-97ad94690664.json';
@@ -19,91 +20,112 @@ class GoogleAnalyticsService {
   });
 
   // Google Analytics credentials
+  private googleApis = google;
+  private analytics = google.analytics('v3');
   private accountId = '47530604';  // GA account (Claxson)
   private webPropertyId = 'UA-47530604-2';  // GA Property (Claxson - HotGo.tv)
   private profileId = '156035551';  // GA view Id (1 - HotGo.tv View Master)
 
-  // Google Cloud - API Key Credential (name HGDW)
-  private apiKey = 'AIzaSyBpNaysW-uBN-IzLNLq5hiVjKaDzIDsl-4';
-  
-  // BigQuery API - View list
-  private uri = `https://www.googleapis.com/analytics/v3/management/accounts/${this.accountId}/webproperties/${this.webPropertyId}/profiles/${this.profileId}?key=${this.apiKey}]`;
-  
-  // Authorization de prueba creada por OAuth2 algo.... (una de las tantas pruebas)
-  private authorization = 'Bearer ya29.a0AfH6SMApjrDfEgEO61CitKJd7ar5knSu9RowGM-BQipWrAhK3kGpJo3ZSjUnflk1qHaZYQtNZP8m8cS9k-JA9Bva4ljiBqF1wJnNYatmLB6qZ49SZOS-ilxdK1B7OuaOPgyoujXzJ-3PWHmZrjSf0pnlyhaenPB8ejI';
-
-  public async getView2(viewId: string): Promise<{}> {
-
-    const token = this.createJwtToken();
-    // const body = `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${token}`;
-    const body = `urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${token}`;
-
-    return await this.http.post<{}>('https://oauth2.googleapis.com/token', body)
-    .then(data => data)
-    .catch( err => {
-      console.log(err);
-      return err;
-    });
-  }
-
-  private async createJwtToken() {
-
-    const jwtHeader = {"alg":"RS256","typ":"JWT"};
-
-    const jwtClaimSet = {
-      "iss": gan.client_email,
-      "scope": "https://www.googleapis.com/auth/devstorage.read_only",
-      "aud": "https://oauth2.googleapis.com/token",
-      "exp": 1328554385,
-      "iat": 1328550785
-    };
-
-    return this.jwt.sign(
-      `${jwtHeader}.${jwtClaimSet}`,
-      gan.private_key, { algorithm: 'RS256' },
-      (err, token) => {
-        console.log('*** token:', token);
-        return token;
-      }
-    );
-  }
-
-  public async getView3(): Promise<void> {
+  // Acceso a través de GoogleAuth  via JWT
+  public async getView3(): Promise<any> {
 
     const scopes = [
       'https://www.googleapis.com/auth/analytics',
-      'https://www.googleapis.com/auth/analytics.readonly',
+      'https://www.googleapis.com/auth/analytics.readonly'
     ];
-      
-    //  'https://www.googleapis.com/auth/analytics.readonly';
 
-    const serviceAccount = new JWT({
+    const jwtServiceAccount = new JWT({
       email: gan.client_email,
       key: gan.private_key,
       scopes
     });
 
-    const url = `https://dns.googleapis.com/dns/v1/projects/${gan.project_id}`;
+    const gauthServiceAccount = new GoogleAuth({
+      clientOptions: jwtServiceAccount
+    });
+
+    /* const url = `https://dns.googleapis.com/dns/v1/projects/${gan.project_id}`;
     const res = await serviceAccount.request({url});
     console.log('*** SERVICE ACCOUNT:');
-    console.log(res.data);
+    console.log(res.data); */
+
+    return jwtServiceAccount.authorize( (err, result) => {
+
+        // Obtener la vista
+        const view_id = '156035551';
+
+        this.googleApis.options({auth: jwtServiceAccount});
+        this.analytics.data.ga.get(
+          {
+            ids: `ga:${ view_id }`,
+            'start-date': '7daysAgo',
+            'end-date': 'today',
+            metrics: 'ga:pageviews'
+          }
+        ).then(
+          gaData => {
+            console.log('*** GA DATA:');
+            console.log(gaData);
+            return gaData.data;
+          }
+        ).catch(
+          err => {
+            console.log(err);
+            return err;
+          }
+        );
+      }
+    );
+  }
+
+  // Acceso a través de GoogleAuth via modo automático
+  public async getView4(): Promise<{}> {
+
+    /**
+     * Instead of specifying the type of client you'd like to use (JWT, OAuth2, etc)
+     * this library will automatically choose the right client based on the environment.
+     */
+    const auth = new GoogleAuth({
+      keyFilename: 'src/settings/HGDW-97ad94690664.json',
+      projectId: gan.project_id,
+      scopes: [
+        'https://www.googleapis.com/auth/analytics',
+        'https://www.googleapis.com/auth/analytics.readonly',
+      ]
+    });
+
+    /* const client = await auth.getClient();
+    console.log('*** CLIENT:', client);
+
+    const projectId = await auth.getProjectId();
+    console.log('*** PROJECT ID:', projectId);
+    
+    const url = `https://dns.googleapis.com/dns/v1/projects/${projectId}`;
+    const res = await client.request({ url });
+    console.log(res.data); */
 
     const view_id = '156035551';
 
-    serviceAccount.authorize((err, response) => {
-      google.analytics('v3').data.ga.get(
-        {
-          ids: `ga:${ view_id }`,
-          'start-date': '30daysAgo',
-          'end-date': 'today',
-          metrics: 'ga:pageviews'
-        },
-        (err, result) => {
-          console.log(err, result)
-        }
-      )
-    })
-    console.log('*** FIN');
+    this.googleApis.options({auth: auth});
+    return await this.analytics.data.ga.get(
+      {
+        ids: `ga:${ view_id }`,
+        'start-date': '7daysAgo',
+        'end-date': 'today',
+        metrics: 'ga:pageviews;ga:sessions'
+      }
+    ).then(
+      gaData => {
+        console.log('*** GA DATA:');
+        console.log(gaData);
+        return gaData.data;
+      }
+    ).catch( err => {
+      console.log('** GA ERROR:');
+      console.log(err, err.code);
+      return new Error(err);
+    });
+
   }
 
 }
