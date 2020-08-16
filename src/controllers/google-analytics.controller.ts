@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 
 // Services
 import { googleAnalyticsService } from '../services/google-analytics.service';
+import { type } from 'os';
 
 class GoogleAnalyticsController {
 
@@ -19,8 +20,8 @@ class GoogleAnalyticsController {
     })
     .catch( err => {
       console.log('*** ERROR CONTOLLER:');
-      console.log(err, err.code);
-      return res.send(err.errors).status(err.code);
+      console.log(err, typeof err);
+      return res.send(err.error.message.toString());  //.status(err.code.toString());
     });
   }
 

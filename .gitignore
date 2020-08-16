@@ -4,6 +4,8 @@ node_modules
 
 # Exclude these directories
 src/settings
+src/public/downloads
+src/public/uploads
 
 # Exclude these files
 ormconfig.json

@@ -3,6 +3,7 @@ import jsonwebtoken from 'jsonwebtoken';
 import { google }  from 'googleapis';
 import { JWT } from 'google-auth-library';
 import { GoogleAuth } from 'google-auth-library';
+import { rejects } from 'assert';
 
 // Environment
 import gan from '../settings/HGDW-97ad94690664.json';
@@ -79,7 +80,7 @@ class GoogleAnalyticsService {
   }
 
   // Acceso a través de GoogleAuth via modo automático
-  public async getView4(): Promise<{}> {
+  public async getView4(): Promise<void | {}> {
 
     /**
      * Instead of specifying the type of client you'd like to use (JWT, OAuth2, etc)
@@ -112,7 +113,7 @@ class GoogleAnalyticsService {
         ids: `ga:${ view_id }`,
         'start-date': '7daysAgo',
         'end-date': 'today',
-        metrics: 'ga:pageviews;ga:sessions'
+        metrics: 'ga:sessionCount,ga:sessions'
       }
     ).then(
       gaData => {
@@ -122,8 +123,8 @@ class GoogleAnalyticsService {
       }
     ).catch( err => {
       console.log('** GA ERROR:');
-      console.log(err, err.code);
-      return new Error(err);
+      console.log(err);
+      throw new Error(JSON.stringify(err.response.data.error).toString());
     });
 
   }

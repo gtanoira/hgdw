@@ -12,5 +12,17 @@ export class ErrorLogsService {
     const connection = getConnection(AWS_DBASE);
     return await connection.getRepository(ErrorLog).find();
   }
+
+  public async addError(errorType: string, errorMsg: string) {
+    const connection = getConnection(AWS_DBASE);
+    return await connection.getRepository(ErrorLog)
+      .createQueryBuilder()
+      .insert()
+      .into(ErrorLog)
+      .values([
+          { errorType, message: errorMsg }
+      ])
+      .execute();
+  }
 }
 export const errorLogsService = new ErrorLogsService();
