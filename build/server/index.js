@@ -9,7 +9,9 @@ const path_1 = __importDefault(require("path"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const error_logs_route_1 = require("../routes/error-logs.route");
+const google_analytics_route_1 = require("../routes/google-analytics.route");
 const procesos_batchs_route_1 = require("../routes/procesos-batchs.route");
+const register_route_1 = require("../routes/register.route");
 const schedule_events_route_1 = require("../routes/schedule-events.route");
 class ApiServer {
     constructor() {
@@ -48,6 +50,8 @@ class ApiServer {
         app.use('/api2/procesos_batchs', procesos_batchs_route_1.procesosBatchsRoute.router);
         app.use('/api2/error_logs', error_logs_route_1.errorLogsRoute.router);
         app.use('/api2/schedule_events', schedule_events_route_1.scheduleEventsRoute.router);
+        app.use('/ga', google_analytics_route_1.googleAnalyticsRoute.router);
+        app.use('/register', register_route_1.registerRoute.router);
         app.set('port', port);
         app.listen(app.get('port'), () => {
             console.log(`Server escuchando en el port`, app.get('port'));

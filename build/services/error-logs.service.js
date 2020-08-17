@@ -20,6 +20,19 @@ class ErrorLogsService {
             return yield connection.getRepository(error_log_model_1.ErrorLog).find();
         });
     }
+    addError(errorType, errorMsg) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
+            return yield connection.getRepository(error_log_model_1.ErrorLog)
+                .createQueryBuilder()
+                .insert()
+                .into(error_log_model_1.ErrorLog)
+                .values([
+                { errorType, message: errorMsg }
+            ])
+                .execute();
+        });
+    }
 }
 exports.ErrorLogsService = ErrorLogsService;
 exports.errorLogsService = new ErrorLogsService();

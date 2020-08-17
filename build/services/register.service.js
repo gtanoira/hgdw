@@ -9,32 +9,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.procesosBatchsService = exports.ProcesosBatchsService = void 0;
+exports.registerService = exports.RegisterService = void 0;
 const typeorm_1 = require("typeorm");
 const environment_settings_1 = require("../settings/environment.settings");
-const proceso_batch_model_1 = require("../models/proceso_batch.model");
-class ProcesosBatchsService {
-    delById(id) {
+const error_logs_service_1 = require("./error-logs.service");
+class RegisterService {
+    insertRegisterHistory(sqlCmd) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sqlCmd = `CALL pr_delete_batch(${id})`;
+            const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
+            return yield connection.query(sqlCmd);
+        });
+    }
+    deleteDuplicates(userId, cantidad) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sqlCmd = `DELETE FROM Datalake.register WHERE user_id = '${userId}' LIMIT ${cantidad - 1}`;
             const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
             return yield connection.query(sqlCmd)
                 .then(data => {
-                const dataMessage = JSON.stringify(data);
-                const rtnMessage = JSON.parse(dataMessage);
-                return rtnMessage[0][0].sqlResult;
+                return data;
             })
                 .catch(err => {
+                error_logs_service_1.errorLogsService.addError('del_duplicate_register', err.toString().substring(0, 4000));
                 return Promise.reject(err);
             });
         });
     }
-    getAll() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
-            return yield connection.getRepository(proceso_batch_model_1.ProcesoBatch).find();
-        });
-    }
 }
-exports.ProcesosBatchsService = ProcesosBatchsService;
-exports.procesosBatchsService = new ProcesosBatchsService();
+exports.RegisterService = RegisterService;
+exports.registerService = new RegisterService();

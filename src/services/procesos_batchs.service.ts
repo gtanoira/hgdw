@@ -24,7 +24,7 @@ export class ProcesosBatchsService {
     )
     .catch(
       err => {
-        throw new Error("err");
+        return Promise.reject(err);
       }
     );
   }
