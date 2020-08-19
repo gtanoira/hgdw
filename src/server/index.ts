@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 // Routes
+import { cancelRoute } from '../routes/cancel.route';
 import { errorLogsRoute } from '../routes/error-logs.route';
 import { googleAnalyticsRoute } from '../routes/google-analytics.route';
 import { procesosBatchsRoute }  from '../routes/procesos-batchs.route';
@@ -71,6 +72,7 @@ export class ApiServer {
     app.use('/ga', googleAnalyticsRoute.router);
     app.use('/register', registerRoute.router);
     app.use('/user_collections', userCollectionsRoute.router);
+    app.use('/cancel', cancelRoute.router);
 
 
     // Starting the Server

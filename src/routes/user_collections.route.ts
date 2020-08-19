@@ -2,7 +2,7 @@ import { Router } from 'express';
 import cors from 'cors';
 
 // Controllers
-import { userCollectionsController } from '../controllers/user_collections.constroller';
+import { userCollectionsController } from '../controllers/user_collections.controller';
 
 export class UserCollectionsRoute {
 
