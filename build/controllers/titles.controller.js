@@ -30,8 +30,7 @@ class TitlesController {
                 titulosActualizados = titles.length;
                 yield titles_service_1.titlesService.startTransaction();
                 for (let i = 0; i < titles.length; i++) {
-                    if (i > 0 && i % 2 === 0) {
-                        console.log('*** i:', i);
+                    if (i > 0 && i % 1000 === 0) {
                         yield exports.titlesController.sendTitles(sqlValues)
                             .then(data => data)
                             .catch(err => {
@@ -49,8 +48,6 @@ class TitlesController {
                 ;
             }
             catch (err) {
-                console.log('*** PUBLISH()');
-                console.log(err);
                 yield titles_service_1.titlesService.rollbackTransaction();
                 yield titles_service_1.titlesService.endTransaction();
                 return res.status(exports.titlesController.rtn_status).send({ message: err.toString().replace("Error: ", '') });

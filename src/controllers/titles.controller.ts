@@ -39,8 +39,7 @@ class TitlesController {
       for (let i = 0; i < titles.length; i++) {
 
         // Ejecutar el comando SQL si llegó a las 1000 iteraciones
-        if ( i > 0 && i % 2 === 0) {
-          console.log('*** i:', i);
+        if ( i > 0 && i % 1000 === 0) {
 
           // Ejecutar el insert 
           await titlesController.sendTitles(sqlValues)
@@ -63,8 +62,6 @@ class TitlesController {
       };
 
     } catch (err) {
-      console.log('*** PUBLISH()');
-      console.log(err);
       await titlesService.rollbackTransaction();  // Rollback toda la transaccion
       await titlesService.endTransaction(); // finalizar la transacción      
       return res.status(titlesController.rtn_status).send({message: err.toString().replace("Error: ", '')});
