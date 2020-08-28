@@ -34,6 +34,8 @@ class TitlesController {
       const titles: TitleMetadataPublished[] = req.body;
       titulosActualizados = titles.length;
 
+      await titlesService.startTransaction();
+      
       for (let i = 0; i < titles.length; i++) {
 
         // Ejecutar el comando SQL si llegó a las 1000 iteraciones
@@ -63,6 +65,8 @@ class TitlesController {
     } catch (err) {
       console.log('*** PUBLISH()');
       console.log(err);
+      await titlesService.rollbackTransaction();  // Rollback toda la transaccion
+      await titlesService.endTransaction(); // finalizar la transacción      
       return res.status(titlesController.rtn_status).send({message: err.toString().replace("Error: ", '')});
     }
 
@@ -71,13 +75,27 @@ class TitlesController {
     let rtn_message = {message:`'Proceso finalizado. Se actualizaron ${titulosActualizados ? titulosActualizados : 0} titulos.'`};
 
     // Procesar los últimos titulos
-    await titlesController.sendTitles(sqlValues)
-    .then(data => data)
-    .catch(err => {
-      titlesController.rtn_status = 503;  // service unavailable
-      rtn_message = {message: `SqlError: ${err.sqlMessage.toString()}`};
-    });
+    if (sqlValues === '') {
+      titlesService.commitTransaction();  // Commit toda la transaccion
 
+    } else {
+
+      // Grabar los últimos titulos
+      await titlesController.sendTitles(sqlValues)
+      .then(data => {
+        titlesService.commitTransaction();  // Commit toda la transaccion
+      })
+      .catch(err => {
+        titlesService.rollbackTransaction();  // Rollback toda la transaccion
+        titlesController.rtn_status = 503;  // service unavailable
+        rtn_message = {message: `SqlError: ${err.sqlMessage.toString()}`};
+      });
+    };
+
+    // Liberar la transacción
+    titlesService.endTransaction();
+    
+    // Retornar el resultado
     return res.status(titlesController.rtn_status).send(rtn_message);
   }
 
