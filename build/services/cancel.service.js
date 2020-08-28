@@ -9,31 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.errorLogsService = exports.ErrorLogsService = void 0;
+exports.cancelService = exports.CancelService = void 0;
 const typeorm_1 = require("typeorm");
 const environment_settings_1 = require("../settings/environment.settings");
-const error_log_model_1 = require("../models/error-log.model");
-class ErrorLogsService {
-    getAll() {
+class CancelService {
+    insertCancelHistory(sqlCmd) {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
-            return yield connection.getRepository(error_log_model_1.ErrorLog).find();
-        });
-    }
-    addError(errorType, errorMsg, errorCode, idFk) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
-            const errorSolved = errorCode === 'nocode' ? 2 : 0;
-            return yield connection.getRepository(error_log_model_1.ErrorLog)
-                .createQueryBuilder()
-                .insert()
-                .into(error_log_model_1.ErrorLog)
-                .values([
-                { errorType, message: errorMsg, errorCode, errorSolved, idFk }
-            ])
-                .execute();
+            return yield connection.query(sqlCmd);
         });
     }
 }
-exports.ErrorLogsService = ErrorLogsService;
-exports.errorLogsService = new ErrorLogsService();
+exports.CancelService = CancelService;
+exports.cancelService = new CancelService();

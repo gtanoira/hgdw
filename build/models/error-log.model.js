@@ -38,6 +38,10 @@ __decorate([
     typeorm_1.Column({ name: 'error_solved', type: 'tinyint', comment: 'Solucionado' }),
     __metadata("design:type", Number)
 ], ErrorLog.prototype, "errorSolved", void 0);
+__decorate([
+    typeorm_1.Column({ name: 'id_fk', type: 'int', comment: 'Id registro de la tabla donde se produjo el error. (foreign key)' }),
+    __metadata("design:type", Number)
+], ErrorLog.prototype, "idFk", void 0);
 ErrorLog = __decorate([
     typeorm_1.Entity({
         name: 'error_logs',

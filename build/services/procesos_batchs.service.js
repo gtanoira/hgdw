@@ -22,7 +22,9 @@ class ProcesosBatchsService {
                 .then(data => {
                 const dataMessage = JSON.stringify(data);
                 const rtnMessage = JSON.parse(dataMessage);
-                return rtnMessage[0][0].sqlResult;
+                console.log('');
+                console.log(rtnMessage[1][0]);
+                return rtnMessage[1][0].sqlResult;
             })
                 .catch(err => {
                 return Promise.reject(err);

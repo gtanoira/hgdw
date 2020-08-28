@@ -9,31 +9,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.errorLogsService = exports.ErrorLogsService = void 0;
+exports.userCollectionsService = exports.UserCollectionsService = void 0;
 const typeorm_1 = require("typeorm");
 const environment_settings_1 = require("../settings/environment.settings");
-const error_log_model_1 = require("../models/error-log.model");
-class ErrorLogsService {
-    getAll() {
+class UserCollectionsService {
+    insertPaymentCommitHistory(sqlCmd) {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
-            return yield connection.getRepository(error_log_model_1.ErrorLog).find();
+            return yield connection.query(sqlCmd);
         });
     }
-    addError(errorType, errorMsg, errorCode, idFk) {
+    insertRebillHistory(sqlCmd) {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
-            const errorSolved = errorCode === 'nocode' ? 2 : 0;
-            return yield connection.getRepository(error_log_model_1.ErrorLog)
-                .createQueryBuilder()
-                .insert()
-                .into(error_log_model_1.ErrorLog)
-                .values([
-                { errorType, message: errorMsg, errorCode, errorSolved, idFk }
-            ])
-                .execute();
+            return yield connection.query(sqlCmd);
         });
     }
 }
-exports.ErrorLogsService = ErrorLogsService;
-exports.errorLogsService = new ErrorLogsService();
+exports.UserCollectionsService = UserCollectionsService;
+exports.userCollectionsService = new UserCollectionsService();

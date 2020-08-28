@@ -29,7 +29,7 @@ class RegisterService {
                 return data;
             })
                 .catch(err => {
-                error_logs_service_1.errorLogsService.addError('del_duplicate_register', err.toString().substring(0, 4000));
+                error_logs_service_1.errorLogsService.addError('del_duplicate_register', err.toString().substring(0, 4000), 'nocode', 0);
                 return Promise.reject(err);
             });
         });
