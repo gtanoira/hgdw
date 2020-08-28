@@ -28,6 +28,7 @@ class TitlesController {
             try {
                 const titles = req.body;
                 titulosActualizados = titles.length;
+                yield titles_service_1.titlesService.startTransaction();
                 for (let i = 0; i < titles.length; i++) {
                     if (i > 0 && i % 2 === 0) {
                         console.log('*** i:', i);
@@ -50,16 +51,28 @@ class TitlesController {
             catch (err) {
                 console.log('*** PUBLISH()');
                 console.log(err);
+                yield titles_service_1.titlesService.rollbackTransaction();
+                yield titles_service_1.titlesService.endTransaction();
                 return res.status(exports.titlesController.rtn_status).send({ message: err.toString().replace("Error: ", '') });
             }
             exports.titlesController.rtn_status = 200;
             let rtn_message = { message: `'Proceso finalizado. Se actualizaron ${titulosActualizados ? titulosActualizados : 0} titulos.'` };
-            yield exports.titlesController.sendTitles(sqlValues)
-                .then(data => data)
-                .catch(err => {
-                exports.titlesController.rtn_status = 503;
-                rtn_message = { message: `SqlError: ${err.sqlMessage.toString()}` };
-            });
+            if (sqlValues === '') {
+                titles_service_1.titlesService.commitTransaction();
+            }
+            else {
+                yield exports.titlesController.sendTitles(sqlValues)
+                    .then(data => {
+                    titles_service_1.titlesService.commitTransaction();
+                })
+                    .catch(err => {
+                    titles_service_1.titlesService.rollbackTransaction();
+                    exports.titlesController.rtn_status = 503;
+                    rtn_message = { message: `SqlError: ${err.sqlMessage.toString()}` };
+                });
+            }
+            ;
+            titles_service_1.titlesService.endTransaction();
             return res.status(exports.titlesController.rtn_status).send(rtn_message);
         });
     }

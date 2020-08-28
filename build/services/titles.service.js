@@ -14,9 +14,39 @@ const typeorm_1 = require("typeorm");
 const environment_settings_1 = require("../settings/environment.settings");
 class TitlesService {
     insertPublishedTitles(sqlCmd) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            return yield ((_a = this.queryRunner) === null || _a === void 0 ? void 0 : _a.query(sqlCmd));
+        });
+    }
+    startTransaction() {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('*** START TRANSACTION');
             const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
-            return yield connection.query(sqlCmd);
+            this.queryRunner = connection.createQueryRunner();
+            yield this.queryRunner.connect();
+            yield this.queryRunner.startTransaction();
+        });
+    }
+    commitTransaction() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('*** COMMIT');
+            return yield ((_a = this.queryRunner) === null || _a === void 0 ? void 0 : _a.commitTransaction());
+        });
+    }
+    rollbackTransaction() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('*** ROLLBACK');
+            return yield ((_a = this.queryRunner) === null || _a === void 0 ? void 0 : _a.rollbackTransaction());
+        });
+    }
+    endTransaction() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('*** END TRANSACTION');
+            yield ((_a = this.queryRunner) === null || _a === void 0 ? void 0 : _a.release());
         });
     }
 }
