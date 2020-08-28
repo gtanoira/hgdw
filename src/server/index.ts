@@ -10,6 +10,7 @@ import { googleAnalyticsRoute } from '../routes/google-analytics.route';
 import { procesosBatchsRoute }  from '../routes/procesos-batchs.route';
 import { registerRoute } from '../routes/register.route';
 import { scheduleEventsRoute } from '../routes/schedule-events.route';
+import { titlesRoute } from '../routes/titles.route';
 import { userCollectionsRoute } from '../routes/user_collections.route';
 
 export class ApiServer {
@@ -66,13 +67,14 @@ export class ApiServer {
     /*
      * Routes
      */
-    app.use('/api2/procesos_batchs', procesosBatchsRoute.router);
     app.use('/api2/error_logs', errorLogsRoute.router);
+    app.use('/api2/procesos_batchs', procesosBatchsRoute.router);
     app.use('/api2/schedule_events', scheduleEventsRoute.router);
+    app.use('/cancel', cancelRoute.router);
     app.use('/ga', googleAnalyticsRoute.router);
     app.use('/register', registerRoute.router);
+    app.use('/titles', titlesRoute.router);
     app.use('/user_collections', userCollectionsRoute.router);
-    app.use('/cancel', cancelRoute.router);
 
 
     // Starting the Server

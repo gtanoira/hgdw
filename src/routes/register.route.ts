@@ -2,7 +2,7 @@ import { Router } from 'express';
 import cors from 'cors';
 
 // Controllers
-import { registerController } from '../controllers/register.constroller';
+import { registerController } from '../controllers/register.controller';
 
 export class RegisterRoute {
 

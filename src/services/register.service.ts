@@ -26,7 +26,7 @@ export class RegisterService {
     })
     .catch( err => { 
       // Guardar el error en la base de datos
-      errorLogsService.addError('del_duplicate_register', err.toString().substring(0, 4000));
+      errorLogsService.addError('del_duplicate_register', err.toString().substring(0, 4000), 'nocode', 0);
       return Promise.reject(err);
     });
   }

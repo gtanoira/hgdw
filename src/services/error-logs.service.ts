@@ -13,14 +13,15 @@ export class ErrorLogsService {
     return await connection.getRepository(ErrorLog).find();
   }
 
-  public async addError(errorType: string, errorMsg: string) {
+  public async addError(errorType: string, errorMsg: string, errorCode: string, idFk: number | 0) {
     const connection = getConnection(AWS_DBASE);
+    const errorSolved = errorCode === 'nocode' ? 2 : 0;
     return await connection.getRepository(ErrorLog)
       .createQueryBuilder()
       .insert()
       .into(ErrorLog)
       .values([
-          { errorType, message: errorMsg }
+          { errorType, message: errorMsg, errorCode, errorSolved, idFk }
       ])
       .execute();
   }

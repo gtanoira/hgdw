@@ -214,7 +214,7 @@ class UserCollectionsController {
       .catch( err => { 
         // Guardar el error en la base de datos
         console.log('ERROR: ', err); 
-        errorLogsService.addError('history_payment_commit', err.toString().substring(1, 4000))
+        errorLogsService.addError('history_payment_commit', err.toString().substring(1, 4000), 'nocode', 0)
         .then(data => null)
         .catch(err => null);
         return;
@@ -238,7 +238,7 @@ class UserCollectionsController {
       .catch( err => { 
         // Guardar el error en la base de datos
         console.log('ERROR: ', err); 
-        errorLogsService.addError('history_rebill', err.toString().substring(1, 4000))
+        errorLogsService.addError('history_rebill', err.toString().substring(1, 4000), 'nocode', 0)
         .then(data => null)
         .catch(err => null);
         return;
