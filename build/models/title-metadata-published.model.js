@@ -27,6 +27,10 @@ __decorate([
     __metadata("design:type", Object)
 ], TitleMetadataPublished.prototype, "titleName", void 0);
 __decorate([
+    typeorm_1.Column({ name: 'title_summary', length: 4000 }),
+    __metadata("design:type", Object)
+], TitleMetadataPublished.prototype, "titleSummary", void 0);
+__decorate([
     typeorm_1.Column({ name: 'title_type' }),
     __metadata("design:type", Object)
 ], TitleMetadataPublished.prototype, "titleType", void 0);
@@ -34,6 +38,14 @@ __decorate([
     typeorm_1.Column({ name: 'title_active', type: 'tinyint' }),
     __metadata("design:type", Number)
 ], TitleMetadataPublished.prototype, "titleActive", void 0);
+__decorate([
+    typeorm_1.Column({ name: 'title_url_image_portrait' }),
+    __metadata("design:type", Object)
+], TitleMetadataPublished.prototype, "titleUrlImagePortrait", void 0);
+__decorate([
+    typeorm_1.Column({ name: 'title_url_image_landscape' }),
+    __metadata("design:type", Object)
+], TitleMetadataPublished.prototype, "titleUrlImageLandscape", void 0);
 __decorate([
     typeorm_1.Column({ name: 'brand_id' }),
     __metadata("design:type", Object)
@@ -43,17 +55,33 @@ __decorate([
     __metadata("design:type", Object)
 ], TitleMetadataPublished.prototype, "assetId", void 0);
 __decorate([
-    typeorm_1.Column({ name: 'episode_active', type: 'tinyint' }),
+    typeorm_1.Column({ name: 'asset_active', type: 'tinyint' }),
     __metadata("design:type", Number)
-], TitleMetadataPublished.prototype, "episodeActive", void 0);
+], TitleMetadataPublished.prototype, "assetActive", void 0);
 __decorate([
-    typeorm_1.Column({ name: 'episode_type' }),
+    typeorm_1.Column({ name: 'asset_type' }),
     __metadata("design:type", Object)
-], TitleMetadataPublished.prototype, "episodeType", void 0);
+], TitleMetadataPublished.prototype, "assetType", void 0);
 __decorate([
-    typeorm_1.Column({ name: 'episode_no' }),
+    typeorm_1.Column({ name: 'asset_url_image_portrait' }),
+    __metadata("design:type", Object)
+], TitleMetadataPublished.prototype, "assetUrlImagePortrait", void 0);
+__decorate([
+    typeorm_1.Column({ name: 'asset_url_image_landscape' }),
+    __metadata("design:type", Object)
+], TitleMetadataPublished.prototype, "assetUrlImageLandscape", void 0);
+__decorate([
+    typeorm_1.Column({ name: 'episode_no', type: 'int' }),
     __metadata("design:type", Object)
 ], TitleMetadataPublished.prototype, "episodeNo", void 0);
+__decorate([
+    typeorm_1.Column({ name: 'season_no', type: 'int' }),
+    __metadata("design:type", Object)
+], TitleMetadataPublished.prototype, "seasonNo", void 0);
+__decorate([
+    typeorm_1.Column({ name: 'episode_summary', length: 4000 }),
+    __metadata("design:type", Object)
+], TitleMetadataPublished.prototype, "episodeSummary", void 0);
 __decorate([
     typeorm_1.Column({ length: 1000 }),
     __metadata("design:type", Object)
