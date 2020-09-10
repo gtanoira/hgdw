@@ -57,7 +57,7 @@ export class ApiServer {
     app.use(express.urlencoded({ extended: false })); */
 
     // Static files
-    app.use(express.static(path.join(__dirname, 'public')));
+    app.use('/static', express.static(path.join(__dirname, 'public')));
 
     // MAX legth para el body en los request
     app.use(bodyParser.json({ limit: '10mb' }));

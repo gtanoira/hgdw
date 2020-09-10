@@ -7,7 +7,7 @@ import { TitleMetadataPublished } from '../models/title-metadata-published.model
 // Services
 import { titlesService } from '../services/titles.service';
 import { errorLogsService } from '../services/error-logs.service';
-import { isNull } from 'util';
+import { auxiliarTablesService } from '../services/auxiliar_tables.service';
 
 class TitlesController {
 
@@ -74,8 +74,8 @@ class TitlesController {
         const title = titlesController.validateTitle(titles[i]);
 
         sqlValues += `('${title.titleId}'` +
-          `${title.titleName === null ? `,null` : `,'${title.titleName}'`}` +
-          `${title.titleSummary === null ? `,null` : `,'${title.titleSummary}'`}` +
+          `${title.titleName === null ? `,null` : `,'${title.titleName.replace(/'/g, '')}'`}` +
+          `${title.titleSummary === null ? `,null` : `,'${title.titleSummary.replace(/'/g, '')}'`}` +
           `,'${title.titleType}'` +
           `,${title.titleActive}` +
           `${title.titleUrlImagePortrait === null ? `,null` : `,'${title.titleUrlImagePortrait}'`}` +
@@ -88,8 +88,8 @@ class TitlesController {
           `${title.assetUrlImageLandscape === null ? `,null` : `,'${title.assetUrlImageLandscape}'`}` +
           `,${title.episodeNo}` +
           `,${title.seasonNo}`  +
-          `${title.episodeSummary === null ? `,null` : `,'${title.episodeSummary}'`}` +
-          `${title.categories === null ? `,null` : `,'${title.categories}'`}` +
+          `${title.episodeSummary === null ? `,null` : `,'${title.episodeSummary.replace(/'/g, '')}'`}` +
+          `${title.categories === null ? `,null` : `,'${title.categories.replace(/'/g, '')}'`}` +
           `,'${title.publishedDate}'` +
           `,'${timestamp.format('YYYY-MM-DD HH:mm:ss')}'),`;
 
@@ -282,12 +282,18 @@ class TitlesController {
         + `, asset_active, asset_type, asset_url_image_portrait, asset_url_image_landscape, episode_no`
         + `, season_no, episode_summary, categories, published_date, timestamp) `
         + `VALUES ${sqlValues.substring(0, sqlValues.length - 1)};`;
+      
+      // Insertarlo en la base de datos
       return await titlesService.insertPublishedTitles(sqlCmd)
       .then( data => { 
         console.log('Proceso Ok:', data.affectedRows, ' - ', data.message);
         return data;
       })
       .catch( err => {
+        // Grabar el SQL en un archivo (para análisis de errores)
+        const filename = `insert_into_${moment().format('YYYY-MM-YY_HH-mm-ss')}.sql`;
+        auxiliarTablesService.saveDataToFile(filename, sqlCmd);
+
         // Guardar el error en la base de datos
         errorLogsService.addError('publish_title', err.sqlMessage.toString().substring(0, 4000), 'nocode', 0)
         .then(data => null )

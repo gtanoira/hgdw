@@ -1,7 +1,8 @@
 import { getConnection } from 'typeorm';
+import fileSave from 'fs';
 
 // Envirnoment
-import { AWS_DBASE } from '../settings/environment.settings';
+import { AWS_DBASE, STATIC_PATH } from '../settings/environment.settings';
 
 // Models
 import { FieldStatus } from '../models/field_status.model';
@@ -47,6 +48,16 @@ export class AuxiliarTablesService {
   public async getPaises(): Promise<Country[]> {
     const connection = getConnection(AWS_DBASE);
     return await connection.getRepository(Country).find();
+  }
+
+  /*
+     Guardar los INSERT INTO a la tabla HGDW.titles_metadata_published
+  */
+  public saveDataToFile(filename: string, dataToSave: string): void {
+    fileSave.writeFile(`${STATIC_PATH}/downloads/${filename}`, dataToSave, (err) => {
+      console.log('*** SAVEFILE:', err);
+      return;
+    });
   }
 }
 
