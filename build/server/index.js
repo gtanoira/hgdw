@@ -46,10 +46,9 @@ class ApiServer {
     }
     start(port) {
         const app = express_1.default();
-        app.use(express_1.default.json());
-        app.use(express_1.default.urlencoded({ extended: false }));
         app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
         app.use(body_parser_1.default.json({ limit: '10mb' }));
+        app.use(body_parser_1.default.urlencoded({ limit: '10mb', extended: true }));
         app.use(morgan_1.default('dev'));
         app.use(cors_1.default(this.corsOptionsDelegate));
         app.use('/api2/error_logs', error_logs_route_1.errorLogsRoute.router);

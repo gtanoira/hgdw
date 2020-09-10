@@ -53,15 +53,15 @@ export class ApiServer {
     * Middlewares Section
     * OJO: es super importante el orden de ejecución de cada paquete o funcion o middleware
     */
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: false }));
+    /* app.use(express.json());
+    app.use(express.urlencoded({ extended: false })); */
 
     // Static files
     app.use(express.static(path.join(__dirname, 'public')));
 
     // MAX legth para el body en los request
     app.use(bodyParser.json({ limit: '10mb' }));
-    // app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));  // se usa para formatear los forms <FORM></FORM>
+    app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));  // se usa para formatear los forms <FORM></FORM>
 
     // Http reqeusts log
     app.use(morgan('dev'))
