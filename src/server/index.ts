@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import morgan from 'morgan';
 import cors from 'cors';
+import bodyParser from 'body-parser';
 
 // Routes
 import { cancelRoute } from '../routes/cancel.route';
@@ -57,6 +58,10 @@ export class ApiServer {
 
     // Static files
     app.use(express.static(path.join(__dirname, 'public')));
+
+    // MAX legth para el body en los request
+    app.use(bodyParser.json({ limit: '10mb' }));
+    // app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));  // se usa para formatear los forms <FORM></FORM>
 
     // Http reqeusts log
     app.use(morgan('dev'))
