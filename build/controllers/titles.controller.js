@@ -16,6 +16,7 @@ exports.titlesController = void 0;
 const moment_1 = __importDefault(require("moment"));
 const titles_service_1 = require("../services/titles.service");
 const error_logs_service_1 = require("../services/error-logs.service");
+const auxiliar_tables_service_1 = require("../services/auxiliar_tables.service");
 class TitlesController {
     constructor() {
         this.rtn_status = 400;
@@ -48,8 +49,8 @@ class TitlesController {
                     ;
                     const title = exports.titlesController.validateTitle(titles[i]);
                     sqlValues += `('${title.titleId}'` +
-                        `${title.titleName === null ? `,null` : `,'${title.titleName}'`}` +
-                        `${title.titleSummary === null ? `,null` : `,'${title.titleSummary}'`}` +
+                        `${title.titleName === null ? `,null` : `,'${title.titleName.replace(/'/g, '')}'`}` +
+                        `${title.titleSummary === null ? `,null` : `,'${title.titleSummary.replace(/'/g, '')}'`}` +
                         `,'${title.titleType}'` +
                         `,${title.titleActive}` +
                         `${title.titleUrlImagePortrait === null ? `,null` : `,'${title.titleUrlImagePortrait}'`}` +
@@ -62,8 +63,8 @@ class TitlesController {
                         `${title.assetUrlImageLandscape === null ? `,null` : `,'${title.assetUrlImageLandscape}'`}` +
                         `,${title.episodeNo}` +
                         `,${title.seasonNo}` +
-                        `${title.episodeSummary === null ? `,null` : `,'${title.episodeSummary}'`}` +
-                        `${title.categories === null ? `,null` : `,'${title.categories}'`}` +
+                        `${title.episodeSummary === null ? `,null` : `,'${title.episodeSummary.replace(/'/g, '')}'`}` +
+                        `${title.categories === null ? `,null` : `,'${title.categories.replace(/'/g, '')}'`}` +
                         `,'${title.publishedDate}'` +
                         `,'${timestamp.format('YYYY-MM-DD HH:mm:ss')}'),`;
                     if (sqlValues.indexOf('undefined') > 0) {
@@ -255,6 +256,8 @@ class TitlesController {
                     return data;
                 })
                     .catch(err => {
+                    const filename = `insert_into_${moment_1.default().format('YYYY-MM-YY_HH-mm-ss')}.sql`;
+                    auxiliar_tables_service_1.auxiliarTablesService.saveDataToFile(filename, sqlCmd);
                     error_logs_service_1.errorLogsService.addError('publish_title', err.sqlMessage.toString().substring(0, 4000), 'nocode', 0)
                         .then(data => null)
                         .catch(err => err);

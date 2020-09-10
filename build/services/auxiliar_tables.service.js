@@ -8,9 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.auxiliarTablesService = exports.AuxiliarTablesService = void 0;
 const typeorm_1 = require("typeorm");
+const fs_1 = __importDefault(require("fs"));
 const environment_settings_1 = require("../settings/environment.settings");
 const field_status_model_1 = require("../models/field_status.model");
 const country_model_1 = require("../models/country.model");
@@ -47,6 +51,12 @@ class AuxiliarTablesService {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
             return yield connection.getRepository(country_model_1.Country).find();
+        });
+    }
+    saveDataToFile(filename, dataToSave) {
+        fs_1.default.writeFile(`${environment_settings_1.STATIC_PATH}/downloads/${filename}`, dataToSave, (err) => {
+            console.log('*** SAVEFILE:', err);
+            return;
         });
     }
 }
