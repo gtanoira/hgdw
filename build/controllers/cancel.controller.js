@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cancelController = void 0;
 const xlsx_1 = __importDefault(require("xlsx"));
-;
 const cancel_service_1 = require("../services/cancel.service");
 const error_logs_service_1 = require("../services/error-logs.service");
 class CancelController {
@@ -33,7 +32,6 @@ class CancelController {
                     yield exports.cancelController.sendCancelHistoryData(insertValues);
                     insertValues = '';
                 }
-                ;
                 try {
                     const register = registers[i];
                     const puserId = register.user_id ? register.user_id : 'no user';
@@ -43,7 +41,6 @@ class CancelController {
                             return args[4] + '/' + args[2].padStart(2, '0') + '/' + args[3].padStart(2, '0') + ' ' + args[5] + ' ' + args[6];
                         });
                     }
-                    ;
                     const pevent = register.event ? register.event : 'cancel';
                     const psource = register.source ? register.source : '';
                     const pchannel = register.channel ? register.channel : '';
@@ -72,12 +69,11 @@ class CancelController {
                     .catch(err => {
                     console.log('ERROR: ', err);
                     error_logs_service_1.errorLogsService.addError('history_cancel', err.toString().substring(1, 4000), 'nocode', 0)
-                        .then(data => null)
-                        .catch(err => null);
+                        .then(() => null)
+                        .catch(() => null);
                     return;
                 });
             }
-            ;
             return;
         });
     }

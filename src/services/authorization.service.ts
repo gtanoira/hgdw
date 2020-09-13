@@ -7,15 +7,15 @@ class AuthorizationService {
 
   private http = axios;
 
-  public async isTokenValid(token: string): Promise<Boolean> {
+  public async isTokenValid(token: string): Promise<boolean> {
     
-    return await this.http.get<Boolean>(`${LOGIN_CENTRAL_SERVER}/api2/validatesession`, {
+    return await this.http.get<boolean>(`${LOGIN_CENTRAL_SERVER}/api2/validatesession`, {
       headers: {
         Authorization: token
       }
     })
-    .then( (response) => { return true; } )
-    .catch((response) => { return false; } );
+    .then( () => { return true; } )
+    .catch(() => { return false; } );
   }
 
 }

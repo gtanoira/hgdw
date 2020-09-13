@@ -14,7 +14,7 @@ const google_analytics_service_1 = require("../services/google-analytics.service
 class GoogleAnalyticsController {
     index(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield google_analytics_service_1.googleAnalyticsService.getView4()
+            return yield google_analytics_service_1.googleAnalyticsService.getView4()
                 .then(rtnValue => {
                 console.log('*** rtnValue:');
                 console.log(rtnValue);

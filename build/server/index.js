@@ -27,7 +27,7 @@ class ApiServer {
         ];
         this.corsOptions = {};
         this.corsOptionsDelegate = (req, callback) => {
-            let corsOptions = {
+            const corsOptions = {
                 "origin": false,
                 "methods": "GET,PUT,PATCH,POST,DELETE",
                 "allowedHeaders": "Access-Control-Allow-Origin, Access-Control-Allow-Headers, Authorization, Content-Type",
@@ -35,13 +35,15 @@ class ApiServer {
                 "preflightContinue": false,
                 "optionsSuccessStatus": 200
             };
-            if (this.whiteList.indexOf(req.headers.origin) !== -1) {
+            const origen = req.headers.origin ? req.headers.origin : 'xxx';
+            if (this.whiteList.indexOf(origen) !== -1) {
                 corsOptions['origin'] = true;
             }
             else {
                 corsOptions['origin'] = false;
             }
             callback(null, corsOptions);
+            return corsOptions;
         };
     }
     start(port) {

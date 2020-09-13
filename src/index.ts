@@ -7,7 +7,7 @@ import { SERVER_PORT } from './settings/environment.settings';
 
 // Abrir las conexiones con las bases de datos
 HotGoDBase.setConnections()
-  .then( data => {
+  .then( () => {
     console.log('');
     console.log('');
     console.log('');

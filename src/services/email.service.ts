@@ -16,9 +16,9 @@ class EmailService {
     }
   }); */
  
-  public async sendMail(to: string, subject: string, content: string): Promise<String> { 
+  public async sendMail(to: string, subject: string, content: string): Promise<string> { 
 
-    let options = { 
+    const options = { 
       from: EMAIL_SERVER_SETTINGS.fromAddress, 
       to: to, 
       subject: subject, 

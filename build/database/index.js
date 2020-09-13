@@ -20,7 +20,7 @@ const schedule_event_model_1 = require("../models/schedule-event.model");
 class HotGoDBase {
     static setConnections() {
         return __awaiter(this, void 0, void 0, function* () {
-            let connectionInformationSchemaOptions = yield typeorm_1.getConnectionOptions('INFORMATION_SCHEMA');
+            const connectionInformationSchemaOptions = yield typeorm_1.getConnectionOptions('INFORMATION_SCHEMA');
             if (!connectionInformationSchemaOptions) {
                 throw new Error(`Las credenciales para la BDatos HotGo (schema: INFORMATION_SCHEMA) no existen.`);
             }
@@ -45,7 +45,7 @@ class HotGoDBase {
             options.push(connectionAWS_DBASEOptions);
             options.push(connectionInformationSchemaOptions);
             this.connections = yield typeorm_1.createConnections(options)
-                .then(connection => {
+                .then(() => {
                 return this.connections;
             })
                 .catch(error => {

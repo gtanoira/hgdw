@@ -25,7 +25,7 @@ class TitlesService {
             const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
             this.queryRunner = connection.createQueryRunner();
             yield this.queryRunner.connect();
-            yield this.queryRunner.startTransaction();
+            return yield this.queryRunner.startTransaction();
         });
     }
     commitTransaction() {
@@ -46,7 +46,7 @@ class TitlesService {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             console.log('*** END TRANSACTION');
-            yield ((_a = this.queryRunner) === null || _a === void 0 ? void 0 : _a.release());
+            return yield ((_a = this.queryRunner) === null || _a === void 0 ? void 0 : _a.release());
         });
     }
 }

@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import moment from 'moment';
 import XLSX from 'xlsx';
 
 // Models
@@ -10,7 +9,7 @@ interface CancelModel {
   source?: string | '';
   channel ?: string | '';
   access_until?: string | '';
-};
+}
 
 // Services
 import { cancelService } from '../services/cancel.service';
@@ -19,7 +18,7 @@ import { errorLogsService } from '../services/error-logs.service';
 class CancelController {
 
   // Insertar los register históricos en la tabla history_rebill
-  public async InsertCancelHistory(req: Request, res: Response): Promise<any> {
+  public async InsertCancelHistory(req: Request, res: Response): Promise<Response> {
 
     // RegExp para corregir los timestamp
     const regExpTimestamp = /((\d{1,2})\/(\d{1,2})\/(\d{4})) (.*) (AM|am|PM|pm)/gm;
@@ -54,7 +53,7 @@ class CancelController {
 
         // Reinicializar
         insertValues = '';
-      };
+      }
 
       try {
         const register = registers[i];
@@ -66,7 +65,7 @@ class CancelController {
           ptimestamp = ptimestamp.replace(regExpTimestamp, (...args) => {
             return args[4] +'/'+ args[2].padStart(2, '0') +'/'+ args[3].padStart(2, '0') +' '+ args[5] +' '+ args[6];
           });
-        };
+        }
         const pevent = register.event ? register.event : 'cancel';
         const psource = register.source ? register.source : '';
         const pchannel = register.channel ? register.channel : '';
@@ -99,11 +98,11 @@ class CancelController {
         // Guardar el error en la base de datos
         console.log('ERROR: ', err); 
         errorLogsService.addError('history_cancel', err.toString().substring(1, 4000), 'nocode', 0)
-        .then(data => null)
-        .catch(err => null);
+        .then(() => null)
+        .catch(() => null);
         return;
       });
-    };
+    }
     return;
   }
 

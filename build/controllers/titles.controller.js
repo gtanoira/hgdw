@@ -46,7 +46,6 @@ class TitlesController {
                         });
                         sqlValues = '';
                     }
-                    ;
                     const title = exports.titlesController.validateTitle(titles[i]);
                     sqlValues += `('${title.titleId}'` +
                         `${title.titleName === null ? `,null` : `,'${title.titleName.replace(/'/g, '')}'`}` +
@@ -71,7 +70,6 @@ class TitlesController {
                         throw new Error(`HTG-011(E): validando el assetId ${title.assetId}: faltan 1 o más campos.`);
                     }
                 }
-                ;
             }
             catch (err) {
                 yield titles_service_1.titlesService.rollbackTransaction();
@@ -85,7 +83,7 @@ class TitlesController {
             }
             else {
                 yield exports.titlesController.sendTitles(sqlValues)
-                    .then(data => {
+                    .then(() => {
                     titles_service_1.titlesService.commitTransaction();
                 })
                     .catch(err => {
@@ -94,14 +92,13 @@ class TitlesController {
                     rtn_message = { message: `HTG-012(E): SQL error: ${err.sqlMessage.toString()}` };
                 });
             }
-            ;
             titles_service_1.titlesService.endTransaction();
             return res.status(exports.titlesController.rtn_status).send(rtn_message);
         });
     }
     validateTitle(oldTitle) {
         const newTitle = oldTitle;
-        const regExpUrl = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&'\(\)\*\+,;=.]+(jpg|jpeg|png|gif|tiff)$/;
+        const regExpUrl = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:\/?#[\]@!$&'()*+,;=.]+(jpg|jpeg|png|gif|tiff)$/;
         try {
             if (!oldTitle.assetId) {
                 throw new Error(`El campo assetId es obligatorio.`);
@@ -109,29 +106,24 @@ class TitlesController {
             else if (oldTitle.assetId === null || oldTitle.assetId === '') {
                 throw new Error(`El campo assetId no puede ser null o vacío.`);
             }
-            ;
             if (oldTitle.titleId === undefined || oldTitle.titleId === null || oldTitle.titleId === '') {
                 throw new Error(`El campo titleId es obligatorio y no puede ser null o vacío.`);
             }
             else {
                 newTitle.titleId = oldTitle.titleId === null ? null : oldTitle.titleId.toUpperCase();
             }
-            ;
             if (!oldTitle.titleName) {
                 newTitle.titleName = null;
             }
-            ;
             if (!oldTitle.titleType || oldTitle.titleType === null || oldTitle.titleType === '') {
                 throw new Error(`El campo titleType es obligatorio, no puede ser null ni vacío.`);
             }
             else {
                 newTitle.titleType = oldTitle.titleType.toLowerCase();
             }
-            ;
             if (!oldTitle.titleSummary) {
                 newTitle.titleSummary = null;
             }
-            ;
             if (oldTitle.titleActive === undefined) {
                 throw new Error(`El campo titleActive es obligatorio.`);
             }
@@ -143,9 +135,7 @@ class TitlesController {
                 else {
                     newTitle.titleActive = ptitleActive;
                 }
-                ;
             }
-            ;
             if (oldTitle.titleUrlImagePortrait === undefined) {
                 newTitle.titleUrlImagePortrait = null;
             }
@@ -153,9 +143,7 @@ class TitlesController {
                 if (!regExpUrl.test(oldTitle.titleUrlImagePortrait)) {
                     throw new Error(`El URI del campo titleUrlImagePortrait es incorrecto.`);
                 }
-                ;
             }
-            ;
             if (oldTitle.titleUrlImageLandscape === undefined) {
                 newTitle.titleUrlImageLandscape = null;
             }
@@ -163,9 +151,7 @@ class TitlesController {
                 if (!regExpUrl.test(oldTitle.titleUrlImageLandscape)) {
                     throw new Error(`El URI del campo titleUrlImageLandscape es incorrecto.`);
                 }
-                ;
             }
-            ;
             if (!oldTitle.brandId) {
                 newTitle.brandId = null;
             }
@@ -177,9 +163,7 @@ class TitlesController {
                     });
                     newTitle.brandId = newBrand.trim();
                 }
-                ;
             }
-            ;
             if (oldTitle.assetActive === undefined) {
                 throw new Error(`El campo assetActive es obligatorio.`);
             }
@@ -191,16 +175,13 @@ class TitlesController {
                 else {
                     newTitle.assetActive = passetActive;
                 }
-                ;
             }
-            ;
             if (oldTitle.assetType === undefined || oldTitle.assetType === null || oldTitle.assetType === '') {
                 throw new Error(`El campo assetType es obligatorio, no puede ser null ni vacío.`);
             }
             else {
                 newTitle.assetType = oldTitle.assetType.toLowerCase();
             }
-            ;
             if (oldTitle.assetUrlImagePortrait === undefined) {
                 newTitle.assetUrlImagePortrait = null;
             }
@@ -208,9 +189,7 @@ class TitlesController {
                 if (!regExpUrl.test(oldTitle.assetUrlImagePortrait)) {
                     throw new Error(`El URI del campo assetUrlImagePortrait es incorrecto.`);
                 }
-                ;
             }
-            ;
             if (oldTitle.assetUrlImageLandscape === undefined) {
                 newTitle.assetUrlImageLandscape = null;
             }
@@ -218,21 +197,16 @@ class TitlesController {
                 if (!regExpUrl.test(oldTitle.assetUrlImageLandscape)) {
                     throw new Error(`El URI del campo assetUrlImageLandscape es incorrecto.`);
                 }
-                ;
             }
-            ;
             if (!oldTitle.episodeSummary) {
                 newTitle.episodeSummary = null;
             }
-            ;
             if (!oldTitle.categories) {
                 newTitle.categories = null;
             }
-            ;
             if (!oldTitle.publishedDate) {
                 newTitle.publishedDate = null;
             }
-            ;
         }
         catch (err) {
             exports.titlesController.rtn_status = 400;
@@ -241,7 +215,6 @@ class TitlesController {
         ;
         return newTitle;
     }
-    ;
     sendTitles(sqlValues) {
         return __awaiter(this, void 0, void 0, function* () {
             if (sqlValues !== '') {
@@ -252,19 +225,18 @@ class TitlesController {
                     + `VALUES ${sqlValues.substring(0, sqlValues.length - 1)};`;
                 return yield titles_service_1.titlesService.insertPublishedTitles(sqlCmd)
                     .then(data => {
-                    console.log('Proceso Ok:', data.affectedRows, ' - ', data.message);
+                    console.log(`Proceso Ok: ${data === null || data === void 0 ? void 0 : data.affectedRows} - ${data === null || data === void 0 ? void 0 : data.message}`);
                     return data;
                 })
                     .catch(err => {
                     const filename = `insert_into_${moment_1.default().format('YYYY-MM-YY_HH-mm-ss')}.sql`;
                     auxiliar_tables_service_1.auxiliarTablesService.saveDataToFile(filename, sqlCmd);
                     error_logs_service_1.errorLogsService.addError('publish_title', err.sqlMessage.toString().substring(0, 4000), 'nocode', 0)
-                        .then(data => null)
-                        .catch(err => err);
+                        .then(() => null)
+                        .catch(() => null);
                     return Promise.reject(err);
                 });
             }
-            ;
             return;
         });
     }

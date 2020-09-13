@@ -5,7 +5,7 @@ const index_1 = require("./server/index");
 const index_2 = require("./database/index");
 const environment_settings_1 = require("./settings/environment.settings");
 index_2.HotGoDBase.setConnections()
-    .then(data => {
+    .then(() => {
     console.log('');
     console.log('');
     console.log('');

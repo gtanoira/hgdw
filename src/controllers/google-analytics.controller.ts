@@ -4,15 +4,14 @@ import { Request, Response } from 'express';
 
 // Services
 import { googleAnalyticsService } from '../services/google-analytics.service';
-import { type } from 'os';
 
 class GoogleAnalyticsController {
 
   // Leer todos los registros
-  public async index(req: Request, res: Response): Promise<any> {
+  public async index(req: Request, res: Response): Promise<Response> {
     
     // Validar que el request tenga un token de un usuario válido
-    await googleAnalyticsService.getView4()
+    return await googleAnalyticsService.getView4()
     .then( rtnValue => {
       console.log('*** rtnValue:');
       console.log(rtnValue);

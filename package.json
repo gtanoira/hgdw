@@ -14,7 +14,7 @@
     "build": "rimraf build && tsc",
     "start": "nodemon --exec ts-node src/index.ts",
     "start-server": "node build/index.js",
-    "lint": "tslint"
+    "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "author": "Gonzalo Martinez Tanoira <gonzalo.mtanoira@gmail.com>",
   "license": "ISC",
@@ -48,6 +48,9 @@
     "@types/nodemailer": "^6.4.0",
     "@types/nodemailer-direct-transport": "^1.0.31",
     "@types/nodemailer-smtp-transport": "^2.7.4",
+    "@typescript-eslint/eslint-plugin": "^4.1.0",
+    "@typescript-eslint/parser": "^4.1.0",
+    "eslint": "^7.8.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.4",
     "tsc": "^1.20150623.0",

@@ -2,7 +2,6 @@ import { getConnection, QueryRunner } from 'typeorm';
 
 // Envirnoment
 import { AWS_DBASE } from '../settings/environment.settings';
-import { query } from 'express';
 
 // Models
 
@@ -10,24 +9,25 @@ import { query } from 'express';
 
 export class TitlesService {
 
-  private queryRunner: QueryRunner | undefined;
+  private queryRunner?: QueryRunner;
 
   // Ejecutar in INSERT INTO bulk sobre la tabla history_register
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async insertPublishedTitles(sqlCmd: string): Promise<any> {
     return await this.queryRunner?.query(sqlCmd);
   }
 
   // Iniciar una transaccion START TRANSACTION
-  public async startTransaction(): Promise<any> {
+  public async startTransaction(): Promise<void> {
     console.log('*** START TRANSACTION');
     const connection = getConnection(AWS_DBASE);
     this.queryRunner = connection.createQueryRunner();
     await this.queryRunner.connect();  // Establish real database connection
-    await this.queryRunner.startTransaction(); // Open a new transaction
+    return await this.queryRunner.startTransaction(); // Open a new transaction
   }
 
   // Finalizar una transaccion COMMIT
-  public async commitTransaction(): Promise<any> {
+  public async commitTransaction(): Promise<void> {
     console.log('*** COMMIT');
     /* const connection = getConnection(AWS_DBASE);
     const sqlCmd = 'COMMIT';
@@ -36,7 +36,7 @@ export class TitlesService {
   }
 
   // Finalizar una transaccion ROLLBACK
-  public async rollbackTransaction(): Promise<any> {
+  public async rollbackTransaction(): Promise<void> {
     console.log('*** ROLLBACK');
     /* const connection = getConnection(AWS_DBASE);
     const sqlCmd = 'ROLLBACK';
@@ -45,9 +45,9 @@ export class TitlesService {
   }
   
   // Finalizar una transaccion via QueryRunner
-  public async endTransaction(): Promise<any> {
+  public async endTransaction(): Promise<void> {
     console.log('*** END TRANSACTION');
-    await this.queryRunner?.release();
+    return await this.queryRunner?.release();
   }
 
 }

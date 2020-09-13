@@ -14,8 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerController = void 0;
 const xlsx_1 = __importDefault(require("xlsx"));
-;
-;
 const register_service_1 = require("../services/register.service");
 const error_logs_service_1 = require("../services/error-logs.service");
 class RegisterController {
@@ -28,17 +26,16 @@ class RegisterController {
             let cantOk = 0;
             for (let i = 0; i < dupRegisters.length; i++) {
                 yield register_service_1.registerService.deleteDuplicates(dupRegisters[i].userId, dupRegisters[i].cantidad)
-                    .then(data => { cantOk += 1; })
+                    .then(() => { cantOk += 1; })
                     .catch(err => err);
                 console.log('Register: ', i);
             }
-            ;
             return res.send(`Proceso finalizado. Registers procesados: ${dupRegisters.length}. Registers eliminados: ${cantOk}`).status(200);
         });
     }
     InsertHistory(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const regExpEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+            const regExpEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
             const regExpFullname = /(.*),(.*)/gm;
             const regExpTimestamp = /((\d{1,2})\/(\d{1,2})\/(\d{4})) (.*) (AM|am|PM|pm)/gm;
             const workbook = xlsx_1.default.readFile('src/public/downloads/history_register.xlsx');
@@ -53,7 +50,6 @@ class RegisterController {
                     yield exports.registerController.sendHistoryData(insertValues);
                     insertValues = '';
                 }
-                ;
                 try {
                     const register = registers[i];
                     const puserId = register.userId ? register.userId : 'no user';
@@ -69,7 +65,6 @@ class RegisterController {
                             return args[4] + '/' + args[2].padStart(2, '0') + '/' + args[3].padStart(2, '0') + ' ' + args[5] + ' ' + args[6];
                         });
                     }
-                    ;
                     const pidp = register.idp ? register.idp : '';
                     insertValues += `('${puserId}','${pevent}','${psource}','${pname}','${plastname}','${pemail}','${pcountry}','${ptimestamp}','${pidp}'),`;
                 }
@@ -95,12 +90,11 @@ class RegisterController {
                     .catch(err => {
                     console.log('ERROR: ', err);
                     error_logs_service_1.errorLogsService.addError('history_register', err.substring(1, 4000), 'nocode', 0)
-                        .then(data => null)
-                        .catch(err => null);
+                        .then(() => null)
+                        .catch(() => null);
                     return;
                 });
             }
-            ;
             return;
         });
     }

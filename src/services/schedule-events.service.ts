@@ -1,4 +1,4 @@
-import { getConnection } from 'typeorm';
+import { getConnection, QueryRunner } from 'typeorm';
 
 // Envirnoment
 import { AWS_DBASE } from '../settings/environment.settings';
@@ -8,7 +8,7 @@ import { ScheduleEvent } from '../models/schedule-event.model';
 
 export class ScheduleEventsService {
 
-  public async getAll():Promise<any[]> {
+  public async getAll():Promise<ScheduleEvent[]> {
     const connection = getConnection('INFORMATION_SCHEMA');
     return await connection.getRepository(ScheduleEvent)
       .createQueryBuilder()
@@ -17,7 +17,7 @@ export class ScheduleEventsService {
   }
 
   // Modificar un evento de la bdatos en AWS
-  public async patchEvent(eventName: string, intervalValue: number, intervalTime: string):Promise<any[]> {
+  public async patchEvent(eventName: string, intervalValue: number, intervalTime: string):Promise<QueryRunner> {
     const connection = getConnection(AWS_DBASE);
     const sqlCmd = `ALTER EVENT evt_update_${eventName} ON SCHEDULE EVERY ${intervalValue} ${intervalTime} STARTS NOW()`;
     return await connection.query(sqlCmd);

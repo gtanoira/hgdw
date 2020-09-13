@@ -1,4 +1,4 @@
-import { getConnection, DeleteResult } from 'typeorm';
+import { getConnection, InsertResult } from 'typeorm';
 
 // Envirnoment
 import { AWS_DBASE } from '../settings/environment.settings';
@@ -13,7 +13,7 @@ export class ErrorLogsService {
     return await connection.getRepository(ErrorLog).find();
   }
 
-  public async addError(errorType: string, errorMsg: string, errorCode: string, idFk: number | 0) {
+  public async addError(errorType: string, errorMsg: string, errorCode: string, idFk: number | 0): Promise<InsertResult> {
     const connection = getConnection(AWS_DBASE);
     const errorSolved = errorCode === 'nocode' ? 2 : 0;
     return await connection.getRepository(ErrorLog)

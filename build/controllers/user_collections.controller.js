@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userCollectionsController = void 0;
 const moment_1 = __importDefault(require("moment"));
 const xlsx_1 = __importDefault(require("xlsx"));
-;
 const user_collections_service_1 = require("../services/user_collections.service");
 const error_logs_service_1 = require("../services/error-logs.service");
 class UserCollectionsController {
@@ -36,7 +35,6 @@ class UserCollectionsController {
                     insertValues = '';
                     cantReg = 0;
                 }
-                ;
                 try {
                     const register = registers[i];
                     if (register.event === 'payment_commit') {
@@ -48,7 +46,6 @@ class UserCollectionsController {
                                 return args[4] + '/' + args[2].padStart(2, '0') + '/' + args[3].padStart(2, '0') + ' ' + args[5] + ' ' + args[6];
                             });
                         }
-                        ;
                         const pstatus = register.status ? register.status : '';
                         const pmethodName = register.method_name ? register.method_name : '';
                         const psource = register.source ? register.source : '';
@@ -68,7 +65,6 @@ class UserCollectionsController {
                             + `,${pamount},${pdiscount},'${puserPaymentId}'),`;
                         cantReg += 1;
                     }
-                    ;
                 }
                 catch (error) {
                     console.log('*** Error reg: ', i);
@@ -97,7 +93,6 @@ class UserCollectionsController {
                     insertValues = '';
                     cantReg = 0;
                 }
-                ;
                 try {
                     const register = registers[i];
                     if (register.event === 'rebill') {
@@ -109,7 +104,6 @@ class UserCollectionsController {
                                 return args[4] + '/' + args[2].padStart(2, '0') + '/' + args[3].padStart(2, '0') + ' ' + args[5] + ' ' + args[6];
                             });
                         }
-                        ;
                         const pstatus = register.status ? register.status : '';
                         const pmethodName = register.method_name ? register.method_name : '';
                         const psource = register.source ? register.source : '';
@@ -129,7 +123,6 @@ class UserCollectionsController {
                             + `,${pamount},${pdiscount},'${puserPaymentId}'),`;
                         cantReg += 1;
                     }
-                    ;
                 }
                 catch (error) {
                     console.log('*** Error reg: ', i);
@@ -149,18 +142,17 @@ class UserCollectionsController {
                     + `VALUES ${valuesCmd.substring(0, valuesCmd.length - 1)};`;
                 return yield user_collections_service_1.userCollectionsService.insertPaymentCommitHistory(sqlCmd)
                     .then(data => {
-                    console.log('Proceso Ok:', data.affectedRows, ' - ', data.message);
-                    return;
+                    console.log('Proceso Ok:', data);
+                    return data;
                 })
                     .catch(err => {
                     console.log('ERROR: ', err);
                     error_logs_service_1.errorLogsService.addError('history_payment_commit', err.toString().substring(1, 4000), 'nocode', 0)
-                        .then(data => null)
-                        .catch(err => null);
-                    return;
+                        .then(() => null)
+                        .catch(() => null);
+                    return err;
                 });
             }
-            ;
             return;
         });
     }
@@ -178,12 +170,11 @@ class UserCollectionsController {
                     .catch(err => {
                     console.log('ERROR: ', err);
                     error_logs_service_1.errorLogsService.addError('history_rebill', err.toString().substring(1, 4000), 'nocode', 0)
-                        .then(data => null)
-                        .catch(err => null);
+                        .then(() => null)
+                        .catch(() => null);
                     return;
                 });
             }
-            ;
             return;
         });
     }

@@ -9,7 +9,7 @@ import { authorizationService } from '../services/authorization.service';
 class ProcesosBatchsController {
 
   // Borrar un lote y todos sus posteriores
-  public async delete(req: Request, res: Response): Promise<any> {
+  public async delete(req: Request, res: Response): Promise<Response> {
     let rtnStatus = 444;
     let rtnMessage = 'No hay nada';
     await procesosBatchsService.delById(+req.params.id)
@@ -30,7 +30,7 @@ class ProcesosBatchsController {
   }
 
   // Obtener todos los registros
-  public async index(req: Request, res: Response): Promise<any> {
+  public async index(req: Request, res: Response): Promise<Response> {
     // Validar que el request tenga un token de un usuario válido
     if ( await authorizationService.isTokenValid(req.headers.authorization || '')) {
       const recs = await procesosBatchsService.getAll();

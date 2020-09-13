@@ -20,17 +20,18 @@ interface PaymentCommitModel {
   amount?: number | 0;
   discount?: number | 0;
   user_payment_id?: string | '';
-};
+}
 
 // Services
 import { userCollectionsService } from '../services/user_collections.service';
 import { errorLogsService } from '../services/error-logs.service';
+import { QueryRunner } from 'typeorm';
 
 class UserCollectionsController {
 
   
   // Insertar los register históricos en la tabla history_payment_commit
-  public async InsertPaymentCommitHistory(req: Request, res: Response): Promise<any> {
+  public async InsertPaymentCommitHistory(req: Request, res: Response): Promise<Response> {
 
     // RegExp para corregir los timestamp
     const regExpTimestamp = /((\d{1,2})\/(\d{1,2})\/(\d{4})) (.*) (AM|am|PM|pm)/gm;
@@ -67,7 +68,7 @@ class UserCollectionsController {
         // Reinicializar
         insertValues = '';
         cantReg = 0;
-      };
+      }
 
       try {
         const register = registers[i];
@@ -81,7 +82,7 @@ class UserCollectionsController {
             ptimestamp = ptimestamp.replace(regExpTimestamp, (...args) => {
               return args[4] +'/'+ args[2].padStart(2, '0') +'/'+ args[3].padStart(2, '0') +' '+ args[5] +' '+ args[6];
             });
-          };
+          }
           const pstatus = register.status ? register.status : '';
           const pmethodName = register.method_name ? register.method_name : '';
           const psource = register.source ? register.source : '';
@@ -102,7 +103,7 @@ class UserCollectionsController {
             + `,'${psource}','${ppaymentType}',${1},${pduration},${ptrial},'${pcurrency}',${ptaxableAmount},${pvatAmount}`
             + `,${pamount},${pdiscount},'${puserPaymentId}'),`;
           cantReg += 1;
-        };
+        }
       } catch (error) {
         console.log('*** Error reg: ', i);
         console.log(error);
@@ -115,7 +116,7 @@ class UserCollectionsController {
   }
 
   // Insertar los register históricos en la tabla history_rebill
-  public async InsertRebillHistory(req: Request, res: Response): Promise<any> {
+  public async InsertRebillHistory(req: Request, res: Response): Promise<Response> {
 
     // RegExp para corregir los timestamp
     const regExpTimestamp = /((\d{1,2})\/(\d{1,2})\/(\d{4})) (.*) (AM|am|PM|pm)/gm;
@@ -152,7 +153,7 @@ class UserCollectionsController {
         // Reinicializar
         insertValues = '';
         cantReg = 0;
-      };
+      }
 
       try {
         const register = registers[i];
@@ -166,7 +167,7 @@ class UserCollectionsController {
             ptimestamp = ptimestamp.replace(regExpTimestamp, (...args) => {
               return args[4] +'/'+ args[2].padStart(2, '0') +'/'+ args[3].padStart(2, '0') +' '+ args[5] +' '+ args[6];
             });
-          };
+          }
           const pstatus = register.status ? register.status : '';
           const pmethodName = register.method_name ? register.method_name : '';
           const psource = register.source ? register.source : '';
@@ -187,7 +188,7 @@ class UserCollectionsController {
             + `,'${psource}','${ppaymentType}',${pduration},${ptrial},'${pcurrency}',${ptaxableAmount},${pvatAmount}`
             + `,${pamount},${pdiscount},'${puserPaymentId}'),`;
           cantReg += 1;
-        };
+        }
       } catch (error) {
         console.log('*** Error reg: ', i);
         console.log(error);
@@ -200,7 +201,7 @@ class UserCollectionsController {
   }
 
   // Envía el comando SQL a ejecutarse a la base de datos
-  private async sendPaymentCommitHistoryData(valuesCmd: string): Promise<void> {
+  private async sendPaymentCommitHistoryData(valuesCmd: string): Promise<QueryRunner | void> {
     if (valuesCmd !== '') {
       // Armar el comando Sql
       const sqlCmd = `INSERT INTO history_payment_commit (user_id, event, timestamp, status, access_until, method_name, source, `
@@ -208,18 +209,18 @@ class UserCollectionsController {
         + `VALUES ${valuesCmd.substring(0, valuesCmd.length - 1)};`;
       return await userCollectionsService.insertPaymentCommitHistory(sqlCmd)
       .then( data => { 
-        console.log('Proceso Ok:', data.affectedRows, ' - ', data.message);
-        return;
+        console.log('Proceso Ok:', data);
+        return data;
       })
       .catch( err => { 
         // Guardar el error en la base de datos
         console.log('ERROR: ', err); 
         errorLogsService.addError('history_payment_commit', err.toString().substring(1, 4000), 'nocode', 0)
-        .then(data => null)
-        .catch(err => null);
-        return;
+        .then(() => null)
+        .catch(() => null);
+        return err;
       });
-    };
+    }
     return;
   }
 
@@ -239,11 +240,11 @@ class UserCollectionsController {
         // Guardar el error en la base de datos
         console.log('ERROR: ', err); 
         errorLogsService.addError('history_rebill', err.toString().substring(1, 4000), 'nocode', 0)
-        .then(data => null)
-        .catch(err => null);
+        .then(() => null)
+        .catch(() => null);
         return;
       });
-    };
+    }
     return;
   }
 

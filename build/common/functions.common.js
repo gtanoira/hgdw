@@ -23,7 +23,7 @@ function ToTimeZone(datetimeUtc, country) {
             const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
             const hsShift = yield connection.getRepository(country_model_1.Country).findOne({ paisId: country.toUpperCase() })
                 .then(data => data ? data.utcShift : 0)
-                .catch(error => 0);
+                .catch(() => 0);
             return moment_1.default(datetimeUtc, 'YYYY-MM-DDThh:mm:ss').add(hsShift, 'hours').format('YYYY-MM-DDThh:mm:ss');
         }
         catch (error) {

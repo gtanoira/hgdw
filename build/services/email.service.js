@@ -21,7 +21,7 @@ class EmailService {
     }
     sendMail(to, subject, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            let options = {
+            const options = {
                 from: environment_settings_1.EMAIL_SERVER_SETTINGS.fromAddress,
                 to: to,
                 subject: subject,

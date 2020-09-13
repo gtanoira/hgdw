@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request } from 'express';
 import path from 'path';
 import morgan from 'morgan';
 import cors from 'cors';
@@ -26,9 +26,9 @@ export class ApiServer {
   
   // CORS validador del origin del HTTP request
   private corsOptions = {};
-  private corsOptionsDelegate = (req: any, callback: any) => {
+  private corsOptionsDelegate = (req: Request, callback: CallableFunction)  => {
     // Default options for all routes
-    let corsOptions = {
+    const corsOptions = {
       "origin": false,
       "methods": "GET,PUT,PATCH,POST,DELETE",
       "allowedHeaders": "Access-Control-Allow-Origin, Access-Control-Allow-Headers, Authorization, Content-Type",
@@ -37,12 +37,14 @@ export class ApiServer {
       "optionsSuccessStatus": 200
     };
     
-    if (this.whiteList.indexOf(req.headers.origin) !== -1) {
+    const origen = req.headers.origin ? req.headers.origin : 'xxx';
+    if (this.whiteList.indexOf(origen) !== -1) {
       corsOptions['origin'] = true;  // reflect (enable) the requested origin in the CORS response
     } else {
       corsOptions['origin'] = false; // disable CORS for this request
     }
-    callback(null, corsOptions) // callback expects two parameters: error and options
+    callback(null, corsOptions); // callback expects two parameters: error and options
+    return corsOptions;
   }
 
   public start(port: number): void {

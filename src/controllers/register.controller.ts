@@ -1,4 +1,4 @@
-import e, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import XLSX from 'xlsx';
 
 // Models
@@ -12,12 +12,12 @@ interface RegisterModel {
   country?: string | '';
   idp?: string | '';
   timestamp?: string | '';
-};
+}
 
 interface DupRegisterModel {
   userId: string;
   cantidad: number;
-};
+}
 
 // Services
 import { registerService } from '../services/register.service';
@@ -41,19 +41,19 @@ class RegisterController {
     let cantOk = 0;  // cantidad de registros eliminados
     for (let i = 0; i < dupRegisters.length; i++) {
       await registerService.deleteDuplicates(dupRegisters[i].userId, dupRegisters[i].cantidad)
-      .then( data => { cantOk += 1; })
+      .then( () => { cantOk += 1; })
       .catch(err => err);
       console.log('Register: ', i);
-    };
+    }
     return res.send(`Proceso finalizado. Registers procesados: ${dupRegisters.length}. Registers eliminados: ${cantOk}`).status(200);
     
   }
 
   // Insertar los register históricos en la tabla history_register
-  public async InsertHistory(req: Request, res: Response): Promise<any> {
+  public async InsertHistory(req: Request, res: Response): Promise<Response> {
 
     // RegExp para validar emails
-    const regExpEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    const regExpEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
     // RegExp para separar name y lastname
     const regExpFullname = /(.*),(.*)/gm;
     // RegExp para corregir los timestamp
@@ -92,7 +92,7 @@ class RegisterController {
 
         // Reinicializar
         insertValues = '';
-      };
+      }
 
       try {
         const register = registers[i];
@@ -109,7 +109,7 @@ class RegisterController {
           ptimestamp = ptimestamp.replace(regExpTimestamp, (...args) => {
             return args[4] +'/'+ args[2].padStart(2, '0') +'/'+ args[3].padStart(2, '0') +' '+ args[5] +' '+ args[6];
           });
-        };
+        }
         const pidp = register.idp ? register.idp : '';
         insertValues += `('${puserId}','${pevent}','${psource}','${pname}','${plastname}','${pemail}','${pcountry}','${ptimestamp}','${pidp}'),`;
       } catch (error) {
@@ -137,11 +137,11 @@ class RegisterController {
         // Guardar el error en la base de datos
         console.log('ERROR: ', err); 
         errorLogsService.addError('history_register', err.substring(1, 4000), 'nocode', 0)
-        .then(data => null)
-        .catch(err => null);
+        .then(() => null)
+        .catch(() => null);
         return;
       });
-    };
+    }
     return;
   }
 

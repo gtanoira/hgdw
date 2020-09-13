@@ -4,7 +4,6 @@ import { getConnection } from "typeorm";
 import { AWS_DBASE } from '../settings/environment.settings';
 
 // Settings
-import { EMAILS_POR_ACTUALIZACON } from '../settings/environment.settings';
 
 // Models
 import { ErrorLog } from "../models/error-log.model";

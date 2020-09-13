@@ -26,8 +26,8 @@ class AuthorizationService {
                     Authorization: token
                 }
             })
-                .then((response) => { return true; })
-                .catch((response) => { return false; });
+                .then(() => { return true; })
+                .catch(() => { return false; });
         });
     }
 }

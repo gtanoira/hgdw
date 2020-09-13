@@ -37,7 +37,7 @@ export class HotGoDBase {
   public static async setConnections(): Promise<void> {
 
     // Customizar la conección a HotGo DB Datalake (la configuración de la BDatos se lee desde ormconfig.json)
-    let connectionInformationSchemaOptions: ConnectionOptions = await getConnectionOptions('INFORMATION_SCHEMA')
+    const connectionInformationSchemaOptions: ConnectionOptions = await getConnectionOptions('INFORMATION_SCHEMA')
     // Si no existe las credenciales para conectarse a Datalake, emitir un error
     if (!connectionInformationSchemaOptions) {
       throw new Error(`Las credenciales para la BDatos HotGo (schema: INFORMATION_SCHEMA) no existen.`);
@@ -71,7 +71,7 @@ export class HotGoDBase {
     options.push(connectionInformationSchemaOptions);
     this.connections = await createConnections(options)
     .then(
-      connection => {
+      () => {
         return this.connections;
       },
     )

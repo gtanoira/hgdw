@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 
 // Models
 import { TitleMetadataPublished } from '../models/title-metadata-published.model';
@@ -14,7 +14,7 @@ class TitlesController {
   private rtn_status = 400; // bad request
 
   // Insertar los register históricos en la tabla history_register
-  public async publishTitles(req: Request, res: Response): Promise<any> {
+  public async publishTitles(req: Request, res: Response): Promise<Response> {
 
     /*
       El proceso consiste en generar in INSERT INTO ... VALUES (...) masivo.
@@ -68,7 +68,7 @@ class TitlesController {
 
           // Reinicializar
           sqlValues = '';
-        };
+        }
 
         // Validar y normalizar el titulo
         const title = titlesController.validateTitle(titles[i]);
@@ -97,7 +97,7 @@ class TitlesController {
           if (sqlValues.indexOf('undefined') > 0) {
             throw new Error(`HTG-011(E): validando el assetId ${title.assetId}: faltan 1 o más campos.`);
           }
-      };
+      }
 
     } catch (err) {
       await titlesService.rollbackTransaction();  // Rollback toda la transaccion
@@ -117,7 +117,7 @@ class TitlesController {
 
       // Grabar los últimos titulos
       await titlesController.sendTitles(sqlValues)
-      .then(data => {
+      .then(() => {
         titlesService.commitTransaction();  // Commit toda la transaccion
       })
       .catch(err => {
@@ -125,7 +125,7 @@ class TitlesController {
         titlesController.rtn_status = 503;  // service unavailable
         rtn_message = {message: `HTG-012(E): SQL error: ${err.sqlMessage.toString()}`};
       });
-    };
+    }
 
     // Liberar la transacción
     titlesService.endTransaction();
@@ -139,7 +139,8 @@ class TitlesController {
 
     const newTitle = oldTitle;  // new TitleMetadataPublished();
     // URL RegExp
-    const regExpUrl = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&'\(\)\*\+,;=.]+(jpg|jpeg|png|gif|tiff)$/;
+    // const regExpUrl = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&'\(\)\*\+,;=.]+(jpg|jpeg|png|gif|tiff)$/;
+    const regExpUrl = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:\/?#[\]@!$&'()*+,;=.]+(jpg|jpeg|png|gif|tiff)$/;
 
     try {
 
@@ -148,31 +149,31 @@ class TitlesController {
         throw new Error(`El campo assetId es obligatorio.`);
       } else if (oldTitle.assetId === null || oldTitle.assetId === '')  {
         throw new Error(`El campo assetId no puede ser null o vacío.`);
-      };
+      }
 
       // Title Id
       if (oldTitle.titleId === undefined || oldTitle.titleId === null || oldTitle.titleId === '') {
         throw new Error(`El campo titleId es obligatorio y no puede ser null o vacío.`);
       } else {
-        newTitle.titleId = oldTitle.titleId === null  ? null : oldTitle.titleId!.toUpperCase();
-      };
+        newTitle.titleId = oldTitle.titleId === null  ? null : oldTitle.titleId.toUpperCase();
+      }
 
       // Title Name
       if (!oldTitle.titleName) {
         newTitle.titleName = null;
-      };
+      }
 
       // Title Type
       if (!oldTitle.titleType || oldTitle.titleType === null || oldTitle.titleType === '') {
         throw new Error(`El campo titleType es obligatorio, no puede ser null ni vacío.`);
       } else {
-        newTitle.titleType = oldTitle.titleType!.toLowerCase();
-      };
+        newTitle.titleType = oldTitle.titleType.toLowerCase();
+      }
 
       // Title Summary
       if (!oldTitle.titleSummary) {
         newTitle.titleSummary = null;
-      };
+      }
 
       // Title Active
       if (oldTitle.titleActive === undefined) {
@@ -183,8 +184,8 @@ class TitlesController {
           throw new Error(`El campo titleActive debe ser 0 o 1.`);            
         } else {
           newTitle.titleActive = ptitleActive;
-        };
-      };
+        }
+      }
 
       // Titles URL
       if (oldTitle.titleUrlImagePortrait === undefined) {
@@ -192,15 +193,15 @@ class TitlesController {
       } else if (oldTitle.titleUrlImagePortrait !== null) {
         if (!regExpUrl.test(oldTitle.titleUrlImagePortrait)) {
           throw new Error(`El URI del campo titleUrlImagePortrait es incorrecto.`);
-        };
-      };
+        }
+      }
       if (oldTitle.titleUrlImageLandscape === undefined) {
         newTitle.titleUrlImageLandscape = null;
       } else if (oldTitle.titleUrlImageLandscape !== null) {
         if (!regExpUrl.test(oldTitle.titleUrlImageLandscape)) {
           throw new Error(`El URI del campo titleUrlImageLandscape es incorrecto.`);
-        };
-      };
+        }
+      }
 
       // Brand Id
       if (!oldTitle.brandId) {
@@ -212,8 +213,8 @@ class TitlesController {
             newBrand += word.charAt(0).toUpperCase() + word.substring(1).toLowerCase() + ' ';
           });
           newTitle.brandId = newBrand.trim();
-        };
-      };
+        }
+      }
 
       // Asset Active
       if (oldTitle.assetActive === undefined) {
@@ -224,15 +225,15 @@ class TitlesController {
           throw new Error(`El campo assetActive debe ser 0 o 1.`);            
         } else {
           newTitle.assetActive = passetActive;
-        };
-      };
+        }
+      }
 
       // Asset Type
       if (oldTitle.assetType === undefined || oldTitle.assetType === null || oldTitle.assetType === '') {
         throw new Error(`El campo assetType es obligatorio, no puede ser null ni vacío.`);
       } else {
-        newTitle.assetType = oldTitle.assetType!.toLowerCase();
-      };
+        newTitle.assetType = oldTitle.assetType.toLowerCase();
+      }
 
       // Assets URL
       if (oldTitle.assetUrlImagePortrait === undefined) {
@@ -240,40 +241,41 @@ class TitlesController {
       } else if (oldTitle.assetUrlImagePortrait !== null) {
         if (!regExpUrl.test(oldTitle.assetUrlImagePortrait)) {
           throw new Error(`El URI del campo assetUrlImagePortrait es incorrecto.`);
-        };
-      };
+        }
+      }
       if (oldTitle.assetUrlImageLandscape === undefined) {
         newTitle.assetUrlImageLandscape = null;
       } else if (oldTitle.assetUrlImageLandscape !== null) {
         if (!regExpUrl.test(oldTitle.assetUrlImageLandscape)) {
           throw new Error(`El URI del campo assetUrlImageLandscape es incorrecto.`);
-        };
-      };
+        }
+      }
 
       // Episode Summary
       if (!oldTitle.episodeSummary) {
         newTitle.episodeSummary = null;
-      };
+      }
 
       // Categories
       if (!oldTitle.categories) {
         newTitle.categories = null;
-      };
+      }
 
       // Published Date
       if (!oldTitle.publishedDate) {
         newTitle.publishedDate = null;
-      };
+      }
       
     } catch(err) {
       titlesController.rtn_status = 400; // bad request
       throw new Error(`HTG-011(E): validando el assetId ${oldTitle.assetId}: ${err.toString()}`);
-    };
+    }
 
     return newTitle;
-  };
+  }
 
   // Envía el comando SQL a ejecutarse a la base de datos
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async sendTitles(sqlValues: string): Promise<any> {
     if (sqlValues !== '') {
       // Armar el comando Sql
@@ -286,7 +288,7 @@ class TitlesController {
       // Insertarlo en la base de datos
       return await titlesService.insertPublishedTitles(sqlCmd)
       .then( data => { 
-        console.log('Proceso Ok:', data.affectedRows, ' - ', data.message);
+        console.log(`Proceso Ok: ${data?.affectedRows} - ${data?.message}`);
         return data;
       })
       .catch( err => {
@@ -296,11 +298,12 @@ class TitlesController {
 
         // Guardar el error en la base de datos
         errorLogsService.addError('publish_title', err.sqlMessage.toString().substring(0, 4000), 'nocode', 0)
-        .then(data => null )
-        .catch(err => err );
+        .then(() => null )
+        .catch(() => null );
+
         return Promise.reject(err);
       });
-    };
+    }
     return;
   }
 

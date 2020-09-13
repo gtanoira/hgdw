@@ -8,7 +8,7 @@ import { errorLogsService } from '../services/error-logs.service';
 
 class ErrorLogsController {
 
-  public async index(req: Request, res: Response): Promise<any> {
+  public async index(req: Request, res: Response): Promise<Response> {
     
     // Validar que el request tenga un token de un usuario válido
     if ( await authorizationService.isTokenValid(req.headers.authorization || '')) {

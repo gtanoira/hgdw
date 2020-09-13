@@ -5,12 +5,11 @@ import { Request, Response } from 'express';
 // Services
 import { authorizationService } from '../services/authorization.service';
 import { scheduleEventsService } from '../services/schedule-events.service';
-import { stringify } from 'querystring';
 
 class ScheduleEventsController {
 
   // Leer todos los registros
-  public async index(req: Request, res: Response): Promise<any> {
+  public async index(req: Request, res: Response): Promise<Response> {
     
     // Validar que el request tenga un token de un usuario válido
     if ( await authorizationService.isTokenValid(req.headers.authorization || '')) {
@@ -30,7 +29,7 @@ class ScheduleEventsController {
   }
 
   // Modificar el schedule de un evento
-  public async patch(req: Request, res: Response): Promise<any> {
+  public async patch(req: Request, res: Response): Promise<Response> {
     // Validar que el request tenga un token de un usuario válido
     if ( await authorizationService.isTokenValid(req.headers.authorization || '')) {
       console.log('*** BODY:', req.body);

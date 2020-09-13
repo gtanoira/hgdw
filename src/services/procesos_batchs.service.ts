@@ -1,12 +1,10 @@
-import { getConnection, DeleteResult } from 'typeorm';
-import { Observable } from 'rxjs';
+import { getConnection  } from 'typeorm';
 
 // Envirnoment
 import { AWS_DBASE } from '../settings/environment.settings';
 
 // Models
 import { ProcesoBatch } from '../models/proceso_batch.model';
-import { stringify } from 'querystring';
 
 export class ProcesosBatchsService {
 

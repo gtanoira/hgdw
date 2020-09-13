@@ -18,7 +18,7 @@ export class AuxiliarTablesService {
    * Tabla FIELD_STATUS
    */
   // Obtener el paymStatus de un status dado
-  public async getPaymStatus(status: string): Promise<String | null> {
+  public async getPaymStatus(status: string): Promise<string | null> {
     // Verificar que se haya cacheado la tabla
     if (!this.fieldStatus || this.fieldStatus.length <= 0) {
       await this.getFieldStatus().then( data => this.fieldStatus = data );
@@ -36,7 +36,7 @@ export class AuxiliarTablesService {
    * Tabla PAISES
    */
   // Buscar la moneda de un país (se usa el cache)
-  public async getMonedaPais(country: string): Promise<String | null> {
+  public async getMonedaPais(country: string): Promise<string | null> {
     // Verificar que se haya cacheado los paises
     if (!this.paises) {
       await this.getPaises().then( data => this.paises = data );
