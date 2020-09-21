@@ -212,7 +212,6 @@ class TitlesController {
             exports.titlesController.rtn_status = 400;
             throw new Error(`HTG-011(E): validando el assetId ${oldTitle.assetId}: ${err.toString()}`);
         }
-        ;
         return newTitle;
     }
     sendTitles(sqlValues) {

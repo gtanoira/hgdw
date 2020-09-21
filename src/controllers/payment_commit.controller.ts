@@ -22,13 +22,6 @@ class PaymentCommitController {
   // Insertar los register históricos en la tabla history_register
   public async InsertMissingPyc(req: Request, res: Response): Promise<Response> {
 
-    // RegExp para validar emails
-    const regExpEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    // RegExp para separar name y lastname
-    const regExpFullname = /(.*),(.*)/gm;
-    // RegExp para corregir los timestamp
-    // const regExpTimestamp = /((\d{1,2})\/(\d{1,2})\/(\d{4})) (.*) (AM|am|PM|pm)/gm;
-
     // Obtengo el nombre del archivo y lo descargo al server
     const filename = await paymentCommitController.saveUploadFile(req)
     .then( data => data )
@@ -84,33 +77,40 @@ class PaymentCommitController {
           insertValues = '';
         }
 
-        try {
-          const register = registers[i];
-          const puserId = register.userId ? register.userId : 'no user';
-          const pevent = register.event ? register.event : 'register';
-          const psource = register.source ? register.source : 'ma';
-          const pname = (register.lastname ? register.lastname.replace(regExpFullname, '$2').replace(/'/g, '').trim() : '');
-          const plastname = (register.lastname ? register.lastname.replace(regExpFullname, '$1').replace(/'/g, '').trim() : '');
-          const pemail = (register.email && regExpEmail.test(register.email) ? register.email.replace(/'/g, '') : '');
-          const pcountry = register.country ? register.country : '';
-          // Corregir la fecha
-          const ptimestamp = getDateFromExcel(register.timestamp ? +register.timestamp : 0).toISOString();
-          const pidp = register.idp ? register.idp : '';
-          insertValues += `('${puserId}','${pevent}','${psource}','${pname}','${plastname}','${pemail}','${pcountry}','${ptimestamp}','${pidp}'),`;
-        } catch (error) {
-          console.log('*** Error reg: ', i);
-          console.log(error);
+        // Leer un registro
+        const register = registers[i];
+        // Grabar los campos a salvar
+        const paccessUntil = getDateFromExcel(register.accessUntil ? +register.accessUntil : 0).toISOString();
+        const ptimestamp = getDateFromExcel(register.timestamp ? +register.timestamp : 0).toISOString();
+        // Validar campos
+        if ('online,offline'.indexOf(register.paymentType) < 0 ) {
+          paymentCommitController.rtn_status = 400;
+          throw new Error(`HTG-011(E): validando la fila ${i+2} del excel: paymentType es incorrecto`);
         }
-        
+        // Grabar los campos opcionales
+        const pmessage = register.message ? register.message : '';
+        const puserAgent = register.userAgent ? register.userAgent : '';
+        const ppaymentId = register.paymentId ? register.paymentId : '';
+        const ppackage = register.package ? register.package : '';
+        const ptrialDuration = register.trialDuration ? register.trialDuration : 0;
+        // Crear el VALUES del INSERT
+        insertValues += `('${register.userId}','${register.status}','${paccessUntil}','${register.methodName}'` +
+          `,'${register.source}',${register.amount},'${register.paymentType}',${register.duration},'${pmessage}'` +
+          `,'${register.event}','${ptimestamp}','${puserAgent}',${register.discount},'${ppaymentId}'` +
+          `,${register.paymentType === 'online' ? 1 : 0},'${ppackage}',${register.trial},${ptrialDuration}),`;
+
         // Chequear que existan todos los campos
         if (insertValues.indexOf('undefined') > 0) {
-          throw new Error(`HTG-011(E): validando la fila ${i} del excel: faltan 1 o más campos.`);
+          paymentCommitController.rtn_status = 400;
+          throw new Error(`HTG-011(E): validando la fila ${i+2} del excel: faltan 1 o más campos.`);
         }
       }
     } catch (err) {
       console.log();
       console.log('*** ERROR:');
       console.log(err);
+      // Corregir rtn_status si es que viene mal
+      paymentCommitController.rtn_status = paymentCommitController.rtn_status === 200 ? 503 : paymentCommitController.rtn_status;
       await paymentCommitService.rollbackTransaction();  // Rollback toda la transaccion
       await paymentCommitService.endTransaction(); // finalizar la transacción      
       return res.status(paymentCommitController.rtn_status).send({message: err.toString().replace(/Error: /g, '')});
@@ -155,7 +155,9 @@ class PaymentCommitController {
   private async sendMissingPyc(valuesCmd: string): Promise<number> {
     if (valuesCmd !== '') {
       // Armar el comando Sql
-      const sqlCmd = `INSERT INTO Datalake.payment_commit (user_id, event, source, name, lastname, email, country, timestamp, idp) VALUES ${valuesCmd.substring(0, valuesCmd.length - 1)};`;
+      const sqlCmd = `INSERT INTO Datalake.payment_commit (user_id, status, access_until, method_name, source, amount, payment_type` +
+        `,duration, message, event, timestamp, user_agent, discount, payment_id, is_suscription, package, trial, trial_duration)` + 
+        ` VALUES ${valuesCmd.substring(0, valuesCmd.length - 1)};`;
       return await paymentCommitService.insertMissingPyc(sqlCmd)
       .then( data => { 
         console.log('Proceso Ok:', data.affectedRows, ' - ', data.message);

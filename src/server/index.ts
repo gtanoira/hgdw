@@ -86,6 +86,7 @@ export class ApiServer {
      * Routes
      */
     app.use('/api2/error_logs', errorLogsRoute.router);
+    app.use('/api2/cancel', cancelRoute.router);
     app.use('/api2/payment_commit', paymentCommitRoute.router);
     app.use('/api2/procesos_batchs', procesosBatchsRoute.router);
     app.use('/api2/register', registerRoute.router);

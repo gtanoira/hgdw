@@ -14,53 +14,52 @@ export class PaymentCommitModel {
 
   @Column({ name: 'user_id' })
   public userId!: string;
-  
-  @Column()
-  public event!: string | '';
-
-  @Column({ type: 'timestamp' })
-  public timestamp?: string | null;
 
   @Column()
   public status!: string | '';
   
   @Column({ name: 'access_until', type: 'timestamp' })
   public accessUntil?: string | null;
-  
+ 
   @Column({ name: 'method_name'})
   public methodName!: string | '';
 
   @Column()
   public source!: string | '';
 
+  @Column({ type: 'double' })
+  public amount!: number | 0;
+  
   @Column({ name: 'payment_type'})
   public paymentType!: string | '';
 
   @Column({ type: 'int' })
   public duration!: number | 0;
- 
-  @Column({ type: 'tinyint' })
-  public trial!: number | 0; 
-  
+
   @Column()
-  public currency!: string | '';
+  public message!: string | '';
+
+  @Column()
+  public event!: string | '';
   
-}
-interface PaymentCommitModel {
-  user_id: string;
-  event?: string | '';
-  timestamp: string | '';
-  status?: string | '';
-  access_until?: string | '';
-  method_name?: string | '';
-  source?: string | '';
-  payment_type?: string | '';
-  duration?: number | 0;
-  trial?: number | 0;
-  currency?: string | '';
-  taxable_amount?: number | 0;
-  vat_amount?: number | 0;
-  amount?: number | 0;
-  discount?: number | 0;
-  user_payment_id?: string | '';
+  @Column({ type: 'timestamp' })
+  public timestamp?: string | null;
+
+  @Column({ name: 'user_agent', length: 1024 })
+  public userAgent!: string | '';
+       
+  @Column({ type: 'int' })
+  public discount!: number | 0; 
+  
+  @Column({ name: 'payment_id' })
+  public paymentId!: string | '';
+     
+  @Column()
+  public package!: string | '';
+
+  @Column({ type: 'tinyint' })
+  public trial!: number | 0;   
+         
+  @Column({ name: 'trial_duration', type: 'int' })
+  public trialDuration!: number | 0;
 }

@@ -20,6 +20,12 @@ class RegisterService {
             return yield connection.query(sqlCmd);
         });
     }
+    insertMissingRegister(sqlCmd) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = typeorm_1.getConnection('Datalake');
+            return yield connection.query(sqlCmd);
+        });
+    }
     deleteDuplicates(userId, cantidad) {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlCmd = `DELETE FROM Datalake.register WHERE user_id = '${userId}' LIMIT ${cantidad - 1}`;
@@ -32,6 +38,36 @@ class RegisterService {
                 error_logs_service_1.errorLogsService.addError('del_duplicate_register', err.toString().substring(0, 4000), 'nocode', 0);
                 return Promise.reject(err);
             });
+        });
+    }
+    startTransaction() {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('*** START TRANSACTION');
+            const connection = typeorm_1.getConnection('Datalake');
+            this.queryRunner = connection.createQueryRunner();
+            yield this.queryRunner.connect();
+            return yield this.queryRunner.startTransaction();
+        });
+    }
+    commitTransaction() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('*** COMMIT');
+            return yield ((_a = this.queryRunner) === null || _a === void 0 ? void 0 : _a.commitTransaction());
+        });
+    }
+    rollbackTransaction() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('*** ROLLBACK');
+            return yield ((_a = this.queryRunner) === null || _a === void 0 ? void 0 : _a.rollbackTransaction());
+        });
+    }
+    endTransaction() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('*** END TRANSACTION');
+            return yield ((_a = this.queryRunner) === null || _a === void 0 ? void 0 : _a.release());
         });
     }
 }

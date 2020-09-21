@@ -13,8 +13,9 @@ class RegisterRoute {
         this.config();
     }
     config() {
-        this.router.get('/history', cors_1.default(), register_controller_1.registerController.InsertHistory);
         this.router.patch('/del_duplicates', cors_1.default(), register_controller_1.registerController.delDuplicateRegister);
+        this.router.get('/history', cors_1.default(), register_controller_1.registerController.InsertHistory);
+        this.router.post('/missing', cors_1.default(), register_controller_1.registerController.InsertMissingRegister);
     }
 }
 exports.RegisterRoute = RegisterRoute;

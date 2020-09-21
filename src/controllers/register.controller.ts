@@ -238,7 +238,7 @@ class RegisterController {
         
         // Chequear que existan todos los campos
         if (insertValues.indexOf('undefined') > 0) {
-          throw new Error(`HTG-011(E): validando la fila ${i} del excel: faltan 1 o más campos.`);
+          throw new Error(`HTG-011(E): validando la fila ${i+2} del excel: faltan 1 o más campos.`);
         }
       }
     } catch (err) {

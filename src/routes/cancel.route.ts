@@ -15,6 +15,7 @@ export class CancelRoute {
   
   config(): void {
     this.router.post('/history', cors(), cancelController.InsertCancelHistory);
+    this.router.post('/missing', cors(), cancelController.InsertMissingCancel);
   }
 
 }

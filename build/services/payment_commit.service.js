@@ -9,17 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cancelService = exports.CancelService = void 0;
+exports.paymentCommitService = exports.PaymentCommitService = void 0;
 const typeorm_1 = require("typeorm");
-const environment_settings_1 = require("../settings/environment.settings");
-class CancelService {
-    insertCancelHistory(sqlCmd) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
-            return yield connection.query(sqlCmd);
-        });
-    }
-    insertMissingCancel(sqlCmd) {
+class PaymentCommitService {
+    insertMissingPyc(sqlCmd) {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = typeorm_1.getConnection('Datalake');
             return yield connection.query(sqlCmd);
@@ -56,5 +49,5 @@ class CancelService {
         });
     }
 }
-exports.CancelService = CancelService;
-exports.cancelService = new CancelService();
+exports.PaymentCommitService = PaymentCommitService;
+exports.paymentCommitService = new PaymentCommitService();

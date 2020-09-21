@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ToTimeZone = void 0;
+exports.getDateFromExcel = exports.ToTimeZone = void 0;
 const typeorm_1 = require("typeorm");
 const moment_1 = __importDefault(require("moment"));
 const environment_settings_1 = require("../settings/environment.settings");
@@ -33,3 +33,7 @@ function ToTimeZone(datetimeUtc, country) {
     });
 }
 exports.ToTimeZone = ToTimeZone;
+function getDateFromExcel(excelDate) {
+    return new Date((excelDate - (25567 + 2)) * 86400 * 1000);
+}
+exports.getDateFromExcel = getDateFromExcel;

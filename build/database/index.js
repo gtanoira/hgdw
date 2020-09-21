@@ -15,6 +15,7 @@ const environment_settings_1 = require("../settings/environment.settings");
 const error_log_model_1 = require("../models/error-log.model");
 const field_status_model_1 = require("../models/field_status.model");
 const country_model_1 = require("../models/country.model");
+const register_model_1 = require("../models/register.model");
 const proceso_batch_model_1 = require("../models/proceso_batch.model");
 const schedule_event_model_1 = require("../models/schedule-event.model");
 class HotGoDBase {
@@ -41,9 +42,19 @@ class HotGoDBase {
                     proceso_batch_model_1.ProcesoBatch
                 ]
             });
+            const connectionDatalakeOptions = yield typeorm_1.getConnectionOptions('Datalake');
+            if (!connectionDatalakeOptions) {
+                throw new Error(`Las credenciales para la BDatos HotGo (schema: Datalake) no existen.`);
+            }
+            Object.assign(connectionDatalakeOptions, {
+                entities: [
+                    register_model_1.Register
+                ]
+            });
             const options = [];
             options.push(connectionAWS_DBASEOptions);
             options.push(connectionInformationSchemaOptions);
+            options.push(connectionDatalakeOptions);
             this.connections = yield typeorm_1.createConnections(options)
                 .then(() => {
                 return this.connections;
