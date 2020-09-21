@@ -23,6 +23,7 @@ class ApiServer {
     constructor() {
         this.whiteList = [
             'http://portaladmin2.claxson.com',
+            'http://portaladmin2dev.claxson.com',
             'http://10.4.[0-9]{1,3}.[0-9]{1,3}',
             'http://localhost:4200',
         ];
