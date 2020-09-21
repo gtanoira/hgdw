@@ -22,10 +22,9 @@ const user_collections_route_1 = require("../routes/user_collections.route");
 class ApiServer {
     constructor() {
         this.whiteList = [
-            'http://localhost:4200',
-            'http://10.4.[0-9]{1,3}.[0-9]{1,3}',
             'http://portaladmin2.claxson.com',
-            'http://portaladmin2dev.claxson.com'
+            'http://10.4.[0-9]{1,3}.[0-9]{1,3}',
+            'http://localhost:4200',
         ];
         this.corsOptions = {};
         this.corsOptionsDelegate = (req, callback) => {
