@@ -3,11 +3,15 @@ import path from 'path';
 import morgan from 'morgan';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import filesUpload from 'express-fileupload';
+
+// Environment
 
 // Routes
 import { cancelRoute } from '../routes/cancel.route';
 import { errorLogsRoute } from '../routes/error-logs.route';
 import { googleAnalyticsRoute } from '../routes/google-analytics.route';
+import { paymentCommitRoute } from '../routes/payment_commit.route';
 import { procesosBatchsRoute }  from '../routes/procesos-batchs.route';
 import { registerRoute } from '../routes/register.route';
 import { scheduleEventsRoute } from '../routes/schedule-events.route';
@@ -65,6 +69,13 @@ export class ApiServer {
     app.use(bodyParser.json({ limit: '10mb' }));
     app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));  // se usa para formatear los forms <FORM></FORM>
 
+    // File uploads
+    app.use(filesUpload({
+      abortOnLimit: true,   // devuelve un status 413 - Size exceeded
+      safeFileNames: false,  // guarda el archivo con el mismo nombre 
+      preserveExtension: false   // mantener la extensión
+    }));
+
     // Http reqeusts log
     app.use(morgan('dev'))
 
@@ -75,11 +86,12 @@ export class ApiServer {
      * Routes
      */
     app.use('/api2/error_logs', errorLogsRoute.router);
+    app.use('/api2/payment_commit', paymentCommitRoute.router);
     app.use('/api2/procesos_batchs', procesosBatchsRoute.router);
+    app.use('/api2/register', registerRoute.router);
     app.use('/api2/schedule_events', scheduleEventsRoute.router);
     app.use('/cancel', cancelRoute.router);
     app.use('/ga', googleAnalyticsRoute.router);
-    app.use('/register', registerRoute.router);
     app.use('/titles', titlesRoute.router);
     app.use('/user_collections', userCollectionsRoute.router);
 

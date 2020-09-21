@@ -14,8 +14,9 @@ export class RegisterRoute {
   }
   
   config(): void {
-    this.router.get('/history', cors(), registerController.InsertHistory);
     this.router.patch('/del_duplicates', cors(), registerController.delDuplicateRegister);
+    this.router.get('/history', cors(), registerController.InsertHistory);
+    this.router.post('/missing', cors(), registerController.InsertMissingRegister);
   }
 
 }

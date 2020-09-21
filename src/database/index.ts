@@ -7,6 +7,7 @@ import { AWS_DBASE } from '../settings/environment.settings';
 import { ErrorLog } from '../models/error-log.model';
 import { FieldStatus } from '../models/field_status.model';
 import { Country } from '../models/country.model';
+import { Register } from '../models/register.model';
 import { ProcesoBatch } from '../models/proceso_batch.model';
 import { ScheduleEvent } from '../models/schedule-event.model';
 
@@ -36,7 +37,7 @@ export class HotGoDBase {
   // Establecer todas las conexiones con las bases de datos
   public static async setConnections(): Promise<void> {
 
-    // Customizar la conección a HotGo DB Datalake (la configuración de la BDatos se lee desde ormconfig.json)
+    // Customizar la conección a HotGo DB INFORMATION_SCHEMA (la configuración de la BDatos se lee desde ormconfig.json)
     const connectionInformationSchemaOptions: ConnectionOptions = await getConnectionOptions('INFORMATION_SCHEMA')
     // Si no existe las credenciales para conectarse a Datalake, emitir un error
     if (!connectionInformationSchemaOptions) {
@@ -65,10 +66,24 @@ export class HotGoDBase {
       ]
     });
 
+    // Customizar la conección a HotGo DB Datalake
+    const connectionDatalakeOptions: ConnectionOptions = await getConnectionOptions('Datalake');  // leer las opciones desde ormconfig.json
+    // Si no existe las credenciales para conectarse a Datalake, emitir un error
+    if (!connectionDatalakeOptions) {
+      throw new Error(`Las credenciales para la BDatos HotGo (schema: Datalake) no existen.`);
+    }
+    // Customizar
+    Object.assign(connectionDatalakeOptions, {
+      entities: [
+        Register
+      ]
+    });
+
     // Crear las conexiones usando las opciones modificadas
     const options: ConnectionOptions[] = [];
     options.push(connectionAWS_DBASEOptions);
     options.push(connectionInformationSchemaOptions);
+    options.push(connectionDatalakeOptions);
     this.connections = await createConnections(options)
     .then(
       () => {
