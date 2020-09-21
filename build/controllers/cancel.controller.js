@@ -183,7 +183,7 @@ class CancelController {
                 return Promise.reject('HTG-013(E): file upload (no se recibió ningún archivo)');
             }
             const fileUpload = req.files.uploadCancel;
-            const filename = `pyc_${moment_1.default().format('YYYY-MM-DD_HH-mm-ss')}.xlsx`;
+            const filename = `cancel_${moment_1.default().format('YYYY-MM-DD_HH-mm-ss')}.xlsx`;
             return yield fileUpload.mv(`${environment_settings_1.STATIC_PATH}/uploads/${filename}`)
                 .then(() => filename)
                 .catch((err) => Promise.reject(err));

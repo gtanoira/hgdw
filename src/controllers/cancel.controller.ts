@@ -31,7 +31,7 @@ class CancelController {
   /*
     HISTORY records
   */
-  // Insertar los register históricos en la tabla history_rebill
+  // Insertar los cancel históricos en la tabla history_rebill
   public async InsertCancelHistory(req: Request, res: Response): Promise<Response> {
 
     // RegExp para corregir los timestamp
@@ -279,7 +279,7 @@ class CancelController {
     const fileUpload =req.files.uploadCancel;
 
     // Salvar el archivo en UPLOADS
-    const filename = `pyc_${moment().format('YYYY-MM-DD_HH-mm-ss')}.xlsx`;
+    const filename = `cancel_${moment().format('YYYY-MM-DD_HH-mm-ss')}.xlsx`;
     return await fileUpload.mv(`${STATIC_PATH}/uploads/${filename}`)
     .then( () =>  filename )
     .catch( (err) => Promise.reject(err) );
