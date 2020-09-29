@@ -135,25 +135,16 @@ class RegisterController {
                         });
                         insertValues = '';
                     }
-                    try {
-                        const register = registers[i];
-                        const puserId = register.userId ? register.userId : 'no user';
-                        const pevent = register.event ? register.event : 'register';
-                        const psource = register.source ? register.source : 'ma';
-                        const pname = (register.lastname ? register.lastname.replace(regExpFullname, '$2').replace(/'/g, '').trim() : '');
-                        const plastname = (register.lastname ? register.lastname.replace(regExpFullname, '$1').replace(/'/g, '').trim() : '');
-                        const pemail = (register.email && regExpEmail.test(register.email) ? register.email.replace(/'/g, '') : '');
-                        const pcountry = register.country ? register.country : '';
-                        const ptimestamp = functions_common_1.getDateFromExcel(register.timestamp ? +register.timestamp : 0).toISOString();
-                        const pidp = register.idp ? register.idp : '';
-                        insertValues += `('${puserId}','${pevent}','${psource}','${pname}','${plastname}','${pemail}','${pcountry}','${ptimestamp}','${pidp}'),`;
-                    }
-                    catch (error) {
-                        console.log('*** Error reg: ', i);
-                        console.log(error);
-                    }
+                    const register = registers[i];
+                    const pname = (register.name ? register.name : '');
+                    const plastname = (register.lastname ? register.lastname : '');
+                    const pemail = (register.email && regExpEmail.test(register.email) ? register.email.replace(/'/g, '') : '');
+                    const ptimestamp = functions_common_1.getDateFromExcel(register.timestamp ? +register.timestamp : 0).toISOString();
+                    insertValues += `('${register.userId}','${register.event}','${register.source}','${pname}'` +
+                        `,'${plastname}','${pemail}','${register.country}','${ptimestamp}','${register.idp}'),`;
                     if (insertValues.indexOf('undefined') > 0) {
-                        throw new Error(`HTG-011(E): validando la fila ${i + 2} del excel: faltan 1 o más campos.`);
+                        exports.registerController.rtn_status = 400;
+                        throw new Error(`HTG-014(E): validando la fila ${i + 2} del excel: faltan 1 o más campos.`);
                     }
                 }
             }
@@ -161,9 +152,10 @@ class RegisterController {
                 console.log();
                 console.log('*** ERROR:');
                 console.log(err);
+                exports.registerController.rtn_status = exports.registerController.rtn_status === 200 ? 503 : exports.registerController.rtn_status;
                 yield register_service_1.registerService.rollbackTransaction();
                 yield register_service_1.registerService.endTransaction();
-                return res.status(exports.registerController.rtn_status).send({ message: err.toString().replace(/Error: /g, '') });
+                return res.status(exports.registerController.rtn_status).send({ message: `HTG-015: ${err.toString().replace(/Error: /g, '')}` });
             }
             exports.registerController.rtn_status = 200;
             let rtn_message = { message: `${regsGrabados} registro/s grabados` };

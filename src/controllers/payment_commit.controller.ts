@@ -85,7 +85,7 @@ class PaymentCommitController {
         // Validar campos
         if ('online,offline'.indexOf(register.paymentType) < 0 ) {
           paymentCommitController.rtn_status = 400;
-          throw new Error(`HTG-011(E): validando la fila ${i+2} del excel: paymentType es incorrecto`);
+          throw new Error(`HTG-014(E): validando la fila ${i+2} del excel: paymentType es incorrecto`);
         }
         // Grabar los campos opcionales
         const pmessage = register.message ? register.message : '';
@@ -102,7 +102,7 @@ class PaymentCommitController {
         // Chequear que existan todos los campos
         if (insertValues.indexOf('undefined') > 0) {
           paymentCommitController.rtn_status = 400;
-          throw new Error(`HTG-011(E): validando la fila ${i+2} del excel: faltan 1 o más campos.`);
+          throw new Error(`HTG-014(E): validando la fila ${i+2} del excel: faltan 1 o más campos.`);
         }
       }
     } catch (err) {
@@ -113,7 +113,7 @@ class PaymentCommitController {
       paymentCommitController.rtn_status = paymentCommitController.rtn_status === 200 ? 503 : paymentCommitController.rtn_status;
       await paymentCommitService.rollbackTransaction();  // Rollback toda la transaccion
       await paymentCommitService.endTransaction(); // finalizar la transacción      
-      return res.status(paymentCommitController.rtn_status).send({message: err.toString().replace(/Error: /g, '')});
+      return res.status(paymentCommitController.rtn_status).send({message: `HTG-015(E): ${err.toString().replace(/Error: /g, '')}`});
     }
 
     // Mensaje de retorno

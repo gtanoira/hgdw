@@ -57,7 +57,7 @@ class PaymentCommitController {
                     const ptimestamp = functions_common_1.getDateFromExcel(register.timestamp ? +register.timestamp : 0).toISOString();
                     if ('online,offline'.indexOf(register.paymentType) < 0) {
                         exports.paymentCommitController.rtn_status = 400;
-                        throw new Error(`HTG-011(E): validando la fila ${i + 2} del excel: paymentType es incorrecto`);
+                        throw new Error(`HTG-014(E): validando la fila ${i + 2} del excel: paymentType es incorrecto`);
                     }
                     const pmessage = register.message ? register.message : '';
                     const puserAgent = register.userAgent ? register.userAgent : '';
@@ -70,7 +70,7 @@ class PaymentCommitController {
                         `,${register.isSuscription},'${ppackage}',${register.trial},${ptrialDuration}),`;
                     if (insertValues.indexOf('undefined') > 0) {
                         exports.paymentCommitController.rtn_status = 400;
-                        throw new Error(`HTG-011(E): validando la fila ${i + 2} del excel: faltan 1 o más campos.`);
+                        throw new Error(`HTG-014(E): validando la fila ${i + 2} del excel: faltan 1 o más campos.`);
                     }
                 }
             }
@@ -81,7 +81,7 @@ class PaymentCommitController {
                 exports.paymentCommitController.rtn_status = exports.paymentCommitController.rtn_status === 200 ? 503 : exports.paymentCommitController.rtn_status;
                 yield payment_commit_service_1.paymentCommitService.rollbackTransaction();
                 yield payment_commit_service_1.paymentCommitService.endTransaction();
-                return res.status(exports.paymentCommitController.rtn_status).send({ message: err.toString().replace(/Error: /g, '') });
+                return res.status(exports.paymentCommitController.rtn_status).send({ message: `HTG-015(E): ${err.toString().replace(/Error: /g, '')}` });
             }
             exports.paymentCommitController.rtn_status = 200;
             let rtn_message = { message: `${regsGrabados} registro/s grabados` };

@@ -120,7 +120,7 @@ class CancelController {
                         `,'${ptimestamp}','${paccessUntil}','${puserAgent}'),`;
                     if (insertValues.indexOf('undefined') > 0) {
                         exports.cancelController.rtn_status = 400;
-                        throw new Error(`HTG-011(E): validando la fila ${i + 2} del excel: faltan 1 o más campos.`);
+                        throw new Error(`HTG-014(E): validando la fila ${i + 2} del excel: faltan 1 o más campos.`);
                     }
                 }
             }
@@ -131,7 +131,7 @@ class CancelController {
                 exports.cancelController.rtn_status = exports.cancelController.rtn_status === 200 ? 503 : exports.cancelController.rtn_status;
                 yield cancel_service_1.cancelService.rollbackTransaction();
                 yield cancel_service_1.cancelService.endTransaction();
-                return res.status(exports.cancelController.rtn_status).send({ message: err.toString().replace(/Error: /g, '') });
+                return res.status(exports.cancelController.rtn_status).send({ message: `HTG-015(E): ${err.toString().replace(/Error: /g, '')}` });
             }
             exports.cancelController.rtn_status = 200;
             let rtn_message = { message: `${regsGrabados} registro/s grabados` };

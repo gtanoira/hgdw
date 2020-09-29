@@ -218,36 +218,32 @@ class RegisterController {
           insertValues = '';
         }
 
-        try {
-          const register = registers[i];
-          const puserId = register.userId ? register.userId : 'no user';
-          const pevent = register.event ? register.event : 'register';
-          const psource = register.source ? register.source : 'ma';
-          const pname = (register.lastname ? register.lastname.replace(regExpFullname, '$2').replace(/'/g, '').trim() : '');
-          const plastname = (register.lastname ? register.lastname.replace(regExpFullname, '$1').replace(/'/g, '').trim() : '');
-          const pemail = (register.email && regExpEmail.test(register.email) ? register.email.replace(/'/g, '') : '');
-          const pcountry = register.country ? register.country : '';
-          // Corregir la fecha
-          const ptimestamp = getDateFromExcel(register.timestamp ? +register.timestamp : 0).toISOString();
-          const pidp = register.idp ? register.idp : '';
-          insertValues += `('${puserId}','${pevent}','${psource}','${pname}','${plastname}','${pemail}','${pcountry}','${ptimestamp}','${pidp}'),`;
-        } catch (error) {
-          console.log('*** Error reg: ', i);
-          console.log(error);
-        }
+        const register = registers[i];
+        // Preparar campos opcionales
+        const pname = (register.name ? register.name : '');
+        const plastname = (register.lastname ? register.lastname : '');
+        const pemail = (register.email && regExpEmail.test(register.email) ? register.email.replace(/'/g, '') : '');
+        const ptimestamp = getDateFromExcel(register.timestamp ? +register.timestamp : 0).toISOString();
         
+        // Crear el VALUES del INSERT
+        insertValues += `('${register.userId}','${register.event}','${register.source}','${pname}'` +
+          `,'${plastname}','${pemail}','${register.country}','${ptimestamp}','${register.idp}'),`;
+
         // Chequear que existan todos los campos
         if (insertValues.indexOf('undefined') > 0) {
-          throw new Error(`HTG-011(E): validando la fila ${i+2} del excel: faltan 1 o más campos.`);
+          registerController.rtn_status = 400;
+          throw new Error(`HTG-014(E): validando la fila ${i+2} del excel: faltan 1 o más campos.`);
         }
       }
     } catch (err) {
       console.log();
       console.log('*** ERROR:');
       console.log(err);
+      // Corregir rtn_status si es que viene mal
+      registerController.rtn_status = registerController.rtn_status === 200 ? 503 : registerController.rtn_status;
       await registerService.rollbackTransaction();  // Rollback toda la transaccion
       await registerService.endTransaction(); // finalizar la transacción      
-      return res.status(registerController.rtn_status).send({message: err.toString().replace(/Error: /g, '')});
+      return res.status(registerController.rtn_status).send({message: `HTG-015: ${err.toString().replace(/Error: /g, '')}`});
     }
 
     // Mensaje de retorno

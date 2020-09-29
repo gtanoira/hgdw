@@ -195,7 +195,7 @@ class CancelController {
         // Chequear que existan todos los campos
         if (insertValues.indexOf('undefined') > 0) {
           cancelController.rtn_status = 400;
-          throw new Error(`HTG-011(E): validando la fila ${i+2} del excel: faltan 1 o más campos.`);
+          throw new Error(`HTG-014(E): validando la fila ${i+2} del excel: faltan 1 o más campos.`);
         }
       }
     } catch (err) {
@@ -206,7 +206,7 @@ class CancelController {
       cancelController.rtn_status = cancelController.rtn_status === 200 ? 503 : cancelController.rtn_status;
       await cancelService.rollbackTransaction();  // Rollback toda la transaccion
       await cancelService.endTransaction(); // finalizar la transacción      
-      return res.status(cancelController.rtn_status).send({message: err.toString().replace(/Error: /g, '')});
+      return res.status(cancelController.rtn_status).send({message: `HTG-015(E): ${err.toString().replace(/Error: /g, '')}`});
     }
 
     // Mensaje de retorno
