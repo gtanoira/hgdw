@@ -38,7 +38,6 @@ class ApiServer {
                 "optionsSuccessStatus": 200
             };
             const origen = req.headers.origin ? req.headers.origin : 'xxx';
-            console.log('*** CORS - origen:', origen);
             if (this.whiteList.indexOf(origen) !== -1) {
                 corsOptions['origin'] = true;
             }
@@ -46,7 +45,6 @@ class ApiServer {
                 corsOptions['origin'] = false;
             }
             callback(null, corsOptions);
-            console.log('*** CORS - corsOptions:', corsOptions);
             return corsOptions;
         };
     }

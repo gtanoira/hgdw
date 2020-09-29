@@ -85,6 +85,10 @@ __decorate([
     typeorm_1.Column({ name: 'trial_duration', type: 'int' }),
     __metadata("design:type", Number)
 ], PaymentCommitModel.prototype, "trialDuration", void 0);
+__decorate([
+    typeorm_1.Column({ name: 'is_suscription', type: 'tinyint' }),
+    __metadata("design:type", Number)
+], PaymentCommitModel.prototype, "isSuscription", void 0);
 PaymentCommitModel = __decorate([
     typeorm_1.Entity({
         name: 'payment_commit',

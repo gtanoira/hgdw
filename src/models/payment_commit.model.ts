@@ -62,4 +62,7 @@ export class PaymentCommitModel {
          
   @Column({ name: 'trial_duration', type: 'int' })
   public trialDuration!: number | 0;
+         
+  @Column({ name: 'is_suscription', type: 'tinyint' })
+  public isSuscription!: number | 0;
 }

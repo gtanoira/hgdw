@@ -42,7 +42,6 @@ export class ApiServer {
     };
     
     const origen = req.headers.origin ? req.headers.origin : 'xxx';
-    console.log('*** CORS - origen:', origen);
     if (this.whiteList.indexOf(origen) !== -1) {
       corsOptions['origin'] = true;  // reflect (enable) the requested origin in the CORS response
     } else {
@@ -51,7 +50,6 @@ export class ApiServer {
 
     callback(null, corsOptions); // callback expects two parameters: error and options
     
-    console.log('*** CORS - corsOptions:', corsOptions);
     return corsOptions;
   }
 

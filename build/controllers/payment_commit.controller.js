@@ -67,7 +67,7 @@ class PaymentCommitController {
                     insertValues += `('${register.userId}','${register.status}','${paccessUntil}','${register.methodName}'` +
                         `,'${register.source}',${register.amount},'${register.paymentType}',${register.duration},'${pmessage}'` +
                         `,'${register.event}','${ptimestamp}','${puserAgent}',${register.discount},'${ppaymentId}'` +
-                        `,${register.paymentType === 'online' ? 1 : 0},'${ppackage}',${register.trial},${ptrialDuration}),`;
+                        `,${register.isSuscription},'${ppackage}',${register.trial},${ptrialDuration}),`;
                     if (insertValues.indexOf('undefined') > 0) {
                         exports.paymentCommitController.rtn_status = 400;
                         throw new Error(`HTG-011(E): validando la fila ${i + 2} del excel: faltan 1 o más campos.`);

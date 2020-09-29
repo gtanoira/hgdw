@@ -19,7 +19,7 @@ class PaymentCommitController {
 
   private rtn_status = 400; // bad request
 
-  // Insertar los register históricos en la tabla history_register
+  // Insertar los missing records
   public async InsertMissingPyc(req: Request, res: Response): Promise<Response> {
 
     // Obtengo el nombre del archivo y lo descargo al server
@@ -97,7 +97,7 @@ class PaymentCommitController {
         insertValues += `('${register.userId}','${register.status}','${paccessUntil}','${register.methodName}'` +
           `,'${register.source}',${register.amount},'${register.paymentType}',${register.duration},'${pmessage}'` +
           `,'${register.event}','${ptimestamp}','${puserAgent}',${register.discount},'${ppaymentId}'` +
-          `,${register.paymentType === 'online' ? 1 : 0},'${ppackage}',${register.trial},${ptrialDuration}),`;
+          `,${register.isSuscription},'${ppackage}',${register.trial},${ptrialDuration}),`;
 
         // Chequear que existan todos los campos
         if (insertValues.indexOf('undefined') > 0) {
