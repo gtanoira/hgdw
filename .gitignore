@@ -4,7 +4,6 @@ node_modules
 
 # Exclude these directories
 src/settings
-build/settings
 
 # Exclude these files
 ormconfig.json
