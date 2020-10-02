@@ -8,11 +8,6 @@ import { ErrorLog } from '../models/error-log.model';
 
 export class ErrorLogsService {
 
-  public async getAll():Promise<ErrorLog[]> {
-    const connection = getConnection(AWS_DBASE);
-    return await connection.getRepository(ErrorLog).find();
-  }
-
   public async addError(errorType: string, errorMsg: string, errorCode: string, idFk: number | 0): Promise<InsertResult> {
     const connection = getConnection(AWS_DBASE);
     const errorSolved = errorCode === 'nocode' ? 2 : 0;
@@ -24,6 +19,18 @@ export class ErrorLogsService {
           { errorType, message: errorMsg, errorCode, errorSolved, idFk }
       ])
       .execute();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public async checkErrors(userId: string): Promise<any> {
+    const sqlCmd = `CALL pr_check_errors('${userId}')`;
+    const connection = getConnection(AWS_DBASE);
+    return await connection.query(sqlCmd);
+  }
+
+  public async getAll():Promise<ErrorLog[]> {
+    const connection = getConnection(AWS_DBASE);
+    return await connection.getRepository(ErrorLog).find();
   }
 }
 export const errorLogsService = new ErrorLogsService();

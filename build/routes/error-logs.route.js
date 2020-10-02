@@ -13,6 +13,7 @@ class ErrorLogsRoute {
         this.config();
     }
     config() {
+        this.router.patch('/check/:userId', cors_1.default(), error_logs_controller_1.errorLogsController.check);
         this.router.get('/', cors_1.default(), error_logs_controller_1.errorLogsController.index);
     }
 }

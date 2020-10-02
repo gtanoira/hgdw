@@ -14,12 +14,6 @@ const typeorm_1 = require("typeorm");
 const environment_settings_1 = require("../settings/environment.settings");
 const error_log_model_1 = require("../models/error-log.model");
 class ErrorLogsService {
-    getAll() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
-            return yield connection.getRepository(error_log_model_1.ErrorLog).find();
-        });
-    }
     addError(errorType, errorMsg, errorCode, idFk) {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
@@ -32,6 +26,19 @@ class ErrorLogsService {
                 { errorType, message: errorMsg, errorCode, errorSolved, idFk }
             ])
                 .execute();
+        });
+    }
+    checkErrors(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sqlCmd = `CALL pr_check_errors('${userId}')`;
+            const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
+            return yield connection.query(sqlCmd);
+        });
+    }
+    getAll() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
+            return yield connection.getRepository(error_log_model_1.ErrorLog).find();
         });
     }
 }

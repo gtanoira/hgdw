@@ -30,5 +30,22 @@ class ErrorLogsController {
             }
         });
     }
+    check(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (yield authorization_service_1.authorizationService.isTokenValid(req.headers.authorization || '')) {
+                return yield error_logs_service_1.errorLogsService.checkErrors(req.params.userId)
+                    .then(data => {
+                    return res.status(200).send(data);
+                })
+                    .catch(err => {
+                    console.log('*** ERR:', err);
+                    return res.status(503).send(err);
+                });
+            }
+            else {
+                return res.status(401).send({ 'message': 'HTG-003(E): el token del usuario es inválido o ha expirado. Vuelva a loguearse.' });
+            }
+        });
+    }
 }
 exports.errorLogsController = new ErrorLogsController();

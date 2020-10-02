@@ -14,6 +14,7 @@ export class ErrorLogsRoute {
   }
   
   config(): void {
+    this.router.patch('/check/:userId', cors(), errorLogsController.check);
     this.router.get('/', cors(), errorLogsController.index);
   }
 
