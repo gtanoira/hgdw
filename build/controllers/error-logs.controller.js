@@ -35,7 +35,8 @@ class ErrorLogsController {
             if (yield authorization_service_1.authorizationService.isTokenValid(req.headers.authorization || '')) {
                 return yield error_logs_service_1.errorLogsService.checkErrors(req.params.userId)
                     .then(data => {
-                    return res.status(200).send(data);
+                    console.log(data);
+                    return res.status(200).send({ message: 'Chequeo finalizado con éxito.' });
                 })
                     .catch(err => {
                     console.log('*** ERR:', err);

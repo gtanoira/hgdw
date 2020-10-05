@@ -32,6 +32,7 @@ class ErrorLogsService {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlCmd = `CALL pr_check_errors('${userId}')`;
             const connection = typeorm_1.getConnection(environment_settings_1.AWS_DBASE);
+            console.log('>*** PASO');
             return yield connection.query(sqlCmd);
         });
     }

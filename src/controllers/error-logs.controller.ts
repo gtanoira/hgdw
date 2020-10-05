@@ -34,7 +34,8 @@ class ErrorLogsController {
 
       return await errorLogsService.checkErrors(req.params.userId)
         .then( data => {
-          return res.status(200).send(data);
+          console.log(data);
+          return res.status(200).send({message: 'Chequeo finalizado con éxito.'});
         })
         .catch(
           err => {

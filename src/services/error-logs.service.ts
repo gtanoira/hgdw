@@ -25,6 +25,7 @@ export class ErrorLogsService {
   public async checkErrors(userId: string): Promise<any> {
     const sqlCmd = `CALL pr_check_errors('${userId}')`;
     const connection = getConnection(AWS_DBASE);
+    console.log('>*** PASO');
     return await connection.query(sqlCmd);
   }
 
