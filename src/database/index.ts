@@ -10,6 +10,7 @@ import { Country } from '../models/country.model';
 import { Register } from '../models/register.model';
 import { ProcesoBatch } from '../models/proceso_batch.model';
 import { ScheduleEvent } from '../models/schedule-event.model';
+import { ProductLocalPrice } from '../models/product-local-price.model';
 
 /* 
 Ejemplo de la interfaz "ConnectionOptions"
@@ -62,7 +63,8 @@ export class HotGoDBase {
         ErrorLog,
         FieldStatus,
         Country,
-        ProcesoBatch
+        ProcesoBatch,
+        ProductLocalPrice
       ]
     });
 

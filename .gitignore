@@ -5,6 +5,8 @@ node_modules
 # Exclude these directories
 src/settings
 build/settings
+settings
+public
 
 # Exclude these files
 ormconfig.json
