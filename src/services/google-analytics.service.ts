@@ -3,10 +3,18 @@ import jsonwebtoken from 'jsonwebtoken';
 import { google }  from 'googleapis';
 import { JWT } from 'google-auth-library';
 import { GoogleAuth } from 'google-auth-library';
-import { rejects } from 'assert';
 
 // Environment
 import gan from '../settings/HGDW-97ad94690664.json';
+
+// Models
+interface GAOptions {
+  ids: string,
+  'start-date': string,
+  'end-date': string,
+  metrics?: string,
+  dimensions?: string
+ };
 
 class GoogleAnalyticsService {
   
@@ -14,12 +22,6 @@ class GoogleAnalyticsService {
   private http = axios;
   private jwt = jsonwebtoken;
   
-  // Google Service Accounts Credentials
-  public authGaaS = new google.auth.GoogleAuth({
-    keyFile: '../settings/HGDW-97ad94690664.json',
-    scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-  });
-
   // Google Analytics credentials
   private googleApis = google;
   private analytics = google.analytics('v3');
@@ -28,6 +30,7 @@ class GoogleAnalyticsService {
   private profileId = '156035551';  // GA view Id (1 - HotGo.tv View Master)
 
   // Acceso a través de GoogleAuth  via JWT
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async getView3(): Promise<any> {
 
     const scopes = [
@@ -80,14 +83,15 @@ class GoogleAnalyticsService {
   }
 
   // Acceso a través de GoogleAuth via modo automático
-  public async getView4(): Promise<void | {}> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public async getView4(metrics: string, dimensions: string): Promise<any> {
 
     /**
      * Instead of specifying the type of client you'd like to use (JWT, OAuth2, etc)
      * this library will automatically choose the right client based on the environment.
      */
     const auth = new GoogleAuth({
-      keyFilename: 'src/settings/HGDW-97ad94690664.json',
+      keyFilename: 'settings/HGDW-97ad94690664.json',
       projectId: gan.project_id,
       scopes: [
         'https://www.googleapis.com/auth/analytics',
@@ -95,36 +99,30 @@ class GoogleAnalyticsService {
       ]
     });
 
-    /* const client = await auth.getClient();
-    console.log('*** CLIENT:', client);
-
-    const projectId = await auth.getProjectId();
-    console.log('*** PROJECT ID:', projectId);
-    
-    const url = `https://dns.googleapis.com/dns/v1/projects/${projectId}`;
-    const res = await client.request({ url });
-    console.log(res.data); */
-
     const view_id = '156035551';
+    const gaOptions: GAOptions = {
+      ids: `ga:${ view_id }`,
+      'start-date': '7daysAgo',
+      'end-date': 'today'
+    };
+    if (metrics) { 
+      gaOptions['metrics'] = metrics;
+    } else { 
+      gaOptions['metrics'] = 'ga:sessions';
+    }
+    if (dimensions) { gaOptions['dimensions'] = dimensions; }
 
     this.googleApis.options({auth: auth});
     return await this.analytics.data.ga.get(
-      {
-        ids: `ga:${ view_id }`,
-        'start-date': '7daysAgo',
-        'end-date': 'today',
-        metrics: 'ga:sessionCount,ga:sessions'
-      }
+      gaOptions
     ).then(
       gaData => {
-        console.log('*** GA DATA:');
-        console.log(gaData);
         return gaData.data;
       }
     ).catch( err => {
       console.log('** GA ERROR:');
       console.log(err);
-      throw new Error(JSON.stringify(err.response.data.error).toString());
+      return Promise.reject(err.errors[0].message);
     });
 
   }

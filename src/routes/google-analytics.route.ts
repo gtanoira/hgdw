@@ -15,6 +15,7 @@ export class GoogleAnalyticsRoute {
   
   config(): void {
     this.router.get('/view', cors(), googleAnalyticsController.index);
+    this.router.get('/data', cors(), googleAnalyticsController.getData);
   }
 
 }

@@ -89,8 +89,9 @@ export class ApiServer {
     /*
      * Routes
      */
-    app.use('/api2/error_logs', errorLogsRoute.router);
     app.use('/api2/cancel', cancelRoute.router);
+    app.use('/api2/error_logs', errorLogsRoute.router);
+    app.use('/api2/ga', googleAnalyticsRoute.router);
     app.use('/api2/payment_commit', paymentCommitRoute.router);
     app.use('/api2/procesos_batchs', procesosBatchsRoute.router);
     app.use('/api2/paises', paisesRoute.router);
@@ -98,7 +99,6 @@ export class ApiServer {
     app.use('/api2/register', registerRoute.router);
     app.use('/api2/schedule_events', scheduleEventsRoute.router);
     app.use('/cancel', cancelRoute.router);
-    app.use('/ga', googleAnalyticsRoute.router);
     app.use('/titles', titlesRoute.router);
     app.use('/user_collections', userCollectionsRoute.router);
 
