@@ -19,14 +19,11 @@ const googleapis_1 = require("googleapis");
 const google_auth_library_1 = require("google-auth-library");
 const google_auth_library_2 = require("google-auth-library");
 const HGDW_97ad94690664_json_1 = __importDefault(require("../settings/HGDW-97ad94690664.json"));
+;
 class GoogleAnalyticsService {
     constructor() {
         this.http = axios_1.default;
         this.jwt = jsonwebtoken_1.default;
-        this.authGaaS = new googleapis_1.google.auth.GoogleAuth({
-            keyFile: '../settings/HGDW-97ad94690664.json',
-            scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-        });
         this.googleApis = googleapis_1.google;
         this.analytics = googleapis_1.google.analytics('v3');
         this.accountId = '47530604';
@@ -66,10 +63,10 @@ class GoogleAnalyticsService {
             });
         });
     }
-    getView4() {
+    getView4(metrics, dimensions, fechaDesde, fechaHasta) {
         return __awaiter(this, void 0, void 0, function* () {
             const auth = new google_auth_library_2.GoogleAuth({
-                keyFilename: 'src/settings/HGDW-97ad94690664.json',
+                keyFilename: 'settings/HGDW-97ad94690664.json',
                 projectId: HGDW_97ad94690664_json_1.default.project_id,
                 scopes: [
                     'https://www.googleapis.com/auth/analytics',
@@ -77,20 +74,27 @@ class GoogleAnalyticsService {
                 ]
             });
             const view_id = '156035551';
-            this.googleApis.options({ auth: auth });
-            return yield this.analytics.data.ga.get({
+            const gaOptions = {
                 ids: `ga:${view_id}`,
-                'start-date': '7daysAgo',
-                'end-date': 'today',
-                metrics: 'ga:sessionCount,ga:sessions'
-            }).then(gaData => {
-                console.log('*** GA DATA:');
-                console.log(gaData);
+                'start-date': fechaDesde,
+                'end-date': fechaHasta
+            };
+            if (metrics) {
+                gaOptions['metrics'] = metrics;
+            }
+            else {
+                gaOptions['metrics'] = 'ga:sessions';
+            }
+            if (dimensions) {
+                gaOptions['dimensions'] = dimensions;
+            }
+            this.googleApis.options({ auth: auth });
+            return yield this.analytics.data.ga.get(gaOptions).then(gaData => {
                 return gaData.data;
             }).catch(err => {
                 console.log('** GA ERROR:');
                 console.log(err);
-                throw new Error(JSON.stringify(err.response.data.error).toString());
+                return Promise.reject(err.errors[0].message);
             });
         });
     }

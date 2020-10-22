@@ -14,6 +14,7 @@ class GoogleAnalyticsRoute {
     }
     config() {
         this.router.get('/view', cors_1.default(), google_analytics_controller_1.googleAnalyticsController.index);
+        this.router.get('/data', cors_1.default(), google_analytics_controller_1.googleAnalyticsController.getData);
     }
 }
 exports.GoogleAnalyticsRoute = GoogleAnalyticsRoute;

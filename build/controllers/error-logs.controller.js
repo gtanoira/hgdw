@@ -36,7 +36,7 @@ class ErrorLogsController {
                 return yield error_logs_service_1.errorLogsService.checkErrors(req.params.userId)
                     .then(data => {
                     console.log(data);
-                    return res.status(200).send({ message: 'Chequeo finalizado con éxito.' });
+                    return res.status(200).send({ message: 'Chequeo de errores finalizado con éxito.' });
                 })
                     .catch(err => {
                     console.log('*** ERR:', err);

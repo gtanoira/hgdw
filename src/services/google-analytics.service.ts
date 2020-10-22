@@ -84,7 +84,7 @@ class GoogleAnalyticsService {
 
   // Acceso a través de GoogleAuth via modo automático
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async getView4(metrics: string, dimensions: string): Promise<any> {
+  public async getView4(metrics: string, dimensions: string, fechaDesde: string, fechaHasta: string): Promise<any> {
 
     /**
      * Instead of specifying the type of client you'd like to use (JWT, OAuth2, etc)
@@ -100,10 +100,11 @@ class GoogleAnalyticsService {
     });
 
     const view_id = '156035551';
+    // Armar el objeto OPTIONS para la API de GA
     const gaOptions: GAOptions = {
       ids: `ga:${ view_id }`,
-      'start-date': '7daysAgo',
-      'end-date': 'today'
+      'start-date': fechaDesde,
+      'end-date': fechaHasta
     };
     if (metrics) { 
       gaOptions['metrics'] = metrics;

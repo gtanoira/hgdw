@@ -18,6 +18,7 @@ const country_model_1 = require("../models/country.model");
 const register_model_1 = require("../models/register.model");
 const proceso_batch_model_1 = require("../models/proceso_batch.model");
 const schedule_event_model_1 = require("../models/schedule-event.model");
+const product_local_price_model_1 = require("../models/product-local-price.model");
 class HotGoDBase {
     static setConnections() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -39,7 +40,8 @@ class HotGoDBase {
                     error_log_model_1.ErrorLog,
                     field_status_model_1.FieldStatus,
                     country_model_1.Country,
-                    proceso_batch_model_1.ProcesoBatch
+                    proceso_batch_model_1.ProcesoBatch,
+                    product_local_price_model_1.ProductLocalPrice
                 ]
             });
             const connectionDatalakeOptions = yield typeorm_1.getConnectionOptions('Datalake');

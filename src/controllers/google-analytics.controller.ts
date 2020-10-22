@@ -13,7 +13,7 @@ class GoogleAnalyticsController {
   public async index(req: Request, res: Response): Promise<Response> {
     
     // Validar que el request tenga un token de un usuario válido
-    return await googleAnalyticsService.getView4('', '')
+    return await googleAnalyticsService.getView4('', '', '', '')
     .then( rtnValue => {
       excelExporterService.exportAsExcelFile(rtnValue.rows, 'GA_cobros_');
       const a = [
@@ -53,9 +53,11 @@ class GoogleAnalyticsController {
       console.log('*** REQ.QUERY:', req.query);
       const metrics = req.query.metrics ? req.query.metrics.toString() : '';
       const dimensions = req.query.dimensions ? req.query.dimensions.toString() : '';
+      const fechaDesde = req.query.fechadesde ? req.query.fechadesde.toString() : '';
+      const fechaHasta = req.query.fechahasta ? req.query.fechahasta.toString() : '';
       
       // Validar que el request tenga un token de un usuario válido
-      return await googleAnalyticsService.getView4(metrics, dimensions)
+      return await googleAnalyticsService.getView4(metrics, dimensions, fechaDesde, fechaHasta)
       .then( rtnValue => {
         return res.status(200).send(rtnValue);
       })
