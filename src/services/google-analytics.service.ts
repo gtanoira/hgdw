@@ -13,8 +13,13 @@ interface GAOptions {
   'start-date': string,
   'end-date': string,
   metrics?: string,
-  dimensions?: string
- };
+  dimensions?: string,
+  sort?: string,
+  filters?: string,
+  segment?: string,
+  'start-index'?: number,
+  'max-results'?: number
+ }
 
 class GoogleAnalyticsService {
   
@@ -84,7 +89,7 @@ class GoogleAnalyticsService {
 
   // Acceso a través de GoogleAuth via modo automático
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async getView4(metrics: string, dimensions: string, fechaDesde: string, fechaHasta: string): Promise<any> {
+  public async getView4(metrics: string, dimensions: string, fechaDesde: string, fechaHasta: string, filters: string): Promise<any> {
 
     /**
      * Instead of specifying the type of client you'd like to use (JWT, OAuth2, etc)
@@ -104,14 +109,19 @@ class GoogleAnalyticsService {
     const gaOptions: GAOptions = {
       ids: `ga:${ view_id }`,
       'start-date': fechaDesde,
-      'end-date': fechaHasta
+      'end-date': fechaHasta,
+      'max-results': 10000
     };
+    // Agregar las métricas
     if (metrics) { 
       gaOptions['metrics'] = metrics;
     } else { 
       gaOptions['metrics'] = 'ga:sessions';
     }
+    // Agregar las dimensiones
     if (dimensions) { gaOptions['dimensions'] = dimensions; }
+    // Agregar los filtros
+    if (filters) { gaOptions['filters'] = filters; }
 
     this.googleApis.options({auth: auth});
     return await this.analytics.data.ga.get(
