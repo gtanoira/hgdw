@@ -19,7 +19,6 @@ const googleapis_1 = require("googleapis");
 const google_auth_library_1 = require("google-auth-library");
 const google_auth_library_2 = require("google-auth-library");
 const HGDW_97ad94690664_json_1 = __importDefault(require("../settings/HGDW-97ad94690664.json"));
-;
 class GoogleAnalyticsService {
     constructor() {
         this.http = axios_1.default;
@@ -63,7 +62,7 @@ class GoogleAnalyticsService {
             });
         });
     }
-    getView4(metrics, dimensions, fechaDesde, fechaHasta) {
+    getView4(metrics, dimensions, fechaDesde, fechaHasta, filters) {
         return __awaiter(this, void 0, void 0, function* () {
             const auth = new google_auth_library_2.GoogleAuth({
                 keyFilename: 'settings/HGDW-97ad94690664.json',
@@ -77,7 +76,8 @@ class GoogleAnalyticsService {
             const gaOptions = {
                 ids: `ga:${view_id}`,
                 'start-date': fechaDesde,
-                'end-date': fechaHasta
+                'end-date': fechaHasta,
+                'max-results': 10000
             };
             if (metrics) {
                 gaOptions['metrics'] = metrics;
@@ -87,6 +87,9 @@ class GoogleAnalyticsService {
             }
             if (dimensions) {
                 gaOptions['dimensions'] = dimensions;
+            }
+            if (filters) {
+                gaOptions['filters'] = filters;
             }
             this.googleApis.options({ auth: auth });
             return yield this.analytics.data.ga.get(gaOptions).then(gaData => {

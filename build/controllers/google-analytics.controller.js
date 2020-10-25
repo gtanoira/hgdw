@@ -16,7 +16,7 @@ const google_analytics_service_1 = require("../services/google-analytics.service
 class GoogleAnalyticsController {
     index(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield google_analytics_service_1.googleAnalyticsService.getView4('', '', '', '')
+            return yield google_analytics_service_1.googleAnalyticsService.getView4('', '', '', '', '')
                 .then(rtnValue => {
                 excel_exporter_service_1.excelExporterService.exportAsExcelFile(rtnValue.rows, 'GA_cobros_');
                 const a = [
@@ -54,7 +54,8 @@ class GoogleAnalyticsController {
                 const dimensions = req.query.dimensions ? req.query.dimensions.toString() : '';
                 const fechaDesde = req.query.fechadesde ? req.query.fechadesde.toString() : '';
                 const fechaHasta = req.query.fechahasta ? req.query.fechahasta.toString() : '';
-                return yield google_analytics_service_1.googleAnalyticsService.getView4(metrics, dimensions, fechaDesde, fechaHasta)
+                const filters = req.query.filters ? req.query.filters.toString() : '';
+                return yield google_analytics_service_1.googleAnalyticsService.getView4(metrics, dimensions, fechaDesde, fechaHasta, filters)
                     .then(rtnValue => {
                     return res.status(200).send(rtnValue);
                 })
