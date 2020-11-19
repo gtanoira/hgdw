@@ -188,9 +188,10 @@ class CancelController {
         const ptimestamp = getDateFromExcel(register.timestamp ? +register.timestamp : 0).toISOString();
         // Grabar los campos opcionales
         const puserAgent = register.userAgent ? register.userAgent : '';
+        const puserPaymentId = register.userPaymentId ? register.userPaymentId : '';
         // Crear el VALUES del INSERT
         insertValues += `('${register.userId}','${register.source}','${register.event}','${register.channel}'` +
-          `,'${ptimestamp}','${paccessUntil}','${puserAgent}'),`;
+          `,'${ptimestamp}','${paccessUntil}','${puserAgent}','${puserPaymentId}'),`;
 
         // Chequear que existan todos los campos
         if (insertValues.indexOf('undefined') > 0) {
@@ -248,7 +249,7 @@ class CancelController {
   private async sendMissingCancel(valuesCmd: string): Promise<number> {
     if (valuesCmd !== '') {
       // Armar el comando Sql
-      const sqlCmd = `INSERT INTO Datalake.cancel (user_id, source, event, channel, timestamp, access_until, user_agent)` +
+      const sqlCmd = `INSERT INTO Datalake.cancel (user_id, source, event, channel, timestamp, access_until, user_agent, user_payment_id)` +
         ` VALUES ${valuesCmd.substring(0, valuesCmd.length - 1)};`;
       return await cancelService.insertMissingCancel(sqlCmd)
       .then( data => { 

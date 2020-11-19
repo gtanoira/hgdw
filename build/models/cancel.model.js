@@ -45,6 +45,10 @@ __decorate([
     typeorm_1.Column({ name: 'user_agent', length: 1024 }),
     __metadata("design:type", String)
 ], CancelModel.prototype, "userAgent", void 0);
+__decorate([
+    typeorm_1.Column({ name: 'user_payment_id' }),
+    __metadata("design:type", String)
+], CancelModel.prototype, "userPaymentId", void 0);
 CancelModel = __decorate([
     typeorm_1.Entity({
         name: 'cancel',

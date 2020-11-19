@@ -116,8 +116,9 @@ class CancelController {
                     const paccessUntil = functions_common_1.getDateFromExcel(register.accessUntil ? +register.accessUntil : 0).toISOString();
                     const ptimestamp = functions_common_1.getDateFromExcel(register.timestamp ? +register.timestamp : 0).toISOString();
                     const puserAgent = register.userAgent ? register.userAgent : '';
+                    const puserPaymentId = register.userPaymentId ? register.userPaymentId : '';
                     insertValues += `('${register.userId}','${register.source}','${register.event}','${register.channel}'` +
-                        `,'${ptimestamp}','${paccessUntil}','${puserAgent}'),`;
+                        `,'${ptimestamp}','${paccessUntil}','${puserAgent}','${puserPaymentId}'),`;
                     if (insertValues.indexOf('undefined') > 0) {
                         exports.cancelController.rtn_status = 400;
                         throw new Error(`HTG-014(E): validando la fila ${i + 2} del excel: faltan 1 o más campos.`);
@@ -160,7 +161,7 @@ class CancelController {
     sendMissingCancel(valuesCmd) {
         return __awaiter(this, void 0, void 0, function* () {
             if (valuesCmd !== '') {
-                const sqlCmd = `INSERT INTO Datalake.cancel (user_id, source, event, channel, timestamp, access_until, user_agent)` +
+                const sqlCmd = `INSERT INTO Datalake.cancel (user_id, source, event, channel, timestamp, access_until, user_agent, user_payment_id)` +
                     ` VALUES ${valuesCmd.substring(0, valuesCmd.length - 1)};`;
                 return yield cancel_service_1.cancelService.insertMissingCancel(sqlCmd)
                     .then(data => {

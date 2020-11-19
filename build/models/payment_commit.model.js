@@ -89,6 +89,22 @@ __decorate([
     typeorm_1.Column({ name: 'is_suscription', type: 'tinyint' }),
     __metadata("design:type", Number)
 ], PaymentCommitModel.prototype, "isSuscription", void 0);
+__decorate([
+    typeorm_1.Column({ type: 'double' }),
+    __metadata("design:type", Number)
+], PaymentCommitModel.prototype, "taxableAmount", void 0);
+__decorate([
+    typeorm_1.Column({ type: 'double' }),
+    __metadata("design:type", Number)
+], PaymentCommitModel.prototype, "vatAmount", void 0);
+__decorate([
+    typeorm_1.Column({ name: 'card_type' }),
+    __metadata("design:type", String)
+], PaymentCommitModel.prototype, "cardType", void 0);
+__decorate([
+    typeorm_1.Column({ name: 'user_payment_id' }),
+    __metadata("design:type", String)
+], PaymentCommitModel.prototype, "userPaymentId", void 0);
 PaymentCommitModel = __decorate([
     typeorm_1.Entity({
         name: 'payment_commit',

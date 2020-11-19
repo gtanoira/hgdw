@@ -32,4 +32,7 @@ export class CancelModel {
 
   @Column({ name: 'user_agent', length: 1024 })
   public userAgent!: string | '';
+
+  @Column({ name: 'user_payment_id' })
+  public userPaymentId?: string | '';
 }

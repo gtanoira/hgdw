@@ -64,10 +64,13 @@ class PaymentCommitController {
                     const ppaymentId = register.paymentId ? register.paymentId : '';
                     const ppackage = register.package ? register.package : '';
                     const ptrialDuration = register.trialDuration ? register.trialDuration : 0;
+                    const pcardType = register.cardType ? register.cardType : '';
+                    const puserPaymentId = register.userPaymentId ? register.userPaymentId : '';
                     insertValues += `('${register.userId}','${register.status}','${paccessUntil}','${register.methodName}'` +
                         `,'${register.source}',${register.amount},'${register.paymentType}',${register.duration},'${pmessage}'` +
                         `,'${register.event}','${ptimestamp}','${puserAgent}',${register.discount},'${ppaymentId}'` +
-                        `,${register.isSuscription},'${ppackage}',${register.trial},${ptrialDuration}),`;
+                        `,${register.isSuscription},'${ppackage}',${register.trial},${ptrialDuration}` +
+                        `,${register.taxableAmount},${register.vatAmount},'${pcardType}','${puserPaymentId}'),`;
                     if (insertValues.indexOf('undefined') > 0) {
                         exports.paymentCommitController.rtn_status = 400;
                         throw new Error(`HTG-014(E): validando la fila ${i + 2} del excel: faltan 1 o más campos.`);
@@ -111,7 +114,8 @@ class PaymentCommitController {
         return __awaiter(this, void 0, void 0, function* () {
             if (valuesCmd !== '') {
                 const sqlCmd = `INSERT INTO Datalake.payment_commit (user_id, status, access_until, method_name, source, amount, payment_type` +
-                    `,duration, message, event, timestamp, user_agent, discount, payment_id, is_suscription, package, trial, trial_duration)` +
+                    `,duration, message, event, timestamp, user_agent, discount, payment_id, is_suscription, package, trial, trial_duration` +
+                    `,taxable_amount, vat_amount, card_type, user_payment_id)` +
                     ` VALUES ${valuesCmd.substring(0, valuesCmd.length - 1)};`;
                 return yield payment_commit_service_1.paymentCommitService.insertMissingPyc(sqlCmd)
                     .then(data => {

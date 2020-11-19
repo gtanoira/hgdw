@@ -65,4 +65,16 @@ export class PaymentCommitModel {
          
   @Column({ name: 'is_suscription', type: 'tinyint' })
   public isSuscription!: number | 0;
+
+  @Column({ type: 'double' })
+  public taxableAmount!: number | 0;
+
+  @Column({ type: 'double' })
+  public vatAmount!: number | 0;
+     
+  @Column({ name: 'card_type' })
+  public cardType?: string | '';
+     
+  @Column({ name: 'user_payment_id' })
+  public userPaymentId?: string | '';
 }
