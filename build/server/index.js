@@ -17,6 +17,7 @@ const paises_route_1 = require("../routes/paises.route");
 const payment_commit_route_1 = require("../routes/payment_commit.route");
 const procesos_batchs_route_1 = require("../routes/procesos-batchs.route");
 const product_local_prices_route_1 = require("../routes/product-local-prices.route");
+const rebill_route_1 = require("../routes/rebill.route");
 const register_route_1 = require("../routes/register.route");
 const schedule_events_route_1 = require("../routes/schedule-events.route");
 const titles_route_1 = require("../routes/titles.route");
@@ -66,6 +67,7 @@ class ApiServer {
         app.use('/api2/error_logs', error_logs_route_1.errorLogsRoute.router);
         app.use('/api2/ga', google_analytics_route_1.googleAnalyticsRoute.router);
         app.use('/api2/payment_commit', payment_commit_route_1.paymentCommitRoute.router);
+        app.use('/api2/rebill', rebill_route_1.rebillRoute.router);
         app.use('/api2/procesos_batchs', procesos_batchs_route_1.procesosBatchsRoute.router);
         app.use('/api2/paises', paises_route_1.paisesRoute.router);
         app.use('/api2/product_local_prices', product_local_prices_route_1.productLocalPricesRoute.router);
