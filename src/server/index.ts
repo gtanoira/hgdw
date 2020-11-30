@@ -15,6 +15,7 @@ import { paisesRoute } from '../routes/paises.route';
 import { paymentCommitRoute } from '../routes/payment_commit.route';
 import { procesosBatchsRoute }  from '../routes/procesos-batchs.route';
 import { productLocalPricesRoute } from '../routes/product-local-prices.route';
+import { rebillRoute } from '../routes/rebill.route';
 import { registerRoute } from '../routes/register.route';
 import { scheduleEventsRoute } from '../routes/schedule-events.route';
 import { titlesRoute } from '../routes/titles.route';
@@ -93,6 +94,7 @@ export class ApiServer {
     app.use('/api2/error_logs', errorLogsRoute.router);
     app.use('/api2/ga', googleAnalyticsRoute.router);
     app.use('/api2/payment_commit', paymentCommitRoute.router);
+    app.use('/api2/rebill', rebillRoute.router);
     app.use('/api2/procesos_batchs', procesosBatchsRoute.router);
     app.use('/api2/paises', paisesRoute.router);
     app.use('/api2/product_local_prices', productLocalPricesRoute.router);
