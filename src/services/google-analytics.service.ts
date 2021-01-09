@@ -89,7 +89,14 @@ class GoogleAnalyticsService {
 
   // Acceso a través de GoogleAuth via modo automático
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async getView4(metrics: string, dimensions: string, fechaDesde: string, fechaHasta: string, filters: string): Promise<any> {
+  public async getView4(
+    metrics: string, 
+    dimensions: string, 
+    fechaDesde: string, 
+    fechaHasta: string, 
+    filters: string,
+    pageIndex = 1
+  ): Promise<any> {
 
     /**
      * Instead of specifying the type of client you'd like to use (JWT, OAuth2, etc)
@@ -110,7 +117,8 @@ class GoogleAnalyticsService {
       ids: `ga:${ view_id }`,
       'start-date': fechaDesde,
       'end-date': fechaHasta,
-      'max-results': 10000
+      'max-results': 10000,
+      'start-index': (pageIndex < 1) ? 1 : (pageIndex - 1) * 10000 + 1
     };
     // Agregar las métricas
     if (metrics) { 

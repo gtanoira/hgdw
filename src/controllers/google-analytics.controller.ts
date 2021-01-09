@@ -9,6 +9,65 @@ import { googleAnalyticsService } from '../services/google-analytics.service';
 
 class GoogleAnalyticsController {
 
+  // Leer y grabar en el AWS MySql la 1er.sesion de nuevos usuarios por dia
+  public async daily1stUserSession(req: Request, res: Response): Promise<any> {
+    
+    // Validar que el request tenga un token de un usuario válido
+    if ( await authorizationService.isTokenValid(req.headers.authorization || '')) {
+
+      // Leer query paramters
+      console.log('*** REQ.QUERY:', req.query);
+      const fechaDesde = req.query.fechadesde ? req.query.fechadesde.toString() : '';
+      const fechaHasta = req.query.fechahasta ? req.query.fechahasta.toString() : '';
+      // Generar los parámetros para la llamada al GA
+      const dimensions = 'ga:dimension1,ga:dateHourMinute, ga:channelgrouping,ga:source,ga:medium ,ga:campaign,ga:adContent';
+      const metrics = 'ga:sessiones';
+      const filters = 'ga:newUsers==1';
+      
+      return await googleAnalyticsService.getView4(metrics, dimensions, fechaDesde, fechaHasta, filters)
+      .then( rtnValue => {
+        return res.status(200).send(rtnValue);
+      })
+      .catch( err => {
+        console.log('*** ERROR CONTOLLER:');
+        console.log(err);
+        return res.status(500).send({message: err.toString()});  //.status(err.code.toString());
+      });
+      
+    } else {
+      return res.status(401).send({ message: 'HTG-003(E): el token del usuario es inválido o ha expirado. Vuelva a loguearse.'})
+    }
+  }
+
+  // Leer todos los registros
+  public async getData(req: Request, res: Response): Promise<Response> {
+
+    // Validar que el request tenga un token de un usuario válido
+    if ( await authorizationService.isTokenValid(req.headers.authorization || '')) {
+
+      console.log('*** REQ.QUERY:', req.query);
+      const metrics = req.query.metrics ? req.query.metrics.toString() : '';
+      const dimensions = req.query.dimensions ? req.query.dimensions.toString() : '';
+      const fechaDesde = req.query.fechadesde ? req.query.fechadesde.toString() : '';
+      const fechaHasta = req.query.fechahasta ? req.query.fechahasta.toString() : '';
+      const filters = req.query.filters ? req.query.filters.toString() : '';
+      
+      return await googleAnalyticsService.getView4(metrics, dimensions, fechaDesde, fechaHasta, filters)
+      .then( rtnValue => {
+        console.log('*** GA res:', rtnValue);
+        return res.status(200).send(rtnValue);
+      })
+      .catch( err => {
+        console.log('*** ERROR CONTOLLER:');
+        console.log(err);
+        return res.status(500).send({message: err.toString()});  //.status(err.code.toString());
+      });
+      
+    } else {
+      return res.status(401).send({ message: 'HTG-003(E): el token del usuario es inválido o ha expirado. Vuelva a loguearse.'})
+    }
+  }
+
   // Leer todos los registros
   public async index(req: Request, res: Response): Promise<Response> {
     
@@ -42,35 +101,6 @@ class GoogleAnalyticsController {
       console.log(err, typeof err);
       return res.send(err.error.message.toString());  //.status(err.code.toString());
     });
-  }
-
-  // Leer todos los registros
-  public async getData(req: Request, res: Response): Promise<Response> {
-
-    // Validar que el request tenga un token de un usuario válido
-    if ( await authorizationService.isTokenValid(req.headers.authorization || '')) {
-
-      console.log('*** REQ.QUERY:', req.query);
-      const metrics = req.query.metrics ? req.query.metrics.toString() : '';
-      const dimensions = req.query.dimensions ? req.query.dimensions.toString() : '';
-      const fechaDesde = req.query.fechadesde ? req.query.fechadesde.toString() : '';
-      const fechaHasta = req.query.fechahasta ? req.query.fechahasta.toString() : '';
-      const filters = req.query.filters ? req.query.filters.toString() : '';
-      
-      // Validar que el request tenga un token de un usuario válido
-      return await googleAnalyticsService.getView4(metrics, dimensions, fechaDesde, fechaHasta, filters)
-      .then( rtnValue => {
-        return res.status(200).send(rtnValue);
-      })
-      .catch( err => {
-        console.log('*** ERROR CONTOLLER:');
-        console.log(err);
-        return res.status(500).send({message: err.toString()});  //.status(err.code.toString());
-      });
-      
-    } else {
-      return res.status(401).send({ message: 'HTG-003(E): el token del usuario es inválido o ha expirado. Vuelva a loguearse.'})
-    }
   }
 
 }
