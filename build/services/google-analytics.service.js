@@ -62,7 +62,7 @@ class GoogleAnalyticsService {
             });
         });
     }
-    getView4(metrics, dimensions, fechaDesde, fechaHasta, filters) {
+    getView4(metrics, dimensions, fechaDesde, fechaHasta, filters, pageIndex = 1) {
         return __awaiter(this, void 0, void 0, function* () {
             const auth = new google_auth_library_2.GoogleAuth({
                 keyFilename: 'settings/HGDW-97ad94690664.json',
@@ -77,7 +77,8 @@ class GoogleAnalyticsService {
                 ids: `ga:${view_id}`,
                 'start-date': fechaDesde,
                 'end-date': fechaHasta,
-                'max-results': 10000
+                'max-results': 10000,
+                'start-index': (pageIndex < 1) ? 1 : (pageIndex - 1) * 10000 + 1
             };
             if (metrics) {
                 gaOptions['metrics'] = metrics;

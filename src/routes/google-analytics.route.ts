@@ -16,6 +16,7 @@ export class GoogleAnalyticsRoute {
   config(): void {
     this.router.get('/view', cors(), googleAnalyticsController.index);
     this.router.get('/data', cors(), googleAnalyticsController.getData);
+    this.router.get('/1st_user_session', cors(), googleAnalyticsController.daily1stUserSession);
   }
 
 }

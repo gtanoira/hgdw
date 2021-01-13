@@ -3,11 +3,11 @@ import jsonwebtoken from 'jsonwebtoken';
 import { google }  from 'googleapis';
 import { JWT } from 'google-auth-library';
 import { GoogleAuth } from 'google-auth-library';
+import { getConnection } from 'typeorm';
 
 // Environment
 import gan from '../settings/HGDW-97ad94690664.json';
-
-// Models
+// Models & Interfaces
 interface GAOptions {
   ids: string,
   'start-date': string,
@@ -144,6 +144,71 @@ class GoogleAnalyticsService {
       return Promise.reject(err.errors[0].message);
     });
 
+  }
+
+  // Save users 1st. sessions into MySql Datawarehouse in AWS
+  public async save1stSessionsToMySql(data: []): Promise<number> {
+    // Mysql maximum packet size = 4194304  (SHOW VARIABLES LIKE 'max_allowed_packet';)
+    // El insert se hace del tipo BULK (masivo) de 4000 registros por vez, o sea 1 INSERT con 4000 VALUES
+
+    // Establecer la conexión con el AWS Datalake
+    const connection = getConnection('HGDW');
+      
+    // Variables
+    let regsGrabados = 0;
+    let valuesCmd = '';
+    const sqlCmd = (valuesCmd: string): string => {
+      return `INSERT INTO ga_first_users_sessions (user_id, timestamp, channel_grouping, source, medium, campaign, ad_content)`+
+      ` VALUES ${valuesCmd.substring(0, valuesCmd.length - 1)};`;
+    };      
+
+    for (let i = 0; i < data.length; i++) {
+
+      // Ejecutar el comando SQL si llegó a las 4000 iteraciones
+      if ( i > 0 && i % 4000 === 0) {
+
+        // Ejecutar el insert
+        await connection.query(sqlCmd(valuesCmd))
+        .then(data => { 
+          regsGrabados = regsGrabados + data.affectedRows ;
+        })
+        .catch(err => { 
+          throw Promise.reject({ message: `HTG-012(E): SQL error: ${err}` }); 
+        });
+
+        // Reinicializar
+        valuesCmd = '';
+      }
+
+      // Leer un registro
+      const userId: string = data[i][0];
+      const timestamp: string = data[i][1];
+      const channelGrouping: string = data[i][2];
+      const source: string = data[i][3];
+      const medium: string = data[i][4];
+      const campaign: string = data[i][5];
+      const adContent: string = data[i][6];
+      // Preparar la fecha
+      const fecha = timestamp.slice(0,4) + '-' + timestamp.slice(4, 6) + '-' + timestamp.slice(6, 8) +
+        'T' + timestamp.slice(8, 10) + ':' + timestamp.slice(10, 12) + ':00Z';
+      // Crear el VALUES del INSERT
+      valuesCmd += `('${userId}','${fecha}','${channelGrouping}','${source}','${medium}'` +
+        `,'${campaign}','${adContent}'),`;
+    }
+
+    // Procesar los últimos titulos
+    if (valuesCmd !== '') {
+      await connection.query(sqlCmd(valuesCmd))
+      .then((data) => {
+        regsGrabados = regsGrabados + data.affectedRows;
+      })
+      .catch(err => {
+        return Promise.reject({ message: `HTG-012(E): SQL error: ${err}` });
+      });
+    }
+
+    // Retornar el resultado
+    return regsGrabados;
   }
 
 }
