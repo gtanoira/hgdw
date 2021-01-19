@@ -4,6 +4,7 @@ import { google }  from 'googleapis';
 import { JWT } from 'google-auth-library';
 import { GoogleAuth } from 'google-auth-library';
 import { getConnection } from 'typeorm';
+import * as moment from 'moment';
 
 // Environment
 import gan from '../settings/HGDW-97ad94690664.json';
@@ -247,20 +248,19 @@ class GoogleAnalyticsService {
 
       // Leer un registro
       const transactionId: string = data[i][0];
-      const timestamp: string = data[i][1];
-      const channelGrouping: string = data[i][2];
-      const source: string = data[i][3];
-      const medium: string = data[i][4];
-      const campaign: string = data[i][5];
-      const currencyCode: string = data[i][6];
-      const localItemRevenue: string = data[i][7];
+      const channelGrouping: string = data[i][1];
+      const source: string = data[i][2];
+      const medium: string = data[i][3];
+      const campaign: string = data[i][4];
+      const currencyCode: string = data[i][5];
+      const localItemRevenue: string = data[i][6];
       // Obtener el userId
       const userId: string = transactionId.slice(14);
       // Obtener la fecha
-      const fecha = timestamp.slice(0,4) + '-' + timestamp.slice(4, 6) + '-' + timestamp.slice(6, 8) +
-        'T' + timestamp.slice(8, 10) + ':' + timestamp.slice(10, 12) + ':00Z';
+      const fecha = new Date(transactionId.slice(0,4) + '-' + transactionId.slice(4, 6) + '-' + transactionId.slice(6, 8) +
+        'T' + transactionId.slice(8, 10) + ':' + transactionId.slice(10, 12) + ':' + transactionId.slice(12, 14) + '+03:00');
       // Crear el VALUES del INSERT
-      valuesCmd += `('${userId}','${fecha}','${transactionId}','${channelGrouping}','${source}','${medium}'` +
+      valuesCmd += `('${userId}','${fecha.toISOString()}','${transactionId}','${channelGrouping}','${source}','${medium}'` +
         `,'${campaign}','${currencyCode}',${localItemRevenue}),`;
     }
 
