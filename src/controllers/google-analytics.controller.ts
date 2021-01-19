@@ -64,6 +64,61 @@ class GoogleAnalyticsController {
     }
   }
 
+  // Leer y grabar en el AWS MySql la 1er.sesion de nuevos usuarios por dia
+  public async dailyTransactions(req: Request, res: Response): Promise<any> {
+    
+    // Este header en el Request es enviado por una rutina en Java dentro del server Linux
+    // que es la encargada de procesar diariamente esta API via un CRONTAB del linux.
+    // Si existe este header, se bypasea la validación del token
+    const bypassAuths = req.headers['x-token-hgdw'] === 'BYPASS' ? true : false;
+
+    // Validar que el request tenga un token de un usuario válido
+    if ( bypassAuths || await authorizationService.isTokenValid(req.headers.authorization || '')) {
+
+      // Leer query paramters
+      const fechaDesde = req.query.fechadesde ? req.query.fechadesde.toString() : '';
+      const fechaHasta = req.query.fechahasta ? req.query.fechahasta.toString() : '';
+      // Generar los parámetros para la llamada al GA
+      const dimensions = 'ga:transactionId,ga:channelgrouping,ga:source,ga:medium,ga:campaign';
+      const metrics = 'ga:transactionRevenue';
+      const filters = '';
+      let pageIndex = 1;
+      let recordsSaved = 0;
+      
+      // Obtener los datos de GA en páginas de 10000 registros
+      let isMore = true;
+      while (isMore) {
+        await googleAnalyticsService.getView4(metrics, dimensions, fechaDesde, fechaHasta, filters, pageIndex)
+        .then( async rtnValue => {
+          if (rtnValue.rows) {
+            const dailyTransactions: [] = rtnValue.rows;
+            await googleAnalyticsService.saveDailyTransactionsToMySql(dailyTransactions)
+            .then(data => { recordsSaved = recordsSaved + data })
+            .catch(error => {
+              // Guardar el error de la operación en Error_logs
+              errorLogsService.addError('GA_daily_transactions', error.message.toString(), 'nocode', 0);
+              return res.status(503).send(error);
+            });
+            isMore = (rtnValue.nextLink) ? true : false;
+            pageIndex += 1;
+          } else {
+            isMore = false;
+          }
+        })
+        .catch( err => {
+          console.log('*** ERROR FROM GA:');
+          console.log(err);
+          return res.status(503).send({message: err.message.toString()});  //.status(err.code.toString());
+        });
+      }
+      console.log(`*** Fin dailyTransactions(de ${fechaDesde} a ${fechaHasta}), registros grabados: ${recordsSaved}`);
+      return res.status(200).send({ message: `Proceso finalizado OK. Registros grabados: ${recordsSaved}`});
+      
+    } else {
+      return res.status(401).send({ message: 'HTG-003(E): el token del usuario es inválido o ha expirado. Vuelva a loguearse.'})
+    }
+  }
+
   // Leer todos los registros
   public async getData(req: Request, res: Response): Promise<Response> {
 

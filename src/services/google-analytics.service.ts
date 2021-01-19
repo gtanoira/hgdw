@@ -129,7 +129,7 @@ class GoogleAnalyticsService {
     // Agregar las dimensiones
     if (dimensions) { gaOptions['dimensions'] = dimensions; }
     // Agregar los filtros
-    if (filters) { gaOptions['filters'] = filters; }
+    if (filters && filters !== '') { gaOptions['filters'] = filters; }
 
     this.googleApis.options({auth: auth});
     return await this.analytics.data.ga.get(
@@ -194,6 +194,72 @@ class GoogleAnalyticsService {
       // Crear el VALUES del INSERT
       valuesCmd += `('${userId}','${fecha}','${channelGrouping}','${source}','${medium}'` +
         `,'${campaign}','${adContent}'),`;
+    }
+
+    // Procesar los últimos titulos
+    if (valuesCmd !== '') {
+      await connection.query(sqlCmd(valuesCmd))
+      .then((data) => {
+        regsGrabados = regsGrabados + data.affectedRows;
+      })
+      .catch(err => {
+        return Promise.reject({ message: `HTG-012(E): SQL error: ${err}` });
+      });
+    }
+
+    // Retornar el resultado
+    return regsGrabados;
+  }
+
+  // Save users 1st. sessions into MySql Datawarehouse in AWS
+  public async saveDailyTransactionsToMySql(data: []): Promise<number> {
+    // Mysql maximum packet size = 4194304  (SHOW VARIABLES LIKE 'max_allowed_packet';)
+    // El insert se hace del tipo BULK (masivo) de 4000 registros por vez, o sea 1 INSERT con 4000 VALUES
+
+    // Establecer la conexión con el AWS Datalake
+    const connection = getConnection('HGDW');
+      
+    // Variables
+    let regsGrabados = 0;
+    let valuesCmd = '';
+    const sqlCmd = (valuesCmd: string): string => {
+      return `INSERT INTO ga_users_payments (user_id, timestamp, transaction_id, channel_grouping, source, medium, campaign, transaction_revenue)`+
+      ` VALUES ${valuesCmd.substring(0, valuesCmd.length - 1)};`;
+    };      
+
+    for (let i = 0; i < data.length; i++) {
+
+      // Ejecutar el comando SQL si llegó a las 4000 iteraciones
+      if ( i > 0 && i % 4000 === 0) {
+
+        // Ejecutar el insert
+        await connection.query(sqlCmd(valuesCmd))
+        .then(data => { 
+          regsGrabados = regsGrabados + data.affectedRows ;
+        })
+        .catch(err => { 
+          throw Promise.reject({ message: `HTG-012(E): SQL error: ${err}` }); 
+        });
+
+        // Reinicializar
+        valuesCmd = '';
+      }
+
+      // Leer un registro
+      const transactionId: string = data[i][0];
+      const channelGrouping: string = data[i][1];
+      const source: string = data[i][2];
+      const medium: string = data[i][3];
+      const campaign: string = data[i][4];
+      const transactionRevenue: string = data[i][5];
+      // Obtener el userId
+      const userId: string = transactionId.slice(14);
+      // Obtener la fecha
+      const fecha = transactionId.slice(0,4) + '-' + transactionId.slice(4, 6) + '-' + transactionId.slice(6, 8) +
+        'T' + transactionId.slice(8, 10) + ':' + transactionId.slice(10, 12) + ':' + transactionId.slice(12, 14) + 'Z';
+      // Crear el VALUES del INSERT
+      valuesCmd += `('${userId}','${fecha}','${transactionId}','${channelGrouping}','${source}','${medium}'` +
+        `,'${campaign}',${transactionRevenue}),`;
     }
 
     // Procesar los últimos titulos
