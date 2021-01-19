@@ -79,8 +79,8 @@ class GoogleAnalyticsController {
       const fechaDesde = req.query.fechadesde ? req.query.fechadesde.toString() : '';
       const fechaHasta = req.query.fechahasta ? req.query.fechahasta.toString() : '';
       // Generar los parámetros para la llamada al GA
-      const dimensions = 'ga:transactionId,ga:channelgrouping,ga:source,ga:medium,ga:campaign';
-      const metrics = 'ga:transactionRevenue';
+      const dimensions = 'ga:transactionId,ga:channelgrouping,ga:source,ga:medium,ga:campaign,ga:currencyCode';
+      const metrics = 'ga:localItemRevenue';
       const filters = '';
       let pageIndex = 1;
       let recordsSaved = 0;

@@ -223,7 +223,7 @@ class GoogleAnalyticsService {
     let regsGrabados = 0;
     let valuesCmd = '';
     const sqlCmd = (valuesCmd: string): string => {
-      return `INSERT INTO ga_users_payments (user_id, timestamp, transaction_id, channel_grouping, source, medium, campaign, transaction_revenue)`+
+      return `INSERT INTO ga_users_payments (user_id, timestamp, transaction_id, channel_grouping, source, medium, campaign, currency_code, local_item_revenue)`+
       ` VALUES ${valuesCmd.substring(0, valuesCmd.length - 1)};`;
     };      
 
@@ -251,7 +251,8 @@ class GoogleAnalyticsService {
       const source: string = data[i][2];
       const medium: string = data[i][3];
       const campaign: string = data[i][4];
-      const transactionRevenue: string = data[i][5];
+      const currencyCode: string = data[i][5];
+      const localItemRevenue: string = data[i][6];
       // Obtener el userId
       const userId: string = transactionId.slice(14);
       // Obtener la fecha
@@ -259,7 +260,7 @@ class GoogleAnalyticsService {
         'T' + transactionId.slice(8, 10) + ':' + transactionId.slice(10, 12) + ':' + transactionId.slice(12, 14) + 'Z';
       // Crear el VALUES del INSERT
       valuesCmd += `('${userId}','${fecha}','${transactionId}','${channelGrouping}','${source}','${medium}'` +
-        `,'${campaign}',${transactionRevenue}),`;
+        `,'${campaign}','${currencyCode}',${localItemRevenue}),`;
     }
 
     // Procesar los últimos titulos
