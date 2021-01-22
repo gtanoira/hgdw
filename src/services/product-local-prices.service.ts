@@ -3,8 +3,15 @@ import { getConnection  } from 'typeorm';
 // Envirnoment
 import { AWS_DBASE } from '../settings/environment.settings';
 
-// Models
+// Models & Interfaces
 import { ProductLocalPrice } from '../models/product-local-price.model';
+interface getAllParams {
+  duration?: string,
+  pageNo?: number,
+  recsPage?: number,
+  sortField?: string,
+  sortDirection?: string
+}
 
 export class ProductLocalPricesService {
 
@@ -29,9 +36,39 @@ export class ProductLocalPricesService {
     );
   } */
 
-  public async getAll():Promise<ProductLocalPrice[]> {
-    const connection = getConnection(AWS_DBASE);
-    return await connection.getRepository(ProductLocalPrice).find();
+  public async getAll({
+    duration = '',
+    pageNo = 1,
+    recsPage = 10000,
+    sortField = '',
+    sortDirection = 'ASC'
+  }: getAllParams):Promise<ProductLocalPrice[]> {
+
+    // Create query params
+    const connection = getConnection(AWS_DBASE)
+    const orderBy = sortDirection ? sortDirection.toUpperCase() : `ASC`;
+    const cmdSql =  connection.getRepository(ProductLocalPrice)
+    .createQueryBuilder('prices')
+    .select('prices.id', 'id')
+    .addSelect('prices.fecha', 'fecha')
+    .addSelect('prices.country', 'country')
+    .addSelect('prices.currency', 'currency')
+    .addSelect('prices.duration', 'duration')
+    .addSelect('prices.taxable_amount', 'taxable_amount')
+    .where(duration ? `duration = cast('${duration}' as unsigned)` : '')
+    .orderBy(sortField ? sortField : '', orderBy === 'ASC' ? 'ASC' : 'DESC')
+    .skip(pageNo ? ((pageNo - 1) * recsPage) : 0)
+    .take(recsPage ? recsPage : 10000)
+    .getSql();
+    
+    return await connection.query(cmdSql)
+    .catch(error => {
+      return Promise.reject(error.message);
+    });
+
+
+    /* const connection = getConnection(AWS_DBASE);
+    return await connection.getRepository(ProductLocalPrice).find(); */
   }
 }
 
