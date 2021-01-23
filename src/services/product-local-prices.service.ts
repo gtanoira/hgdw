@@ -54,21 +54,18 @@ export class ProductLocalPricesService {
     .addSelect('prices.country', 'country')
     .addSelect('prices.currency', 'currency')
     .addSelect('prices.duration', 'duration')
-    .addSelect('prices.taxable_amount', 'taxable_amount')
+    .addSelect('CONVERT(prices.taxable_amount, DECIMAL(12,2))', 'taxableAmount')
     .where(duration ? `duration = cast('${duration}' as unsigned)` : '')
     .orderBy(sortField ? sortField : '', orderBy === 'ASC' ? 'ASC' : 'DESC')
     .skip(pageNo ? ((pageNo - 1) * recsPage) : 0)
     .take(recsPage ? recsPage : 10000)
     .getSql();
-    
+
     return await connection.query(cmdSql)
     .catch(error => {
       return Promise.reject(error.message);
     });
-
-
-    /* const connection = getConnection(AWS_DBASE);
-    return await connection.getRepository(ProductLocalPrice).find(); */
+   
   }
 }
 

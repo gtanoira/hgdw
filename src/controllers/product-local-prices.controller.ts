@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 // Models
+import { localPriceToResponse, ProductLocalPrice } from '../models/product-local-price.model';
 
 // Services
 import { productLocalPricesService } from '../services/product-local-prices.service';
@@ -39,12 +40,15 @@ class ProductLocalPricesController {
     const sortDirection = req.query.sort_direction?.toString();
     // Validar que el request tenga un token de un usuario válido
     if ( await authorizationService.isTokenValid(req.headers.authorization || '')) {
-      const recs = await productLocalPricesService.getAll({
+      let recs: ProductLocalPrice[] = [];
+      await productLocalPricesService.getAll({
         duration: duration ? duration : '',
         pageNo: pageNo && +pageNo > 0 ? +pageNo : 1,
         recsPage: recsPage && +recsPage > 0 ? +recsPage : 10000,
         sortField: sortField ? sortField : '',
         sortDirection: sortDirection && 'asc,desc'.indexOf(sortDirection.toLowerCase()) >= 0 ? sortDirection : 'ASC'
+      }).then(prices => {
+        recs = prices.map(price => localPriceToResponse(price))
       });
       return res.status(200).send(recs);
     } else {
