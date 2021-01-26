@@ -132,6 +132,7 @@ class CancelController {
     .catch( (err) => {
       return res.status(503).send({message: err});
     });
+    console.log('*** archivo salvado:', filename);
 
     // Iniciar transacción en la base de datos
     await cancelService.startTransaction();
@@ -277,13 +278,17 @@ class CancelController {
     }
     
     // Obtener el object que contiene los datos del uploadFile
-    const fileUpload =req.files.uploadCancel;
+    console.log('*** cancel File:', req.files.uploadCancel);
+    const fileUpload = req.files.uploadCancel;
 
     // Salvar el archivo en UPLOADS
     const filename = `cancel_${moment().format('YYYY-MM-DD_HH-mm-ss')}.xlsx`;
     return await fileUpload.mv(`${STATIC_PATH}/uploads/${filename}`)
     .then( () =>  filename )
-    .catch( (err) => Promise.reject(err) );
+    .catch( (err) => {
+      console.log('+++ error:',err);
+      Promise.reject(err);
+    });
   }
 }
 
