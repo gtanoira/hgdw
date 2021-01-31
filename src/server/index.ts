@@ -9,6 +9,7 @@ import filesUpload from 'express-fileupload';
 
 // Routes
 import { cancelRoute } from '../routes/cancel.route';
+import { countriesRoute } from '../routes/countries.route';
 import { errorLogsRoute } from '../routes/error-logs.route';
 import { googleAnalyticsRoute } from '../routes/google-analytics.route';
 import { paisesRoute } from '../routes/paises.route';
@@ -91,6 +92,7 @@ export class ApiServer {
      * Routes
      */
     app.use('/api2/cancel', cancelRoute.router);
+    app.use('/api2/countries', countriesRoute.router);
     app.use('/api2/error_logs', errorLogsRoute.router);
     app.use('/api2/ga', googleAnalyticsRoute.router);
     app.use('/api2/payment_commit', paymentCommitRoute.router);

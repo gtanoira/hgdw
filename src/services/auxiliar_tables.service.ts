@@ -41,8 +41,8 @@ export class AuxiliarTablesService {
     if (!this.paises) {
       await this.getPaises().then( data => this.paises = data );
     }
-    const recFind  = this.paises.find( registro => registro.paisId === country);
-    return recFind ? recFind.monedaId : null;
+    const recFind  = this.paises.find( registro => registro.country === country);
+    return recFind ? recFind.currency : null;
   }
 
   public async getPaises(): Promise<Country[]> {

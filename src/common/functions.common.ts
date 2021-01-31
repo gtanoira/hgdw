@@ -12,7 +12,7 @@ export async function ToTimeZone(datetimeUtc: string, country: string): Promise<
 
   try {
     const connection = getConnection(AWS_DBASE);
-    const hsShift = await connection.getRepository(Country).findOne({paisId: country.toUpperCase()})
+    const hsShift = await connection.getRepository(Country).findOne({country: country.toUpperCase()})
       .then( data => data ? data.utcShift : 0)
       .catch( () =>  0 );
     return moment(datetimeUtc, 'YYYY-MM-DDThh:mm:ss').add(hsShift, 'hours').format('YYYY-MM-DDThh:mm:ss');
