@@ -15,7 +15,7 @@ export class ProductLocalPricesRoute {
   
   config(): void {
     this.router.get('/', cors(), productLocalPricesController.index);
-    // this.router.delete('/:id', cors(), productLocalPricesController.delete);
+    this.router.put('/:id', cors(), productLocalPricesController.update);
   }
 
 }

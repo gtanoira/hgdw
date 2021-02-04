@@ -1,4 +1,4 @@
-import { getConnection  } from 'typeorm';
+import { getConnection, UpdateResult  } from 'typeorm';
 
 // Envirnoment
 import { AWS_DBASE } from '../settings/environment.settings';
@@ -45,7 +45,7 @@ export class ProductLocalPricesService {
   }: getAllParams):Promise<ProductLocalPrice[]> {
 
     // Create query params
-    const connection = getConnection(AWS_DBASE)
+    const connection = getConnection(AWS_DBASE);
     const orderBy = sortDirection ? sortDirection.toUpperCase() : `ASC`;
     const cmdSql =  connection.getRepository(ProductLocalPrice)
     .createQueryBuilder('prices')
@@ -65,7 +65,16 @@ export class ProductLocalPricesService {
     .catch(error => {
       return Promise.reject(error.message);
     });
-   
+  }
+
+  // Update de un registro
+  public async updateRecord(product: ProductLocalPrice): Promise<UpdateResult> {
+    const connection = getConnection(AWS_DBASE);
+    return await connection.getRepository(ProductLocalPrice)
+    .createQueryBuilder()
+    .update(ProductLocalPrice, product)
+    .where("id = :id", { id: product.id })
+    .execute();
   }
 }
 

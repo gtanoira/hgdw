@@ -6,6 +6,7 @@ import { localPriceToResponse, ProductLocalPrice } from '../models/product-local
 // Services
 import { productLocalPricesService } from '../services/product-local-prices.service';
 import { authorizationService } from '../services/authorization.service';
+import { UpdateResult } from 'typeorm';
 
 class ProductLocalPricesController {
 
@@ -55,6 +56,47 @@ class ProductLocalPricesController {
       return res.status(401).send({ 'message': 'HTG-003(E): el token del usuario es inválido o ha expirado. Vuelva a loguearse.'})
     }
   }
+
+  // Obtener todos los registros
+  public async update(req: Request, res: Response): Promise<UpdateResult | any> {
+    // Obtener los query parameters si es que enviaron
+    const id = req.params.id;
+    if (id) {
+
+      // Actualizar el registro
+      const newLocalPrice = req.body;
+      if (req.body.constructor === Object && Object.keys(req.body).length !== 0) {
+        try {
+          const newProduct: ProductLocalPrice = newLocalPrice;
+          await productLocalPricesService.updateRecord(newProduct)
+          .then(prices => {
+            return res.status(200).send(prices);
+          })
+          .catch(error => {
+            return res.status(503).send({
+              'message': `Error al grabar los datos en la BDatos: ${error}`
+            });
+          })
+          
+        } catch (error) {
+          return res.status(400).send({
+            'message': 'Los datos enviados para actualizar son incorrectos o faltan (el body está mal formado)'
+          });
+        }
+      } else {
+        return res.status(400).send({
+          'message': 'Faltan los datos a actualizar (el body está vacío)'
+        });
+      }
+
+    } else {
+      return res.status(400).send({
+        'message': 'No se ha especificado qué registro actualizar (el id es nulo)'
+      });
+    }
+
+  }
+  
 
 }
 
