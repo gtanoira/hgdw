@@ -1,4 +1,4 @@
-import { getConnection, UpdateResult  } from 'typeorm';
+import { DeleteResult, getConnection, UpdateResult  } from 'typeorm';
 
 // Envirnoment
 import { AWS_DBASE } from '../settings/environment.settings';
@@ -74,6 +74,16 @@ export class ProductLocalPricesService {
     .createQueryBuilder()
     .update(ProductLocalPrice, product)
     .where("id = :id", { id: product.id })
+    .execute();
+  }
+  
+  // Update de un registro
+  public async deleteRecord(id: number): Promise<DeleteResult> {
+    const connection = getConnection(AWS_DBASE);
+    return await connection.getRepository(ProductLocalPrice)
+    .createQueryBuilder()
+    .delete()
+    .where("id = :id", { id })
     .execute();
   }
 }

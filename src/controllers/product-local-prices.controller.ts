@@ -58,6 +58,37 @@ class ProductLocalPricesController {
   }
 
   // Obtener todos los registros
+  public async delete(req: Request, res: Response): Promise<UpdateResult | any> {
+    // Obtener los query parameters si es que enviaron
+    const id = req.params.id;
+    if (id) {
+
+      // Eliminar el registro
+      await productLocalPricesService.deleteRecord(+id)
+      .then(result => {
+        console.log('***', result, result.affected);
+        let rtnMessage = '';
+        if (result.affected && result.affected > 0) {
+          rtnMessage = `Se ${result.affected > 1 ? 'eliminaron' : 'eliminó'} ${result.affected} ${result.affected > 1 ? 'registros' : 'registro'} con éxito.`;
+        } else {
+          rtnMessage = 'Ningún registro eliminado.';
+        }
+        return res.status(200).send({'message': rtnMessage});
+      })
+      .catch(error => {
+        return res.status(503).send({
+          'message': `Error al grabar los datos en la BDatos: ${error}`
+        });
+      })
+
+    } else {
+      return res.status(400).send({
+        'message': 'No se ha especificado qué registro eliminar (el id es nulo)'
+      });
+    }
+  }
+
+  // Obtener todos los registros
   public async update(req: Request, res: Response): Promise<UpdateResult | any> {
     // Obtener los query parameters si es que enviaron
     const id = req.params.id;
