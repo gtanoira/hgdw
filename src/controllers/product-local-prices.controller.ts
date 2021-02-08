@@ -6,7 +6,8 @@ import { localPriceToResponse, ProductLocalPrice } from '../models/product-local
 // Services
 import { productLocalPricesService } from '../services/product-local-prices.service';
 import { authorizationService } from '../services/authorization.service';
-import { UpdateResult } from 'typeorm';
+import { InsertResult, UpdateResult } from 'typeorm';
+import { AnyARecord } from 'dns';
 
 class ProductLocalPricesController {
 
@@ -30,6 +31,45 @@ class ProductLocalPricesController {
       );
     return res.send(rtnMessage).status(rtnStatus);
   } */
+
+  // Obtener todos los registros
+  public async create(req: Request, res: Response): Promise<InsertResult | any> {
+
+    // Actualizar el registro
+    const newLocalPrice = req.body;
+    if (req.body.constructor === Object && Object.keys(req.body).length !== 0) {
+      // Chequear que existan todos los campos
+      let existsAllFields = true;
+      for (const prop in ProductLocalPrice) {
+        if (!Object.prototype.hasOwnProperty.call(newLocalPrice, prop)) {
+          existsAllFields = false;
+          break;
+        }
+      }
+
+      if (existsAllFields) {
+        const newProduct: ProductLocalPrice = newLocalPrice;
+        await productLocalPricesService.createRecord(newProduct)
+        .then(() => {
+          return res.status(200).send({'message': 'Precio creado con éxito.'});
+        })
+        .catch(error => {
+          return res.status(503).send({
+            'message': `Error al crear el registro en la BDatos: ${error}`
+          });
+        })
+        
+      } else {
+        return res.status(400).send({
+          'message': 'Los datos enviados para crear el registro son incorrectos o faltan (el body está mal formado)'
+        });
+      }
+    } else {
+      return res.status(400).send({
+        'message': 'Faltan los datos del registro a crear (el body está vacío)'
+      });
+    }
+  }
 
   // Obtener todos los registros
   public async index(req: Request, res: Response): Promise<Response> {

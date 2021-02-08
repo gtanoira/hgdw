@@ -1,4 +1,4 @@
-import { DeleteResult, getConnection, UpdateResult  } from 'typeorm';
+import { DeleteResult, getConnection, InsertResult, UpdateResult  } from 'typeorm';
 
 // Envirnoment
 import { AWS_DBASE } from '../settings/environment.settings';
@@ -35,6 +35,24 @@ export class ProductLocalPricesService {
       }
     );
   } */
+
+  // Update de un registro
+  public async createRecord(product: ProductLocalPrice): Promise<InsertResult> {
+    const connection = getConnection(AWS_DBASE);
+    return await connection.getRepository(ProductLocalPrice)
+    .createQueryBuilder()
+    .insert()
+    .values([
+      {
+        fecha: product.fecha,
+        country: product.country,
+        currency: product.currency,
+        duration: product.duration,
+        taxableAmount: product.taxableAmount
+      }
+    ])
+    .execute();
+  }
 
   public async getAll({
     duration = '',
