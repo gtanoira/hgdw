@@ -38,6 +38,15 @@ export class ProductLocalPrice {
   @Column({ name: 'taxable_amount', type: 'decimal', precision: 12, scale: 2, default: 0 })
   public taxableAmount?: number;
 
+  constructor() {
+    this.id = 0;
+    this.fecha = new Date().toUTCString();
+    this.country = 'AR';
+    this.currency = 'ARS';
+    this.duration = 30;
+    this.taxableAmount = 0;
+  }
+
 }
 
 // What to show as response from a http request

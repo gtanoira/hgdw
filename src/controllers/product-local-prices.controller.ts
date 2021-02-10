@@ -40,7 +40,8 @@ class ProductLocalPricesController {
     if (req.body.constructor === Object && Object.keys(req.body).length !== 0) {
       // Chequear que existan todos los campos
       let existsAllFields = true;
-      for (const prop in ProductLocalPrice) {
+      for (const prop in new ProductLocalPrice()) {
+        console.log(prop, Object.prototype.hasOwnProperty.call(newLocalPrice, prop));
         if (!Object.prototype.hasOwnProperty.call(newLocalPrice, prop)) {
           existsAllFields = false;
           break;
@@ -106,7 +107,6 @@ class ProductLocalPricesController {
       // Eliminar el registro
       await productLocalPricesService.deleteRecord(+id)
       .then(result => {
-        console.log('***', result, result.affected);
         let rtnMessage = '';
         if (result.affected && result.affected > 0) {
           rtnMessage = `Se ${result.affected > 1 ? 'eliminaron' : 'eliminó'} ${result.affected} ${result.affected > 1 ? 'registros' : 'registro'} con éxito.`;
