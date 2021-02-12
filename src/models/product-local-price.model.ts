@@ -8,6 +8,7 @@ class LocalPricesROobject {
   id!: number;
   fecha!: string;
   country!: string;
+  paymProcessor!: string;
   currency!: string;
   duration!: number;
   taxableAmount!: number;
@@ -28,6 +29,9 @@ export class ProductLocalPrice {
 
   @Column()
   public country!: string;
+
+  @Column({ name: 'paym_processor' })
+  public paymProcessor!: string;
  
   @Column()
   public currency!: string;
@@ -42,6 +46,7 @@ export class ProductLocalPrice {
     this.id = 0;
     this.fecha = new Date().toUTCString();
     this.country = 'AR';
+    this.paymProcessor = 'mercado_pago';
     this.currency = 'ARS';
     this.duration = 30;
     this.taxableAmount = 0;
@@ -55,6 +60,7 @@ export function localPriceToResponse(localPrice: ProductLocalPrice): LocalPrices
     id: +localPrice.id,
     fecha: localPrice.fecha,
     country: localPrice.country,
+    paymProcessor: localPrice.paymProcessor,
     currency: localPrice.currency,
     duration: localPrice.duration ? localPrice.duration : 0,
     taxableAmount: localPrice.taxableAmount ? Number(localPrice.taxableAmount) : 0

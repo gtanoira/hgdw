@@ -36,7 +36,7 @@ export class ProductLocalPricesService {
     );
   } */
 
-  // Update de un registro
+  // Crear un registro
   public async createRecord(product: ProductLocalPrice): Promise<InsertResult> {
     const connection = getConnection(AWS_DBASE);
     return await connection.getRepository(ProductLocalPrice)
@@ -46,6 +46,7 @@ export class ProductLocalPricesService {
       {
         fecha: product.fecha,
         country: product.country,
+        paymProcessor: product.paymProcessor,
         currency: product.currency,
         duration: product.duration,
         taxableAmount: product.taxableAmount
@@ -54,6 +55,7 @@ export class ProductLocalPricesService {
     .execute();
   }
 
+  // Obtener registros
   public async getAll({
     duration = '',
     pageNo = 1,
@@ -70,6 +72,7 @@ export class ProductLocalPricesService {
     .select('prices.id', 'id')
     .addSelect('prices.fecha', 'fecha')
     .addSelect('prices.country', 'country')
+    .addSelect('prices.paym_processor', 'paymProcessor')
     .addSelect('prices.currency', 'currency')
     .addSelect('prices.duration', 'duration')
     .addSelect('CONVERT(prices.taxable_amount, DECIMAL(12,2))', 'taxableAmount')
@@ -95,7 +98,7 @@ export class ProductLocalPricesService {
     .execute();
   }
   
-  // Update de un registro
+  // Eliminar un registro
   public async deleteRecord(id: number): Promise<DeleteResult> {
     const connection = getConnection(AWS_DBASE);
     return await connection.getRepository(ProductLocalPrice)

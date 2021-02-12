@@ -4,13 +4,14 @@ import { Connection, getConnectionOptions, ConnectionOptions, createConnections 
 import { AWS_DBASE } from '../settings/environment.settings';
 
 // Models
+import { Country } from '../models/country.model';
 import { ErrorLog } from '../models/error-log.model';
 import { FieldStatus } from '../models/field_status.model';
-import { Country } from '../models/country.model';
-import { Register } from '../models/register.model';
+import { PaymentMethod } from '../models/payment_method.model';
 import { ProcesoBatch } from '../models/proceso_batch.model';
-import { ScheduleEvent } from '../models/schedule-event.model';
 import { ProductLocalPrice } from '../models/product-local-price.model';
+import { Register } from '../models/register.model';
+import { ScheduleEvent } from '../models/schedule-event.model';
 
 /* 
 Ejemplo de la interfaz "ConnectionOptions"
@@ -63,6 +64,7 @@ export class HotGoDBase {
         ErrorLog,
         FieldStatus,
         Country,
+        PaymentMethod,
         ProcesoBatch,
         ProductLocalPrice
       ]
