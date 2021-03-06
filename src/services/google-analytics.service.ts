@@ -181,20 +181,23 @@ class GoogleAnalyticsService {
         valuesCmd = '';
       }
 
-      // Leer un registro
-      const userId: string = data[i][0];
-      const timestamp: string = data[i][1];
-      const channelGrouping: string = data[i][2];
-      const source: string = data[i][3];
-      const medium: string = data[i][4];
-      const campaign: string = data[i][5];
-      const adContent: string = data[i][6];
-      // Preparar la fecha
-      const fecha = timestamp.slice(0,4) + '-' + timestamp.slice(4, 6) + '-' + timestamp.slice(6, 8) +
-        'T' + timestamp.slice(8, 10) + ':' + timestamp.slice(10, 12) + ':00Z';
-      // Crear el VALUES del INSERT
-      valuesCmd += `('${userId}','${fecha}','${channelGrouping}','${source}','${medium}'` +
-        `,'${campaign}','${adContent}'),`;
+      // Leer un registro siempre y cuando no esté duplicado
+      const count = data.reduce((n, el) => n + (el[0] === data[i][0] && el[1] === data[i][1] ? 1 : 0), 0);
+      if (count === 1) {
+        const userId: string = data[i][0];
+        const timestamp: string = data[i][1];
+        const channelGrouping: string = data[i][2];
+        const source: string = data[i][3];
+        const medium: string = data[i][4];
+        const campaign: string = data[i][5];
+        const adContent: string = data[i][6];
+        // Preparar la fecha
+        const fecha = timestamp.slice(0,4) + '-' + timestamp.slice(4, 6) + '-' + timestamp.slice(6, 8) +
+          'T' + timestamp.slice(8, 10) + ':' + timestamp.slice(10, 12) + ':00Z';
+        // Crear el VALUES del INSERT
+        valuesCmd += `('${userId}','${fecha}','${channelGrouping}','${source}','${medium}'` +
+          `,'${campaign}','${adContent}'),`;
+      }
     }
 
     // Procesar los últimos titulos
