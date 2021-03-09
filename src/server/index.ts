@@ -8,6 +8,7 @@ import filesUpload from 'express-fileupload';
 // Environment
 
 // Routes
+import { aliveRoute } from '../routes/alive.route';
 import { cancelRoute } from '../routes/cancel.route';
 import { countriesRoute } from '../routes/countries.route';
 import { errorLogsRoute } from '../routes/error-logs.route';
@@ -83,7 +84,7 @@ export class ApiServer {
       preserveExtension: false   // mantener la extensión
     }));
 
-    // Http reqeusts log
+    // Http requests log
     app.use(morgan('dev'))
 
     // CORS
@@ -107,6 +108,7 @@ export class ApiServer {
     app.use('/cancel', cancelRoute.router);
     app.use('/titles', titlesRoute.router);
     app.use('/user_collections', userCollectionsRoute.router);
+    app.use('/', aliveRoute.router);
 
 
     // Starting the Server
