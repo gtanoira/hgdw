@@ -10,7 +10,7 @@ jobs:
 
     steps:
       # stop backend server
-      - run: pm2 stop hgdw
+      #- run: pm2 stop hgdw
 
       # Build the app
       - uses: actions/checkout@v2
@@ -20,7 +20,7 @@ jobs:
       - run: npm i
 
       # Compile app
-      - run: npm run build
+      #- run: npm run build
 
       # Restart backend server
       # - run: pm2 start hgdw
